@@ -1,0 +1,105 @@
+{
+  "track_id": "hungaroring_acc",
+  "display_name": "Hungaroring Acc",
+  "length_m": 4381,
+  "spline_offset": 0.0,
+  "setup_folder": "hungaroring",
+  "direction": "clockwise",
+  "sectors": [
+    {
+      "name": "S1",
+      "spline_end": 0.33
+    },
+    {
+      "name": "S2",
+      "spline_end": 0.66
+    },
+    {
+      "name": "S3",
+      "spline_end": 1.0
+    }
+  ],
+  "corners": [
+    {
+      "name": "Turn 1",
+      "display_name": "Hungaroring 1",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.010000000000000002,
+      "spline_end": 0.07,
+      "apex_spline": 0.04
+    },
+    {
+      "name": "Turn 2",
+      "display_name": "Hungaroring 2",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.05,
+      "spline_end": 0.11,
+      "apex_spline": 0.08
+    },
+    {
+      "name": "Turn 3",
+      "display_name": "Hungaroring 3",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.11000000000000001,
+      "spline_end": 0.17,
+      "apex_spline": 0.14
+    },
+    {
+      "name": "Turn 4",
+      "display_name": "Hungaroring 4",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.19,
+      "spline_end": 0.25,
+      "apex_spline": 0.22
+    },
+    {
+      "name": "Turn 5",
+      "display_name": "Chicane",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.31999999999999995,
+      "spline_end": 0.38,
+      "apex_spline": 0.35
+    },
+    {
+      "name": "Turn 6",
+      "display_name": "Hungaroring 6",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.42000000000000004,
+      "spline_end": 0.48,
+      "apex_spline": 0.45
+    },
+    {
+      "name": "Turn 11",
+      "display_name": "Hungaroring 11",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.69,
+      "spline_end": 0.75,
+      "apex_spline": 0.72
+    },
+    {
+      "name": "Turn 12",
+      "display_name": "Hungaroring 12",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.7899999999999999,
+      "spline_end": 0.85,
+      "apex_spline": 0.82
+    },
+    {
+      "name": "Turn 14",
+      "display_name": "Hungaroring 14",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.9199999999999999,
+      "spline_end": 0.98,
+      "apex_spline": 0.95
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "track_id": "laguna_seca_acc",
+  "display_name": "Laguna Seca Acc",
+  "length_m": 3602,
+  "spline_offset": 0.0,
+  "setup_folder": "laguna_seca",
+  "direction": "clockwise",
+  "sectors": [
+    {
+      "name": "S1",
+      "spline_end": 0.33
+    },
+    {
+      "name": "S2",
+      "spline_end": 0.66
+    },
+    {
+      "name": "S3",
+      "spline_end": 1.0
+    }
+  ],
+  "corners": [
+    {
+      "name": "Turn 1",
+      "display_name": "Andretti",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.020000000000000004,
+      "spline_end": 0.08,
+      "apex_spline": 0.05
+    },
+    {
+      "name": "Turn 2",
+      "display_name": "Turn 2",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.09,
+      "spline_end": 0.15,
+      "apex_spline": 0.12
+    },
+    {
+      "name": "Turn 3",
+      "display_name": "Turn 3",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.19,
+      "spline_end": 0.25,
+      "apex_spline": 0.22
+    },
+    {
+      "name": "Turn 4",
+      "display_name": "Turn 4",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.31999999999999995,
+      "spline_end": 0.38,
+      "apex_spline": 0.35
+    },
+    {
+      "name": "Turn 5",
+      "display_name": "Turn 5",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.44999999999999996,
+      "spline_end": 0.51,
+      "apex_spline": 0.48
+    },
+    {
+      "name": "Turn 6",
+      "display_name": "Turn 6",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.5499999999999999,
+      "spline_end": 0.61,
+      "apex_spline": 0.58
+    },
+    {
+      "name": "Turn 8",
+      "display_name": "Corkscrew",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.69,
+      "spline_end": 0.75,
+      "apex_spline": 0.72
+    },
+    {
+      "name": "Turn 9",
+      "display_name": "Rainey",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.7899999999999999,
+      "spline_end": 0.85,
+      "apex_spline": 0.82
+    },
+    {
+      "name": "Turn 11",
+      "display_name": "Turn 11",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.9199999999999999,
+      "spline_end": 0.98,
+      "apex_spline": 0.95
+    }
+  ]
+}

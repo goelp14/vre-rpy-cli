@@ -1,0 +1,87 @@
+{
+  "track_id": "kyalami_acc",
+  "display_name": "Kyalami Acc",
+  "length_m": 4529,
+  "spline_offset": 0.0,
+  "setup_folder": "kyalami",
+  "direction": "clockwise",
+  "sectors": [
+    {
+      "name": "S1",
+      "spline_end": 0.33
+    },
+    {
+      "name": "S2",
+      "spline_end": 0.66
+    },
+    {
+      "name": "S3",
+      "spline_end": 1.0
+    }
+  ],
+  "corners": [
+    {
+      "name": "Turn 1",
+      "display_name": "The Kink",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.020000000000000004,
+      "spline_end": 0.08,
+      "apex_spline": 0.05
+    },
+    {
+      "name": "Turn 2",
+      "display_name": "Crowthorne",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.12,
+      "spline_end": 0.18,
+      "apex_spline": 0.15
+    },
+    {
+      "name": "Turn 3",
+      "display_name": "Jukskei",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.25,
+      "spline_end": 0.31000000000000005,
+      "apex_spline": 0.28
+    },
+    {
+      "name": "Turn 5",
+      "display_name": "Barbeque",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.42000000000000004,
+      "spline_end": 0.48,
+      "apex_spline": 0.45
+    },
+    {
+      "name": "Turn 7",
+      "display_name": "Sunset",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.57,
+      "spline_end": 0.63,
+      "apex_spline": 0.6
+    },
+    {
+      "name": "Turn 9",
+      "display_name": "Clubhouse",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.75,
+      "spline_end": 0.81,
+      "apex_spline": 0.78
+    },
+    {
+      "name": "Turn 11",
+      "display_name": "Mines",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.89,
+      "spline_end": 0.9500000000000001,
+      "apex_spline": 0.92
+    }
+  ]
+}

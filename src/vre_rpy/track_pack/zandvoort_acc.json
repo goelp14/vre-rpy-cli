@@ -1,0 +1,78 @@
+{
+  "track_id": "zandvoort_acc",
+  "display_name": "Zandvoort Acc",
+  "length_m": 4259,
+  "spline_offset": 0.0,
+  "setup_folder": "zandvoort",
+  "direction": "clockwise",
+  "sectors": [
+    {
+      "name": "S1",
+      "spline_end": 0.33
+    },
+    {
+      "name": "S2",
+      "spline_end": 0.66
+    },
+    {
+      "name": "S3",
+      "spline_end": 1.0
+    }
+  ],
+  "corners": [
+    {
+      "name": "Turn 1",
+      "display_name": "Tarzan",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.020000000000000004,
+      "spline_end": 0.08,
+      "apex_spline": 0.05
+    },
+    {
+      "name": "Turn 3",
+      "display_name": "Hugenholtz",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.12,
+      "spline_end": 0.18,
+      "apex_spline": 0.15
+    },
+    {
+      "name": "Turn 7",
+      "display_name": "Scheivlak",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.37,
+      "spline_end": 0.43000000000000005,
+      "apex_spline": 0.4
+    },
+    {
+      "name": "Turn 8",
+      "display_name": "Masters",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.52,
+      "spline_end": 0.5800000000000001,
+      "apex_spline": 0.55
+    },
+    {
+      "name": "Turn 11",
+      "display_name": "Hans Ernst",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.72,
+      "spline_end": 0.78,
+      "apex_spline": 0.75
+    },
+    {
+      "name": "Turn 13",
+      "display_name": "Arie Luyendyk",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.89,
+      "spline_end": 0.9500000000000001,
+      "apex_spline": 0.92
+    }
+  ]
+}

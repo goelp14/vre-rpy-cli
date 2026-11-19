@@ -1,0 +1,96 @@
+{
+  "track_id": "donington_acc",
+  "display_name": "Donington Acc",
+  "length_m": 4020,
+  "spline_offset": 0.0,
+  "setup_folder": "donington",
+  "direction": "clockwise",
+  "sectors": [
+    {
+      "name": "S1",
+      "spline_end": 0.33
+    },
+    {
+      "name": "S2",
+      "spline_end": 0.66
+    },
+    {
+      "name": "S3",
+      "spline_end": 1.0
+    }
+  ],
+  "corners": [
+    {
+      "name": "Turn 1",
+      "display_name": "Redgate",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.020000000000000004,
+      "spline_end": 0.08,
+      "apex_spline": 0.05
+    },
+    {
+      "name": "Turn 2",
+      "display_name": "Hollywood",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.09,
+      "spline_end": 0.15,
+      "apex_spline": 0.12
+    },
+    {
+      "name": "Turn 3",
+      "display_name": "Craner",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.19,
+      "spline_end": 0.25,
+      "apex_spline": 0.22
+    },
+    {
+      "name": "Turn 4",
+      "display_name": "Old Hairpin",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.29000000000000004,
+      "spline_end": 0.35,
+      "apex_spline": 0.32
+    },
+    {
+      "name": "Turn 5",
+      "display_name": "Starkeys",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.42000000000000004,
+      "spline_end": 0.48,
+      "apex_spline": 0.45
+    },
+    {
+      "name": "Turn 7",
+      "display_name": "McLeans",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.59,
+      "spline_end": 0.65,
+      "apex_spline": 0.62
+    },
+    {
+      "name": "Turn 9",
+      "display_name": "Coppine",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.75,
+      "spline_end": 0.81,
+      "apex_spline": 0.78
+    },
+    {
+      "name": "Turn 10",
+      "display_name": "Goddards",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.89,
+      "spline_end": 0.9500000000000001,
+      "apex_spline": 0.92
+    }
+  ]
+}

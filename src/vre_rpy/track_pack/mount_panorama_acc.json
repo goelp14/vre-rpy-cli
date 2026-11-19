@@ -1,0 +1,114 @@
+{
+  "track_id": "mount_panorama_acc",
+  "display_name": "Mount Panorama Acc",
+  "length_m": 6213,
+  "spline_offset": 0.0,
+  "setup_folder": "mount_panorama",
+  "direction": "clockwise",
+  "sectors": [
+    {
+      "name": "S1",
+      "spline_end": 0.33
+    },
+    {
+      "name": "S2",
+      "spline_end": 0.66
+    },
+    {
+      "name": "S3",
+      "spline_end": 1.0
+    }
+  ],
+  "corners": [
+    {
+      "name": "Turn 1",
+      "display_name": "Hell Corner",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0,
+      "spline_end": 0.06,
+      "apex_spline": 0.03
+    },
+    {
+      "name": "Turn 2",
+      "display_name": "The Cutting",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.09,
+      "spline_end": 0.15,
+      "apex_spline": 0.12
+    },
+    {
+      "name": "Turn 3",
+      "display_name": "Reid Park",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.19,
+      "spline_end": 0.25,
+      "apex_spline": 0.22
+    },
+    {
+      "name": "Turn 4",
+      "display_name": "Sulman Park",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.29000000000000004,
+      "spline_end": 0.35,
+      "apex_spline": 0.32
+    },
+    {
+      "name": "Turn 5",
+      "display_name": "McPhillamy",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.39,
+      "spline_end": 0.44999999999999996,
+      "apex_spline": 0.42
+    },
+    {
+      "name": "Turn 6",
+      "display_name": "Brock Skyline",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.49,
+      "spline_end": 0.55,
+      "apex_spline": 0.52
+    },
+    {
+      "name": "Turn 7",
+      "display_name": "The Dipper",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.5499999999999999,
+      "spline_end": 0.61,
+      "apex_spline": 0.58
+    },
+    {
+      "name": "Turn 8",
+      "display_name": "Forrest Elbow",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.65,
+      "spline_end": 0.7100000000000001,
+      "apex_spline": 0.68
+    },
+    {
+      "name": "Turn 9",
+      "display_name": "Chase",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.85,
+      "spline_end": 0.91,
+      "apex_spline": 0.88
+    },
+    {
+      "name": "Turn 10",
+      "display_name": "Murray",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.9199999999999999,
+      "spline_end": 0.98,
+      "apex_spline": 0.95
+    }
+  ]
+}

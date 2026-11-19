@@ -1,0 +1,96 @@
+{
+  "track_id": "suzuka_acc",
+  "display_name": "Suzuka Acc",
+  "length_m": 5807,
+  "spline_offset": 0.0,
+  "setup_folder": "suzuka",
+  "direction": "clockwise",
+  "sectors": [
+    {
+      "name": "S1",
+      "spline_end": 0.33
+    },
+    {
+      "name": "S2",
+      "spline_end": 0.66
+    },
+    {
+      "name": "S3",
+      "spline_end": 1.0
+    }
+  ],
+  "corners": [
+    {
+      "name": "Turn 1",
+      "display_name": "First",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.010000000000000002,
+      "spline_end": 0.07,
+      "apex_spline": 0.04
+    },
+    {
+      "name": "Turn 3",
+      "display_name": "S",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.09,
+      "spline_end": 0.15,
+      "apex_spline": 0.12
+    },
+    {
+      "name": "Turn 7",
+      "display_name": "Degner",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.31999999999999995,
+      "spline_end": 0.38,
+      "apex_spline": 0.35
+    },
+    {
+      "name": "Turn 9",
+      "display_name": "Hairpin",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.44999999999999996,
+      "spline_end": 0.51,
+      "apex_spline": 0.48
+    },
+    {
+      "name": "Turn 11",
+      "display_name": "Spoon",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.62,
+      "spline_end": 0.68,
+      "apex_spline": 0.65
+    },
+    {
+      "name": "Turn 13",
+      "display_name": "130R",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.7899999999999999,
+      "spline_end": 0.85,
+      "apex_spline": 0.82
+    },
+    {
+      "name": "Turn 14",
+      "display_name": "Casio",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.87,
+      "spline_end": 0.93,
+      "apex_spline": 0.9
+    },
+    {
+      "name": "Turn 15",
+      "display_name": "Triangle",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.9199999999999999,
+      "spline_end": 0.98,
+      "apex_spline": 0.95
+    }
+  ]
+}

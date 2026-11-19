@@ -1,0 +1,23 @@
+{
+  "track_id": "imola_acc",
+  "display_name": "Imola ACC",
+  "length_m": 4909,
+  "spline_offset": 0.0,
+  "setup_folder": "imola",
+  "direction": "clockwise",
+  "sectors": [
+    {"name": "S1", "spline_end": 0.33},
+    {"name": "S2", "spline_end": 0.66},
+    {"name": "S3", "spline_end": 1.0}
+  ],
+  "corners": [
+    {"name": "Turn 1", "display_name": "Tamburello", "direction": "left", "speed_class": "fast", "spline_start": 0.02, "spline_end": 0.08, "apex_spline": 0.05},
+    {"name": "Turn 2", "display_name": "Villeneuve", "direction": "left", "speed_class": "fast", "spline_start": 0.10, "spline_end": 0.16, "apex_spline": 0.13},
+    {"name": "Turn 3", "display_name": "Tosa", "direction": "left", "speed_class": "slow", "spline_start": 0.20, "spline_end": 0.26, "apex_spline": 0.23},
+    {"name": "Turn 4", "display_name": "Piratella", "direction": "left", "speed_class": "medium", "spline_start": 0.32, "spline_end": 0.40, "apex_spline": 0.36},
+    {"name": "Turn 5", "display_name": "Acque Minerali", "direction": "right", "speed_class": "medium", "spline_start": 0.45, "spline_end": 0.55, "apex_spline": 0.50},
+    {"name": "Turn 6", "display_name": "Variante Alta", "direction": "left", "speed_class": "medium", "spline_start": 0.62, "spline_end": 0.70, "apex_spline": 0.66},
+    {"name": "Turn 7", "display_name": "Rivazza 1", "direction": "left", "speed_class": "medium", "spline_start": 0.82, "spline_end": 0.88, "apex_spline": 0.85},
+    {"name": "Turn 8", "display_name": "Rivazza 2", "direction": "left", "speed_class": "medium", "spline_start": 0.88, "spline_end": 0.94, "apex_spline": 0.91}
+  ]
+}

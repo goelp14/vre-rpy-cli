@@ -1,0 +1,24 @@
+{
+  "track_id": "brands_hatch_acc",
+  "display_name": "Brands Hatch ACC",
+  "length_m": 3908,
+  "spline_offset": 0.0,
+  "setup_folder": "brands_hatch",
+  "direction": "clockwise",
+  "sectors": [
+    {"name": "S1", "spline_end": 0.33},
+    {"name": "S2", "spline_end": 0.66},
+    {"name": "S3", "spline_end": 1.0}
+  ],
+  "corners": [
+    {"name": "Turn 1", "display_name": "Paddock Hill", "direction": "right", "speed_class": "fast", "spline_start": 0.02, "spline_end": 0.10, "apex_spline": 0.06},
+    {"name": "Turn 2", "display_name": "Druids", "direction": "right", "speed_class": "slow", "spline_start": 0.14, "spline_end": 0.22, "apex_spline": 0.18},
+    {"name": "Turn 3", "display_name": "Graham Hill", "direction": "left", "speed_class": "medium", "spline_start": 0.24, "spline_end": 0.32, "apex_spline": 0.28},
+    {"name": "Turn 4", "display_name": "Surtees", "direction": "left", "speed_class": "medium", "spline_start": 0.36, "spline_end": 0.44, "apex_spline": 0.40},
+    {"name": "Turn 5", "display_name": "Hawthorns", "direction": "right", "speed_class": "fast", "spline_start": 0.50, "spline_end": 0.58, "apex_spline": 0.54},
+    {"name": "Turn 6", "display_name": "Westfield", "direction": "left", "speed_class": "fast", "spline_start": 0.62, "spline_end": 0.70, "apex_spline": 0.66},
+    {"name": "Turn 7", "display_name": "Sheene", "direction": "right", "speed_class": "medium", "spline_start": 0.74, "spline_end": 0.82, "apex_spline": 0.78},
+    {"name": "Turn 8", "display_name": "Stirling", "direction": "left", "speed_class": "medium", "spline_start": 0.86, "spline_end": 0.92, "apex_spline": 0.89},
+    {"name": "Turn 9", "display_name": "Clark", "direction": "right", "speed_class": "medium", "spline_start": 0.92, "spline_end": 0.98, "apex_spline": 0.95}
+  ]
+}

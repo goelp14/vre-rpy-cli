@@ -1,0 +1,96 @@
+{
+  "track_id": "nurburgring_acc",
+  "display_name": "Nurburgring Acc",
+  "length_m": 5137,
+  "spline_offset": 0.0,
+  "setup_folder": "nurburgring",
+  "direction": "clockwise",
+  "sectors": [
+    {
+      "name": "S1",
+      "spline_end": 0.33
+    },
+    {
+      "name": "S2",
+      "spline_end": 0.66
+    },
+    {
+      "name": "S3",
+      "spline_end": 1.0
+    }
+  ],
+  "corners": [
+    {
+      "name": "Turn 1",
+      "display_name": "Yokohama",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.010000000000000002,
+      "spline_end": 0.07,
+      "apex_spline": 0.04
+    },
+    {
+      "name": "Turn 2",
+      "display_name": "Hatzenbach",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.09,
+      "spline_end": 0.15,
+      "apex_spline": 0.12
+    },
+    {
+      "name": "Turn 5",
+      "display_name": "Ford",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.25,
+      "spline_end": 0.31000000000000005,
+      "apex_spline": 0.28
+    },
+    {
+      "name": "Turn 6",
+      "display_name": "Dunlop",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.37,
+      "spline_end": 0.43000000000000005,
+      "apex_spline": 0.4
+    },
+    {
+      "name": "Turn 7",
+      "display_name": "Bit Curve",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.52,
+      "spline_end": 0.5800000000000001,
+      "apex_spline": 0.55
+    },
+    {
+      "name": "Turn 10",
+      "display_name": "Veedol",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.69,
+      "spline_end": 0.75,
+      "apex_spline": 0.72
+    },
+    {
+      "name": "Turn 11",
+      "display_name": "NGK Chicane",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.85,
+      "spline_end": 0.91,
+      "apex_spline": 0.88
+    },
+    {
+      "name": "Turn 12",
+      "display_name": "Coca-Cola",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.9199999999999999,
+      "spline_end": 0.98,
+      "apex_spline": 0.95
+    }
+  ]
+}

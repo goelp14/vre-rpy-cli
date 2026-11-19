@@ -1,0 +1,24 @@
+{
+  "track_id": "paul_ricard_acc",
+  "display_name": "Paul Ricard ACC",
+  "length_m": 5770,
+  "spline_offset": 0.0,
+  "setup_folder": "paul_ricard",
+  "direction": "clockwise",
+  "sectors": [
+    {"name": "S1", "spline_end": 0.33},
+    {"name": "S2", "spline_end": 0.66},
+    {"name": "S3", "spline_end": 1.0}
+  ],
+  "corners": [
+    {"name": "Turn 1", "display_name": "Verriere", "direction": "right", "speed_class": "medium", "spline_start": 0.02, "spline_end": 0.08, "apex_spline": 0.05},
+    {"name": "Turn 3", "display_name": "Club", "direction": "left", "speed_class": "medium", "spline_start": 0.12, "spline_end": 0.18, "apex_spline": 0.15},
+    {"name": "Turn 5", "display_name": "Sainte Baume", "direction": "right", "speed_class": "fast", "spline_start": 0.22, "spline_end": 0.30, "apex_spline": 0.26},
+    {"name": "Turn 6", "display_name": "L'epine", "direction": "left", "speed_class": "medium", "spline_start": 0.32, "spline_end": 0.38, "apex_spline": 0.35},
+    {"name": "Turn 7", "display_name": "Bendor", "direction": "right", "speed_class": "medium", "spline_start": 0.40, "spline_end": 0.46, "apex_spline": 0.43},
+    {"name": "Turn 8", "display_name": "Signes", "direction": "right", "speed_class": "fast", "spline_start": 0.55, "spline_end": 0.62, "apex_spline": 0.58},
+    {"name": "Turn 10", "display_name": "Beausset", "direction": "right", "speed_class": "medium", "spline_start": 0.70, "spline_end": 0.80, "apex_spline": 0.75},
+    {"name": "Turn 12", "display_name": "Garlaban", "direction": "left", "speed_class": "medium", "spline_start": 0.86, "spline_end": 0.92, "apex_spline": 0.89},
+    {"name": "Turn 13", "display_name": "Le Musee", "direction": "right", "speed_class": "slow", "spline_start": 0.94, "spline_end": 0.99, "apex_spline": 0.96}
+  ]
+}

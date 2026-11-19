@@ -1,0 +1,87 @@
+{
+  "track_id": "oulton_park_acc",
+  "display_name": "Oulton Park Acc",
+  "length_m": 4307,
+  "spline_offset": 0.0,
+  "setup_folder": "oulton_park",
+  "direction": "clockwise",
+  "sectors": [
+    {
+      "name": "S1",
+      "spline_end": 0.33
+    },
+    {
+      "name": "S2",
+      "spline_end": 0.66
+    },
+    {
+      "name": "S3",
+      "spline_end": 1.0
+    }
+  ],
+  "corners": [
+    {
+      "name": "Turn 1",
+      "display_name": "Old Hall",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.020000000000000004,
+      "spline_end": 0.08,
+      "apex_spline": 0.05
+    },
+    {
+      "name": "Turn 2",
+      "display_name": "Cascades",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.12,
+      "spline_end": 0.18,
+      "apex_spline": 0.15
+    },
+    {
+      "name": "Turn 3",
+      "display_name": "Island",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.27,
+      "spline_end": 0.32999999999999996,
+      "apex_spline": 0.3
+    },
+    {
+      "name": "Turn 4",
+      "display_name": "Shell",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.42000000000000004,
+      "spline_end": 0.48,
+      "apex_spline": 0.45
+    },
+    {
+      "name": "Turn 6",
+      "display_name": "Knickerbrook",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.62,
+      "spline_end": 0.68,
+      "apex_spline": 0.65
+    },
+    {
+      "name": "Turn 8",
+      "display_name": "Druids",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.7899999999999999,
+      "spline_end": 0.85,
+      "apex_spline": 0.82
+    },
+    {
+      "name": "Turn 9",
+      "display_name": "Lodge",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.9199999999999999,
+      "spline_end": 0.98,
+      "apex_spline": 0.95
+    }
+  ]
+}

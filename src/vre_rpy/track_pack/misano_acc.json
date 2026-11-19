@@ -1,0 +1,78 @@
+{
+  "track_id": "misano_acc",
+  "display_name": "Misano Acc",
+  "length_m": 4067,
+  "spline_offset": 0.0,
+  "setup_folder": "misano",
+  "direction": "clockwise",
+  "sectors": [
+    {
+      "name": "S1",
+      "spline_end": 0.33
+    },
+    {
+      "name": "S2",
+      "spline_end": 0.66
+    },
+    {
+      "name": "S3",
+      "spline_end": 1.0
+    }
+  ],
+  "corners": [
+    {
+      "name": "Turn 1",
+      "display_name": "Variante del Parco",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.020000000000000004,
+      "spline_end": 0.08,
+      "apex_spline": 0.05
+    },
+    {
+      "name": "Turn 2",
+      "display_name": "Curvone",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.15,
+      "spline_end": 0.21,
+      "apex_spline": 0.18
+    },
+    {
+      "name": "Turn 5",
+      "display_name": "Quercia",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.37,
+      "spline_end": 0.43000000000000005,
+      "apex_spline": 0.4
+    },
+    {
+      "name": "Turn 8",
+      "display_name": "Tramonto",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.59,
+      "spline_end": 0.65,
+      "apex_spline": 0.62
+    },
+    {
+      "name": "Turn 10",
+      "display_name": "Curva del Carro",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.77,
+      "spline_end": 0.8300000000000001,
+      "apex_spline": 0.8
+    },
+    {
+      "name": "Turn 12",
+      "display_name": "Misano 12",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.9199999999999999,
+      "spline_end": 0.98,
+      "apex_spline": 0.95
+    }
+  ]
+}

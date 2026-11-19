@@ -1,0 +1,78 @@
+{
+  "track_id": "zolder_acc",
+  "display_name": "Zolder Acc",
+  "length_m": 4000,
+  "spline_offset": 0.0,
+  "setup_folder": "zolder",
+  "direction": "clockwise",
+  "sectors": [
+    {
+      "name": "S1",
+      "spline_end": 0.33
+    },
+    {
+      "name": "S2",
+      "spline_end": 0.66
+    },
+    {
+      "name": "S3",
+      "spline_end": 1.0
+    }
+  ],
+  "corners": [
+    {
+      "name": "Turn 1",
+      "display_name": "First",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.020000000000000004,
+      "spline_end": 0.08,
+      "apex_spline": 0.05
+    },
+    {
+      "name": "Turn 2",
+      "display_name": "Earste",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.12,
+      "spline_end": 0.18,
+      "apex_spline": 0.15
+    },
+    {
+      "name": "Turn 4",
+      "display_name": "Sterrenwacht",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.31999999999999995,
+      "spline_end": 0.38,
+      "apex_spline": 0.35
+    },
+    {
+      "name": "Turn 7",
+      "display_name": "Jackie Ickx",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.52,
+      "spline_end": 0.5800000000000001,
+      "apex_spline": 0.55
+    },
+    {
+      "name": "Turn 10",
+      "display_name": "Bianca",
+      "direction": "right",
+      "speed_class": "medium",
+      "spline_start": 0.72,
+      "spline_end": 0.78,
+      "apex_spline": 0.75
+    },
+    {
+      "name": "Turn 12",
+      "display_name": "Villeneuve",
+      "direction": "left",
+      "speed_class": "medium",
+      "spline_start": 0.89,
+      "spline_end": 0.9500000000000001,
+      "apex_spline": 0.92
+    }
+  ]
+}

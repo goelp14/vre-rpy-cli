@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vre-rpy"
+version = "0.1.0"
+description = "ACC .rpy → AI-labeled laps + MoTeC i2 workspace"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "VRE" }]
+keywords = ["assetto-corsa", "acc", "motec", "telemetry", "replay"]
+dependencies = [
+  "numpy>=1.24",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+vre-rpy = "vre_rpy.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+vre_rpy = ["track_pack/*.json"]

@@ -1,0 +1,24 @@
+{
+  "track_id": "barcelona_acc",
+  "display_name": "Barcelona ACC",
+  "length_m": 4655,
+  "spline_offset": 0.0,
+  "setup_folder": "barcelona",
+  "direction": "clockwise",
+  "sectors": [
+    {"name": "S1", "spline_end": 0.33},
+    {"name": "S2", "spline_end": 0.66},
+    {"name": "S3", "spline_end": 1.0}
+  ],
+  "corners": [
+    {"name": "Turn 1", "display_name": "Elf", "direction": "right", "speed_class": "medium", "spline_start": 0.02, "spline_end": 0.08, "apex_spline": 0.05},
+    {"name": "Turn 2", "display_name": "Renault", "direction": "left", "speed_class": "medium", "spline_start": 0.08, "spline_end": 0.12, "apex_spline": 0.10},
+    {"name": "Turn 3", "display_name": "Seat", "direction": "right", "speed_class": "fast", "spline_start": 0.14, "spline_end": 0.22, "apex_spline": 0.18},
+    {"name": "Turn 4", "display_name": "Repsol", "direction": "right", "speed_class": "medium", "spline_start": 0.28, "spline_end": 0.34, "apex_spline": 0.31},
+    {"name": "Turn 5", "display_name": "Campsa", "direction": "left", "speed_class": "fast", "spline_start": 0.40, "spline_end": 0.46, "apex_spline": 0.43},
+    {"name": "Turn 7", "display_name": "La Caixa", "direction": "left", "speed_class": "slow", "spline_start": 0.55, "spline_end": 0.62, "apex_spline": 0.58},
+    {"name": "Turn 9", "display_name": "Banc Sabadell", "direction": "right", "speed_class": "medium", "spline_start": 0.70, "spline_end": 0.78, "apex_spline": 0.74},
+    {"name": "Turn 10", "display_name": "Catalunya", "direction": "left", "speed_class": "medium", "spline_start": 0.82, "spline_end": 0.90, "apex_spline": 0.86},
+    {"name": "Turn 12", "display_name": "Chicane", "direction": "right", "speed_class": "slow", "spline_start": 0.92, "spline_end": 0.98, "apex_spline": 0.95}
+  ]
+}
