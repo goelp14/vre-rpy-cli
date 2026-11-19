@@ -444,9 +444,10 @@ def _build_workspace_i2wsp(
         ref_block = f'\n   <Ref Range.Id="{_xml_escape(_lap_range_id(ref_ld))}"/>'
         outing_ref = f'\n   <Ref Range.Id="{_xml_escape(_outing_range_id(ref_ld))}"/>'
 
-    active_wb = "VRE Overlay" if include_overlay_workbook else "VRE Compare"
+    # Compare workbook (Track Map + ACC channels) is default; Overlay workbook
+    # is available when overlay.ld exists (prefixed Tomato_*/Erik_* traces).
     wb_lines = [
-        f' <Workbooks Version="100" Name="My Workbooks" Active="{active_wb}">',
+        ' <Workbooks Version="100" Name="My Workbooks" Active="VRE Compare">',
         r'  <Workbook XRef="Workbooks\VRE_Compare.i2wkb" Name="VRE Compare"/>',
     ]
     if include_overlay_workbook:
@@ -697,13 +698,9 @@ Write-Host "  (launch: -w workspace -l main.ld - required for auto data load)"
 try {{
   # -w alone = empty graphs. -w + one -l activates Main from Logs.
   # Do not pass a second -l (i2 exits code 1).
-  # With 2+ drivers: prefer overlay.ld (Tomato_* + Erik_* channels both visible),
-  # then still open fastest-valid Ref via clipboard Ctrl+O + R for Compare sheets.
+  # Boot Main (unprefixed ACC channels) so Track Map / G_LAT / venue .mt2 work.
+  # Then clipboard-open Ref (fastest valid) + optional overlay.ld for VRE Overlay.
   $bootLd = $mainLd
-  if ($overlayLd -and $LocalLogs.Count -ge 2) {{
-    $bootLd = $overlayLd
-    Write-Host ("Boot log = overlay (both drivers visible): " + $bootLd)
-  }}
   $launchArgs = @('-w', $DestWorkspace, '-l', $bootLd)
   $p = Start-Process -FilePath $I2 -ArgumentList $launchArgs -PassThru -WorkingDirectory (Split-Path $I2)
   if (-not $p) {{ Fail 'Start-Process returned no process' }}
@@ -719,44 +716,15 @@ try {{
   }}
   if ($LocalLogs.Count -ge 2) {{
     $refLd = $LocalLogs[1]
-    Write-Host ("Opening Ref log (fastest valid): " + $refLd + " (Main vs fastest valid Ref)")
-    Add-Type -AssemblyName System.Windows.Forms
-    Add-Type @"
-using System;
-using System.Runtime.InteropServices;
-public class VreWin {{
-  [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hWnd);
-  [DllImport("user32.dll")] public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
-}}
-"@
-    $h = (Get-Process -Id $p.Id -ErrorAction SilentlyContinue).MainWindowHandle
-    if ($h -and $h -ne [IntPtr]::Zero) {{
-      [VreWin]::ShowWindowAsync($h, 9) | Out-Null
-      [VreWin]::SetForegroundWindow($h) | Out-Null
-      Start-Sleep -Milliseconds 800
-      Set-Clipboard -Value $refLd
-      # Ctrl+O -> Open Log; Ctrl+V paste full path; Enter; R = Reference.
-      [System.Windows.Forms.SendKeys]::SendWait('^o')
-      Start-Sleep -Milliseconds 1200
-      [System.Windows.Forms.SendKeys]::SendWait('^v')
-      Start-Sleep -Milliseconds 500
-      [System.Windows.Forms.SendKeys]::SendWait('{{ENTER}}')
-      Start-Sleep -Seconds 4
-      [VreWin]::SetForegroundWindow($h) | Out-Null
-      Start-Sleep -Milliseconds 500
-      [System.Windows.Forms.SendKeys]::SendWait('r')
-      Write-Host 'Ref open+R sent (clipboard path).'
-      # Also ensure Main (first driver) is open for Compare worksheets
-      Set-Clipboard -Value $mainLd
-      [System.Windows.Forms.SendKeys]::SendWait('^o')
-      Start-Sleep -Milliseconds 1200
-      [System.Windows.Forms.SendKeys]::SendWait('^v')
-      Start-Sleep -Milliseconds 500
-      [System.Windows.Forms.SendKeys]::SendWait('{{ENTER}}')
-      Start-Sleep -Seconds 3
-      Write-Host 'Main log re-opened for Compare.'
-    }} else {{
-      Write-Host 'WARNING: no Motec HWND; open Ref .ld from Data and press R.' -ForegroundColor Yellow
+    $refLap = Fastest-Lap $refLd
+    Write-Host ''
+    Write-Host 'COMPARE: Main is loaded. Ref (fastest VALID flying lap) is listed in DataSources:' -ForegroundColor Cyan
+    Write-Host ("  Ref file: " + $refLd)
+    Write-Host ("  Ref lap:  " + $refLap)
+    Write-Host '  In MoTeC Data pane: select that Ref lap, press R (set Reference).' -ForegroundColor Cyan
+    Write-Host '  Or open workbook VRE Overlay + Logs\\overlay.ld for Tomato_* vs Erik_* traces.'
+    if ($overlayLd) {{
+      Write-Host ("  overlay.ld ready: " + $overlayLd)
     }}
   }}
   Write-Host 'Motec is running. Track Map worksheet shows labeled corners. You can close this window.'
@@ -928,16 +896,15 @@ def write_motec_workspace_bundle(
     )
     (motec_dir / "Open_VRE.bat").write_bytes(_launcher_bat().encode("ascii"))
 
-    active_wb = "VRE Overlay" if include_overlay_wb else "VRE Compare"
     open_txt = (
         "ONE-CLICK: double-click Open_VRE.bat\n\n"
         "Prefer the Windows copy (avoids WSL UNC):\n"
         f"  Documents\\MoTeC\\VRE_Launcher_{workspace_name}\\Open_VRE.bat\n"
         "  (first UNC double-click installs that folder automatically)\n\n"
         f"Workspace: motec/{workspace_name}/\n"
-        f"Active workbook: {active_wb}\n"
+        "Active workbook: VRE Compare (Track Map + ACC channels)\n"
         "With 2+ drivers: Ref = fastest *valid* flying lap; Main = other.\n"
-        "Launcher boots overlay.ld so both drivers are visible, then opens Ref.\n"
+        "Launcher opens Main then clipboard-opens Ref (press R).\n"
         f"Launcher syncs to Documents\\MoTeC\\i2\\Workspaces\\{workspace_name}\\ + Logs\\\n"
         "Sets Motec LoadPrevWorkspace=1 + ExcludeUntrusted=0 so data loads.\n"
         f"Track maps: {len(track_maps)} ACC .mt2 files in Track Maps\\\n"
@@ -950,7 +917,7 @@ def write_motec_workspace_bundle(
         "workspace_name": workspace_name,
         "workspace_dir": str(ws_dir),
         "workspace_i2wsp": str(ws_dir / "Workspace.i2wsp"),
-        "active_workbook": active_wb,
+        "active_workbook": "VRE Compare",
         "workbooks": ["VRE Compare"]
         + (["VRE Overlay"] if include_overlay_wb else []),
         "launcher_bat": str(motec_dir / "Open_VRE.bat"),

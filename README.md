@@ -70,7 +70,7 @@ When you pass two or more `.rpy` files, the CLI picks:
 - **Ref** — driver with the **fastest valid flying lap**
 - **Main** — the other driver (first remaining in your input order)
 
-Invalid laps (track-limit cuts, etc.) are never used for that choice. The launcher boots `overlay.ld` so **both drivers are visible immediately** (prefixed channels on the VRE Overlay workbook), then opens the fastest-valid Ref for Compare worksheets.
+Invalid laps (track-limit cuts, etc.) are never used for that choice. MoTeC boots **Main** (Track Map + ACC channels). In the Data pane, select the Ref lap and press **R**. Workbook **VRE Overlay** + `overlay.ld` shows both drivers as `Tomato_*` / `Erik_*` traces.
 
 ### Track map + corner names
 
