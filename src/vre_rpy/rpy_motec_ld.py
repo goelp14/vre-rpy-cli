@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime
+import os
 import struct
 import sys
 from pathlib import Path
@@ -23,7 +24,7 @@ def _ensure_ldparser() -> None:
     for cand in (
         Path.home() / "tools" / "ldparser",
         Path("/tmp/ldparser"),
-        Path("/home/pranav/tools/ldparser"),
+        Path.home() / "tools" / "ldparser",
     ):
         if (cand / "ldparser.py").is_file():
             p = str(cand)
@@ -100,6 +101,42 @@ def _unit_for(name: str) -> str:
     return ""
 
 
+_STEP_UNITS = {"gear", "flag", "map"}
+MOTEC_EXPORT_HZ = int(os.environ.get("VRE_MOTEC_HZ", "50"))
+
+
+def resample_uniform(flat: Dict[str, Any], hz: float) -> Dict[str, Any]:
+    """Resample every per-sample channel onto ``arange(0, span, 1/hz)``.
+
+    Motec places sample i at ``i / freq`` with an integer freq. rpy samples are
+    jittery (Tomato median 11.28 Hz → written as 11 Hz = 2.5% stretch, ~2 min
+    drift over a session), which slides .ldx beacons (real session seconds) off
+    S/F. Gear / flag / map channels use step (previous-sample) hold.
+    """
+    t = np.asarray(flat["TIME"], dtype=np.float64)
+    n = t.size
+    if n < 2:
+        return flat
+    grid = np.arange(0.0, float(t[-1] - t[0]) + 1e-9, 1.0 / float(hz))
+    t_rel = t - float(t[0])
+    out: Dict[str, Any] = {}
+    for name, val in flat.items():
+        arr = np.asarray(val) if val is not None else None
+        if arr is None or arr.ndim != 1 or arr.size != n:
+            out[name] = val
+            continue
+        if name == "TIME":
+            out[name] = grid.copy()
+            continue
+        a = arr.astype(np.float64)
+        if _unit_for(name) in _STEP_UNITS:
+            idx = np.clip(np.searchsorted(t_rel, grid, side="right") - 1, 0, n - 1)
+            out[name] = a[idx]
+        else:
+            out[name] = np.interp(grid, t_rel, a)
+    return out
+
+
 def channels_from_decoded(
     decoded: Dict[str, Any],
     *,
@@ -125,6 +162,12 @@ def channels_from_decoded(
             electronics=electronics,
         )
     )
+    if flat.get("TIME") is not None:
+        # Motec draws sample-and-hold, so 8-11 Hz rpy streams render as stairs.
+        # Linear interp between real samples is within 0.53 km/h RMS of the
+        # native Motec sample rates, so write the .ld at MOTEC_EXPORT_HZ.
+        hz = max(hz, float(MOTEC_EXPORT_HZ))
+        flat = resample_uniform(flat, hz)
     p = f"{prefix}_" if prefix else ""
     out: List[Dict[str, Any]] = []
     # Do NOT export TIME as a Motec channel. ACC .ld files have no TIME channel;
@@ -252,9 +295,11 @@ def motec_venue_from_track(
             if hint:
                 candidates.append(str(hint).strip().lower())
         # whole filename stem sometimes embeds track (…_Spa_ERIK)
-        name = filename_hints.get("name") or filename_hints.get("base")
-        if name:
-            candidates.append(str(name).strip().lower())
+        # ACCReplay names (…_Q_Spa_ERIK) parse "Spa" as car, "ERIK" as track.
+        for hk in ("name", "base", "stem", "car"):
+            hint = filename_hints.get(hk)
+            if hint:
+                candidates.append(str(hint).strip().lower())
 
     for raw in candidates:
         key = raw.replace("-", "_").replace(" ", "_")
@@ -550,8 +595,18 @@ def write_ldx_beacons(
     total, fastest_s, fastest_idx = _flying_gap_stats(
         cleaned, preferred_fastest_s=preferred_fastest_s
     )
+    # Motec always numbers [log start, first marker] as Lap 1. A marker at the
+    # log start makes that an empty Lap 1 and shifts every label by one (Erik
+    # 2:15.426 showed as Lap 6, not Lap 5). Skip it; otherwise the pre-beacon
+    # segment is a real Lap 1 and our gap laps start at Lap 2.
+    if cleaned[0] <= t_min + 1e-6:
+        written = cleaned[1:]
+    else:
+        written = cleaned
+        fastest_idx += 1
+        total += 1
     marker_lines = []
-    for i, sec in enumerate(cleaned):
+    for i, sec in enumerate(written):
         tick = f"{sec * _MOTEC_BCN_TICKS_PER_SEC:.17e}"
         marker_lines.append(
             f'     <Marker Version="100" ClassName="BCN" Name="{i}, id=99" '

@@ -41,6 +41,32 @@ ACC_COMPARE_CHANNELS: List[str] = [
 
 _PathLike = Union[str, Path]
 
+# Byte-identical CircuitMaths block to ACC Workspace V1 (Documents\MoTeC\i2\
+# Workspaces\ACC Workspace V1\Internal Maths.xml), plus SPEED_KMH after SPEED
+# so our dual-unit LDs still resolve Corr Dist. Dual-wheel pair OFF (4:0).
+ACC_INTERNAL_MATHS_XML = (
+    '<?xml version="1.0"?>\r\n'
+    '<Maths Locale="English_United States.1252" DefaultLocale="C" '
+    'Id="Internal" Flags="196">\r\n'
+    " <MathItems>\r\n"
+    '  <MathPlugin ProgId="MoTeC.GPSMaths.1.0" '
+    'Params="V2:GPS Latitude:GPS Longitude:GPS Speed:1:1:a:0:0:'
+    '[GPS Heading;GPS Time]:0:GPS Sats Used:0::0:0:[]:0:GPS Date:GPS Time:0"/>\r\n'
+    '  <MathPlugin ProgId="MoTeC.CircuitMaths.1.3" '
+    'Params="4:0;Wheel Speed FL;Wheel Speed FR:1:[SPEED;SPEED_KMH;Ground Speed;'
+    "Wheel Speed FL;Wheel Speed FR;Wheel Speed Front;Wheel Speed;"
+    "Wheel Speed RL;Wheel Speed RR;Wheel Speed Rear;Drive Speed;"
+    'Dig In 1 Speed;Dig In 2 Speed]:0;GPS Speed:0;G Force Long;-1;0;0:0;'
+    'Corr Speed;Lap Distance:0;5:1;1:0" '
+    'SpeedClampMax="0" SpeedMax="0" SpeedMaxInvalidate="0" '
+    'SpeedClampMin="0" SpeedMin="0" SpeedMinInvalidate="0"/>\r\n'
+    '  <MathPlugin ProgId="MoTeC.SuspensionMaths.1.3" '
+    'Params="1,0,1,SUS_TRAVEL_LF,1,SUS_TRAVEL_RF,1,SUS_TRAVEL_LR,1,'
+    'SUS_TRAVEL_RR,0,,0,,50000,1,1"/>\r\n'
+    " </MathItems>\r\n"
+    "</Maths>\r\n"
+)
+
 
 def to_motec_windows_path(path: _PathLike) -> str:
     """Absolute path Motec on Windows can open (WSL → \\\\wsl$\\Distro\\...)."""
@@ -118,28 +144,60 @@ def _time_distance_worksheet(
   </Worksheet>"""
 
 
-def _track_map_worksheet() -> str:
-    """Track Map panel: Time/Distance + TrackReport with section labels visible.
+_SPEED_BAND_COLORS = (
+    "64,64,255", "64,102,255", "64,174,255", "64,255,226", "64,255,117",
+    "117,255,64", "226,255,64", "255,226,64", "255,174,64", "255,117,64",
+    "255,64,64",
+)
 
-    Motec loads the venue .mt2 from Workspace Track Maps\\ (patched with real
-    corner names). Cursor links so scrubbing data moves the car on track.
+
+def _speed_bands_xml(lo: int = 40, width: int = 24, count: int = 10) -> str:
+    """Track-map SPEED contour in km/h (Overrides display unit), GT3 range."""
+    hi = lo + width * count
+    rows = [f'       <ColorBand Flags="2" Min="{lo}" Max="{lo}" Color="{_SPEED_BAND_COLORS[0]}" Visible="1"/>']
+    for i in range(count):
+        flags = 15 if i == count - 1 else 7
+        a, b = lo + i * width, lo + (i + 1) * width
+        rows.append(
+            f'       <ColorBand Flags="{flags}" Min="{a}" Max="{b}" '
+            f'Color="{_SPEED_BAND_COLORS[i]}" Visible="1"/>'
+        )
+    rows.append(f'       <ColorBand Flags="1" Min="{hi}" Max="{hi}" Color="{_SPEED_BAND_COLORS[-1]}" Visible="1"/>')
+    head = (
+        '      <EvenWidthBandAxis PaletteMode="1" GradientMode="0" BandChanColor="244,244,0" '
+        'AxisChanColor="244,244,0" Color1="64,64,255" Color2="255,64,64" ReversGradient="0" '
+        'CentredBands="0" GreaterMaxBand="1" LessMinBand="1" Continuous="0" BandMode="1" '
+        f'DataMin="{lo}" DataMax="{hi}" BandWidth="{width}" BandCount="{count}">'
+    )
+    return "\n".join([head, *rows, "      </EvenWidthBandAxis>"])
+
+
+def _track_map_worksheet() -> str:
+    """Full-bleed Track Report + speed strip (ACC Track Speed layout).
+
+    Requires workspace ``Internal Maths.xml`` CircuitMaths to resolve channel
+    ``SPEED`` so Motec can compute Lap Distance — otherwise the map shows
+    section labels only (no track stroke) and Time/Distance says
+    "No distance calculated".
     """
     speed = _graph_block(
         "Speed",
         0,
         1000,
-        [("SPEED_KMH", "km/h", "1"), ("SPEED", "m/s", "2")],
-        active="SPEED_KMH",
+        [("SPEED", "m/s", "2"), ("SPEED_KMH", "km/h", "1")],
+        active="SPEED",
     )
+    # Match ACC Workspace "Track Speed": speed strip on top, Track Report below
+    # with ShowSectLabels + SPEED contour on the venue .mt2 polyline.
     return f"""  <Worksheet Version="200" Name="Track Map" LinkTo="Laps" DataDomain="1" LockByGPSTime="0">
-   <Controls Active="Time/Distance [1]">
-    <MoTeC.TimeDistance Version="100" Name="Time/Distance [1]" PosPC="0,0,1000,220" ShowCaption="0" AutoCaption="0" LinkZoom="1" ModeId="0" ShowDataLegend="1" ShowColorLegend="1" TelemetryZoom="0" TraceLineWidth="1" TracePointSize="3" TraceStyle="0" LinkCursor="1" LinkDatum="1" ShowKeyValues="1" ShowKeyStats="1" KeyMode="0" KeyPos="1" ShowGridLines="1" ShowXAxis="1" ShowXAxisScrollBar="0" ShowYAxis="1" ShowYAxisScrollBar="1" ShowMarkers="1" ShowVSP="0" ShowDeviveEvents="1" ShowBands="1" BandGroup="Outings:Laps:Track Sections:Default" BandMode="1" OverlapMode="0" VariancePos="0.25" VarianceAutoScale="1">
+   <Controls Active="Track Report [1]">
+    <MoTeC.TimeDistance Version="100" Name="Time/Distance Graph" PosPC="0,0,1000,180" ShowCaption="0" AutoCaption="0" LinkZoom="1" ModeId="0" ShowDataLegend="1" ShowColorLegend="1" TelemetryZoom="0" TraceLineWidth="1" TracePointSize="3" TraceStyle="0" LinkCursor="1" LinkDatum="1" ShowKeyValues="1" ShowKeyStats="0" KeyMode="0" KeyPos="1" ShowGridLines="1" ShowXAxis="1" ShowXAxisScrollBar="0" ShowYAxis="1" ShowYAxisScrollBar="1" ShowMarkers="1" ShowVSP="0" ShowDeviveEvents="1" ShowBands="1" BandGroup="Outings:Laps:Track Sections:Default" BandMode="1" OverlapMode="0" VariancePos="0.25" VarianceAutoScale="1">
      <Graphs ActivateChild="Speed">
 {speed}
      </Graphs>
      <Cursor Version="1" Style="1" Snap="1"/>
     </MoTeC.TimeDistance>
-    <MoTeC.TrackReport Version="100" Name="Track Report [1]" PosPC="0,220,1000,1000" ShowCaption="0" AutoCaption="0" LinkZoom="0" ModeId="0" ShowDataLegend="0" ShowColorLegend="1" TelemetryZoom="0" ShowSectLabels="1" ShowSectMarks="1" LinkCursor="1">
+    <MoTeC.TrackReport Version="100" Name="Track Report [1]" PosPC="0,180,1000,1000" ShowCaption="0" AutoCaption="0" LinkZoom="0" ModeId="0" ShowDataLegend="0" ShowColorLegend="1" TelemetryZoom="0" ShowSectLabels="1" ShowSectMarks="1" LinkCursor="1">
      <TrackMapWindow>
       <SizeScheme>
        <SizeSchemeEntry Name="Cursor" INTValue="10"/>
@@ -147,32 +205,11 @@ def _track_map_worksheet() -> str:
        <SizeSchemeEntry Name="Material" INTValue="6"/>
       </SizeScheme>
      </TrackMapWindow>
-     <ContourChannel ID="SPEED_KMH" Enabled="1" ScaleMode="1" UnitsMode="0">
-      <EvenWidthBandAxis PaletteMode="1" GradientMode="0" BandChanColor="244,244,0" AxisChanColor="244,244,0" Color1="64,64,255" Color2="255,64,64" ReversGradient="0" CentredBands="0" GreaterMaxBand="1" LessMinBand="1" Continuous="0" BandMode="1" DataMin="40" DataMax="280" BandWidth="24" BandCount="10">
-       <ColorBand Flags="2" Min="28" Max="28" Color="64,64,255" Visible="1"/>
-       <ColorBand Flags="7" Min="28" Max="52" Color="64,102,255" Visible="1"/>
-       <ColorBand Flags="7" Min="52" Max="76" Color="64,174,255" Visible="1"/>
-       <ColorBand Flags="7" Min="76" Max="100" Color="64,255,226" Visible="1"/>
-       <ColorBand Flags="7" Min="100" Max="124" Color="64,255,117" Visible="1"/>
-       <ColorBand Flags="7" Min="124" Max="148" Color="117,255,64" Visible="1"/>
-       <ColorBand Flags="7" Min="148" Max="172" Color="226,255,64" Visible="1"/>
-       <ColorBand Flags="7" Min="172" Max="196" Color="255,226,64" Visible="1"/>
-       <ColorBand Flags="7" Min="196" Max="220" Color="255,174,64" Visible="1"/>
-       <ColorBand Flags="15" Min="220" Max="244" Color="255,117,64" Visible="1"/>
-       <ColorBand Flags="1" Min="244" Max="244" Color="255,64,64" Visible="1"/>
-      </EvenWidthBandAxis>
+     <ContourChannel ID="SPEED" Enabled="1" ScaleMode="1" UnitsMode="0">
+{_speed_bands_xml()}
      </ContourChannel>
      <Cursor Version="1" Style="1" Snap="1"/>
     </MoTeC.TrackReport>
-    <MoTeC.TrackPos Version="100" Name="Track Position" PosPC="780,0,1000,220" ShowCaption="0" AutoCaption="0" LinkZoom="1" ModeId="0" ShowDataLegend="1" TelemetryZoom="0" ShowSectLabels="1" ShowSectMarks="1" LinkCursor="1">
-     <TrackMapWindow>
-      <SizeScheme>
-       <SizeSchemeEntry Name="Cursor" INTValue="7"/>
-       <SizeSchemeEntry Name="Detail" INTValue="1"/>
-       <SizeSchemeEntry Name="Material" INTValue="1"/>
-      </SizeScheme>
-     </TrackMapWindow>
-    </MoTeC.TrackPos>
    </Controls>
   </Worksheet>"""
 
@@ -360,17 +397,18 @@ def install_acc_track_maps(dest_track_maps: Path) -> List[str]:
         "991",
         "AMG",
     )
-    docs = Path("/mnt/c/Users/Pranav/OneDrive/Documents/MoTeC/i2/Workspaces")
-    if not docs.is_dir():
-        # Native Windows / alternate user
-        home = Path.home()
-        for cand in (
-            home / "OneDrive/Documents/MoTeC/i2/Workspaces",
-            home / "Documents/MoTeC/i2/Workspaces",
-        ):
-            if cand.is_dir():
-                docs = cand
-                break
+    docs: Optional[Path] = None
+    home = Path.home()
+    for cand in (
+        home / "OneDrive/Documents/MoTeC/i2/Workspaces",
+        home / "Documents/MoTeC/i2/Workspaces",
+        # WSL → Windows user profile
+        Path("/mnt/c/Users") / os.environ.get("USER", "") / "OneDrive/Documents/MoTeC/i2/Workspaces",
+        Path("/mnt/c/Users") / os.environ.get("USER", "") / "Documents/MoTeC/i2/Workspaces",
+    ):
+        if cand.is_dir():
+            docs = cand
+            break
 
     sources: List[Path] = []
     env = os.environ.get("MOTEC_ACC_TRACK_MAPS")
@@ -379,8 +417,9 @@ def install_acc_track_maps(dest_track_maps: Path) -> List[str]:
     pack_maps = Path(__file__).resolve().parent / "track_pack" / "mt2"
     if pack_maps.is_dir():
         sources.append(pack_maps)
-    for name in ("ACC_NN", "ACC Workspace V1", "ACC_NN_BASE", "PRANAV_EDIT"):
-        sources.append(docs / name / "Track Maps")
+    if docs is not None:
+        for name in ("ACC_NN", "ACC Workspace V1", "ACC_NN_BASE"):
+            sources.append(docs / name / "Track Maps")
 
     try:
         from vre_rpy.mt2_sections import (
@@ -578,6 +617,15 @@ $rc = (Start-Process -FilePath 'robocopy.exe' -ArgumentList @(
 ) -Wait -PassThru).ExitCode
 if ($rc -ge 8) {{ Fail "robocopy workspace failed code $rc" }}
 
+# Gate: without SPEED in CircuitMaths Motec never builds Corr Dist → blank track.
+$MathsGate = Join-Path $DestWorkspace 'Internal Maths.xml'
+if (-not (Test-Path $MathsGate)) {{ Fail "Internal Maths.xml missing after sync" }}
+$mathsTxt = [System.IO.File]::ReadAllText($MathsGate)
+if ($mathsTxt -notmatch '\\[SPEED[;\\]]') {{
+  Fail 'Internal Maths.xml CircuitMaths must list SPEED first (ACC Workspace V1)'
+}}
+Write-Host 'Internal Maths.xml: SPEED CircuitMaths OK'
+
 $LocalLogs = @()
 foreach ($name in $LogNames) {{
   $src = Join-Path $Root $name
@@ -678,6 +726,9 @@ Write-Host ("Workspace DataSources -> local Logs (" + $lapMain + " / ExcludeUntr
 $MotecReg = 'HKCU:\\Software\\MoTeC\\i2\\1.1'
 if (-not (Test-Path $MotecReg)) {{ New-Item -Path $MotecReg -Force | Out-Null }}
 New-ItemProperty -Path $MotecReg -Name 'LoadPrevWorkspace' -PropertyType DWord -Value 1 -Force | Out-Null
+# LoadPrevData=1 makes i2 open every workspace DataSource (Main AND Ref).
+# With 0 (Motec default) -w opens no logs, and -l replaces DataSources with one.
+New-ItemProperty -Path $MotecReg -Name 'LoadPrevData' -PropertyType DWord -Value 1 -Force | Out-Null
 $rfRoot = Join-Path $MotecReg 'RecentFiles'
 $rf0 = Join-Path $rfRoot '0'
 if (-not (Test-Path $rfRoot)) {{ New-Item -Path $rfRoot -Force | Out-Null }}
@@ -693,18 +744,15 @@ Start-Sleep -Milliseconds 400
 Write-Host "Opening Motec: {workspace_name} / VRE Compare"
 Write-Host "  Workspace: $DestWorkspace"
 Write-Host "  Hotkeys: F9=distance  F3=variance"
-Write-Host "  (launch: -w workspace -l main.ld - required for auto data load)"
+Write-Host "  (launch: -w workspace + LoadPrevData=1 - opens Main and Ref logs)"
 
 try {{
-  # -w alone = empty graphs. -w + one -l activates Main from Logs.
-  # Do not pass a second -l (i2 exits code 1).
-  # Boot Main (unprefixed ACC channels) so Track Map / G_LAT / venue .mt2 work.
-  # Then clipboard-open Ref (fastest valid) + optional overlay.ld for VRE Overlay.
-  $bootLd = $mainLd
-  $launchArgs = @('-w', $DestWorkspace, '-l', $bootLd)
+  # No -l: it replaces DataSources with that single log (Ref lost). A second
+  # i2 -l starts a new instance instead of adding to the running one.
+  $launchArgs = @('-w', $DestWorkspace)
   $p = Start-Process -FilePath $I2 -ArgumentList $launchArgs -PassThru -WorkingDirectory (Split-Path $I2)
   if (-not $p) {{ Fail 'Start-Process returned no process' }}
-  Write-Host ("Motec PID " + $p.Id + " -l " + $bootLd)
+  Write-Host ("Motec PID " + $p.Id + " Main=" + $mainLd)
   Start-Sleep -Seconds 5
   if ($p.HasExited) {{
     Fail ("i2.exe exited immediately code=" + $p.ExitCode)
@@ -718,10 +766,10 @@ try {{
     $refLd = $LocalLogs[1]
     $refLap = Fastest-Lap $refLd
     Write-Host ''
-    Write-Host 'COMPARE: Main is loaded. Ref (fastest VALID flying lap) is listed in DataSources:' -ForegroundColor Cyan
-    Write-Host ("  Ref file: " + $refLd)
-    Write-Host ("  Ref lap:  " + $refLap)
-    Write-Host '  In MoTeC Data pane: select that Ref lap, press R (set Reference).' -ForegroundColor Cyan
+    Write-Host 'COMPARE: Main + Ref (fastest VALID flying lap) auto-loaded:' -ForegroundColor Cyan
+    Write-Host ("  Main: " + $mainLd + " " + $lapMain)
+    Write-Host ("  Ref:  " + $refLd + " " + $refLap)
+    Write-Host '  If Ref is missing: Data pane (F8), tick the Ref column on that lap.' -ForegroundColor Cyan
     Write-Host '  Or open workbook VRE Overlay + Logs\\overlay.ld for Tomato_* vs Erik_* traces.'
     if ($overlayLd) {{
       Write-Host ("  overlay.ld ready: " + $overlayLd)
@@ -807,12 +855,28 @@ def write_motec_workspace_bundle(
         ("Details.xml", '<Details Locale="English_United States.1252" DefaultLocale="C"/>'),
         (
             "Overrides.xml",
-            '<Overrides Locale="English_United States.1252" DefaultLocale="C"/>',
+            # ACC Workspace V1: SPEED DisplayUnit=km/h (raw channel is m/s).
+            # Without this, CircuitMaths can mis-scale Corr Dist.
+            '<Overrides Locale="English_United States.1252" DefaultLocale="C">\r\n'
+            ' <Override Id="SPEED" DisplayDPS="1" DisplayUnit="km/h" DisplayColorIndex="4"/>\r\n'
+            ' <Override Id="G_LAT" DisplayDPS="2"/>\r\n'
+            ' <Override Id="THROTTLE" DisplayColorIndex="2"/>\r\n'
+            ' <Override Id="BRAKE" DisplayColorIndex="0"/>\r\n'
+            "</Overrides>",
         ),
     ):
         (ch_dir / name).write_text(
             f'<?xml version="1.0"?>\r\n{body}\r\n', encoding="utf-8"
         )
+
+    # CircuitMaths MUST list SPEED first (ACC Workspace V1 evidence). Motec's
+    # default Internal Maths is Ground Speed / wheel speeds only → no Corr Dist
+    # → Track Map shows section labels with a blank polyline ("No distance
+    # calculated"). Motec forum t=4926; i2 Training Seminar 2008 pp.37-39.
+    maths_path = ws_dir / "Internal Maths.xml"
+    maths_path.write_bytes(ACC_INTERNAL_MATHS_XML.encode("utf-8"))
+    if "SPEED" not in maths_path.read_text(encoding="utf-8"):
+        raise RuntimeError("Internal Maths.xml missing SPEED — refuse to ship")
 
     track_maps = install_acc_track_maps(track_dir)
 

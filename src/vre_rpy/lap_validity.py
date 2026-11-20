@@ -1,7 +1,16 @@
-"""Per-lap validity from the .rpy lap-timer snapshot.
+"""Per-lap validity from the .rpy lap-timer snapshot array.
 
-Marks completed flying laps as valid/invalid for Motec Ref selection
-and AI lap labels.
+Layout (24-byte records; same array ``parse_rpy.extract_lap_times_ms`` uses):
+
+    +0   u32  current-lap clock, ms (resets at S/F)
+    +4   u32  reference/predicted lap ms
+    +8   u8   valid flag: 1 at lap start, 0 after first track-limit cut until S/F
+    +12  u32  per-car/session constant
+    +16  f64  session time, seconds (monotonic)
+
+Empirical across Spa fixtures: flag drops at known track-limit hotspots;
+clean flying laps stay 1 for the full lap. Motec has no validity channel —
+treat as ``file_go_empirical``.
 """
 
 from __future__ import annotations

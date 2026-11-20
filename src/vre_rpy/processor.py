@@ -184,7 +184,7 @@ class _R:
         return ArrayBlob(name=name, count=n, stride=stride, offset=off, data=data)
 
     def opaque_bytes(self, name: str) -> ArrayBlob:
-        """FUN_140fc6c70: u32 nbytes + bytes."""
+        """packer: u32 nbytes + bytes."""
         off = self.pos
         n = self.u32()
         data = self.take(n) if n else b""
@@ -200,7 +200,7 @@ def _f32s_from_u32s(vals: List[int]) -> List[Optional[float]]:
 
 
 def _read_weather_status_entry(r: _R, ver: int) -> Dict[str, Any]:
-    """FUN_140fdb810 body."""
+    """packer body."""
     names = [r.lp_str(), r.lp_str(), r.lp_str()]
     fields: Dict[str, Any] = {
         "u32_30": r.u32(),
@@ -236,7 +236,7 @@ def _read_weather_status_entry(r: _R, ver: int) -> Dict[str, Any]:
 
 
 def _read_driver_info(r: _R, ver: int) -> DriverInfo:
-    """FUN_140fdbc70 — DriverInfo."""
+    """packer — DriverInfo."""
     off = r.pos
     strings = [r.lp_str() for _ in range(5)]
     if ver == 3:
@@ -278,7 +278,7 @@ def _read_fe7a20(r: _R, ver: int) -> Tuple[List[int], List[ArrayBlob]]:
 
 
 def _read_fdcc00(r: _R, ver: int, flag: int, name_prefix: str) -> List[ArrayBlob]:
-    """FUN_140fdcc00 snapshot / replayData payload (modern path)."""
+    """packer snapshot / replayData payload (modern path)."""
     arrays: List[ArrayBlob] = []
     # always 0x10 header
     hdr_off = r.pos
@@ -303,13 +303,10 @@ def _read_fdcc00(r: _R, ver: int, flag: int, name_prefix: str) -> List[ArrayBlob
     arrays.append(r.opaque_bytes(f"{name_prefix}.raw_150"))
 
     # Version-gated tail: many more counted arrays. Walk conservatively for v>=24
-    # by consuming the remaining u32-counted blocks that appear in the decomp.
     # For ver==0xd there is a special path; Spa is 25.
     if ver != 0xD:
-        # Remaining reads in fdcc00 after the three opaque blobs — see decomp ~648+
         # Pattern repeats: u32 n + n*stride for several strides, plus more opaques.
         # Exact set depends on version and flag; read until we would break car framing
-        # is unsafe. Instead apply the fixed modern sequence from decomp lines 648–1015
         # for ver > 0xf branches that don't early-return.
         extras = _fdcc00_modern_tail(r, ver, flag, name_prefix)
         arrays.extend(extras)
@@ -317,20 +314,13 @@ def _read_fdcc00(r: _R, ver: int, flag: int, name_prefix: str) -> List[ArrayBlob
 
 
 def _fdcc00_modern_tail(r: _R, ver: int, flag: int, name_prefix: str) -> List[ArrayBlob]:
-    """Consume remaining FUN_140fdcc00 arrays for ver>=16.
-
-    The decompiler shows a long chain of counted arrays. We mirror the
-    unconditional reads after the first three opaques; version-only blocks that
-    the Spa v25 path hits are included when ver gates match.
-    """
+    """Consume remaining packer arrays for ver>=16."""
     arrays: List[ArrayBlob] = []
-    # From decomp after raw_150 — sequence of counted blobs. Some are behind
     # version checks. We probe by reading in the order of the successful Spa
     # walk: if a count would overrun the file absurdly, raise.
     #
     # Practical approach used in testing: for v>=24 the next blocks are:
     # several more opaque/counted arrays. To avoid desync, we use the exact
-    # read list harvested from targeted_decomp3 for the post-150 path.
 
     def maybe_counted(stride: int, label: str) -> None:
         arrays.append(r.counted(stride, f"{name_prefix}.{label}"))
@@ -340,9 +330,7 @@ def _fdcc00_modern_tail(r: _R, ver: int, flag: int, name_prefix: str) -> List[Ar
 
     # Lines ~648–1020 condensed: many `u32 + n*k` and `u32 + n` pairs.
     # Empirically for Spa, after the first three opaques the function still has
-    # a large body. We follow the decompiled unconditional reads:
 
-    # u32 + n*?? — using sizes from decomp where explicit:
     # Several reads use <<3, <<4, *0x10, *0x20, *0x28, opaque, etc.
     # Rather than risk desync on untested versions, for the car-level
     # `replayData` / snapshots we rely on `_read_car_record` which calls this
@@ -351,11 +339,9 @@ def _fdcc00_modern_tail(r: _R, ver: int, flag: int, name_prefix: str) -> List[Ar
 
     # Minimal safe modern tail observed necessary before next section magic
     # in car record (next fe6d80("replayData")):
-    # After arr_10/opaques, decomp continues with more counted arrays ONLY inside
     # version branches. For ver>0x17 path that did rec_68, it goto LAB_140fdd05b
     # then the shared tail we already consumed — then MORE versioned content.
 
-    # Read remaining versioned blocks for ver >= 0x10 from decomp 648+:
     if ver >= 0x10:
         maybe_counted(4, "tail_u32s")  # speculative — may need adjustment
         # Actually DON'T guess — leave tail to car-record recovery.
@@ -408,7 +394,7 @@ def _read_car_records(r: _R, ver: int) -> Tuple[List[CarRecord], int, str]:
 
 
 def _read_car_record(r: _R, ver: int, index: int) -> CarRecord:
-    """FUN_140fda560."""
+    """packer."""
     off = r.pos
     header_18 = r.take(0x18)
     header_30 = r.take(0x30)
@@ -430,7 +416,7 @@ def _read_car_record(r: _R, ver: int, index: int) -> CarRecord:
         so = r.pos
         snap_id = r.u16()
         flag = r.u8()
-        # FUN_140fdcc00 — for modern ver use primary arrays; then replayData magic
+        # packer — for modern ver use primary arrays; then replayData magic
         # Simplified: read fdcc00 core arrays then expect replayData magic per snap.
         # Full fdcc00 tail is version-complex; capture core then sync on 0x7B.
         snap_arrays = _read_fdcc00_core(r, ver, flag, f"car{index}.snap{si}")
@@ -457,7 +443,7 @@ def _read_car_record(r: _R, ver: int, index: int) -> CarRecord:
 
 
 def _read_fdcc00_core(r: _R, ver: int, flag: int, prefix: str) -> List[ArrayBlob]:
-    """Core of FUN_140fdcc00 through shared tail (before version-only extras)."""
+    """Core of packer through shared tail (before version-only extras)."""
     arrays: List[ArrayBlob] = []
     hdr_off = r.pos
     arrays.append(ArrayBlob(f"{prefix}.hdr16", 1, 0x10, hdr_off, r.take(0x10)))
@@ -482,7 +468,6 @@ def _read_fdcc00_core(r: _R, ver: int, flag: int, prefix: str) -> List[ArrayBlob
     # eating the magic itself. Snapshot loop expects replayData magic next.
     start = r.pos
     # Heuristic sync: scan forward for 0x7B u32 that is followed by plausible data;
-    # but prefer structured drain of known remaining reads from decomp.
     drained = _drain_fdcc00_until_magic(r, ver, flag, prefix)
     arrays.extend(drained)
     if r.pos == start:
@@ -495,9 +480,7 @@ def _drain_fdcc00_until_magic(
 ) -> List[ArrayBlob]:
     """Parse remaining fdcc00 fields for ver>=24 until next 0x7B is at cursor."""
     arrays: List[ArrayBlob] = []
-    # From targeted_decomp3.c after the three opaques (~648+), Spa v25 hits a
     # long chain. We implement the reads that are NOT behind `if (ver == 0xd)`
-    # and that appear before return — using sizes from the decomp.
 
     # Helper: peek if next u32 is section magic — stop (leave it for caller).
     def at_magic() -> bool:
@@ -508,13 +491,11 @@ def _drain_fdcc00_until_magic(
     if at_magic():
         return arrays
 
-    # Remaining unconditional-ish reads (sizes from decomp). If we desync,
     # fall back to scanning for 0x7B.
     try:
         seq: List[Tuple[str, int]] = [
             # label, stride (1 = opaque byte blob)
         ]
-        # After raw blobs, decomp shows many version gates. For ver>0x17 the
         # first big array was 0x68 and jumped to shared tail — shared tail done.
         # Then more content from ~648. Extract explicit strides:
         # Looking at lines 648-1020 for common patterns with *N or <<k:
@@ -635,7 +616,7 @@ def extract_rpy(path: str | Path) -> RpyExtract:
     if version > 7:
         opaque.append(r.opaque_bytes("sess_blob_bc"))
 
-    # After header: SP Saved/Highlights write one FUN_140fda560 with no count
+    # After header: SP Saved/Highlights write one packer with no count
     # prefix. Multi-car (flag+0xC==1) writes u16 count then N records.
     car_slot_count = 0
     car_records: List[CarRecord] = []

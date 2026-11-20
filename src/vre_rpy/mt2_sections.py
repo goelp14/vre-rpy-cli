@@ -1,9 +1,9 @@
 """Patch Motec .mt2 Default section names with real corner labels.
 
-ACC track maps ship with auto names like ``Turn 1`` / ``Str 0-1``. We rename
-corner sections using ``track_pack/*_acc.json`` display names,
-matching by distance along the Motec track map (marker Dist midpoints ↔
-corner apex_spline × length_m).
+CRITICAL: Motec .mt2 files store a binary track polyline (Points/Data) before
+SectionGroups. Changing UTF-16 Name *lengths* shifts the file and Motec then
+draws section labels with **no track outline**. Renames MUST keep the original
+byte length (pad/truncate in place; never rewrite the u32 length field).
 """
 
 from __future__ import annotations
@@ -74,26 +74,25 @@ def parse_markers_and_turns(
         if nk and nk[0] == "Name":
             nlen = struct.unpack_from("<I", data, nk[1])[0]
             if 2 <= nlen <= 64 and nlen % 2 == 0:
-                name = data[nk[1] + 4 : nk[1] + 4 + nlen].decode("utf-16-le", errors="replace")
+                name = data[nk[1] + 4 : nk[1] + 4 + nlen].decode(
+                    "utf-16-le", errors="replace"
+                )
                 if name.startswith("Marker"):
                     markers[name] = float(dist)
                 i = nk[1] + 4 + nlen
                 continue
         i += 1
 
-    # Turn sections: Name "Turn N" preceded by Marker1/Marker2 refs in nearby bytes
     fields = iter_named_utf16_fields(data)
     turns: List[Tuple[str, float, int, int]] = []
     for offset, blen, text in fields:
         if not text.startswith("Turn "):
             continue
-        # look backward ~120 bytes for Marker1 / Marker2 utf16 names
         window = data[max(0, offset - 200) : offset]
         m1 = m2 = None
         for mn in markers:
             enc = mn.encode("utf-16-le")
             if enc in window:
-                # last two marker mentions → Marker1 then Marker2 order in blob
                 if m1 is None:
                     m1 = mn
                 else:
@@ -116,19 +115,17 @@ def corner_rename_by_distance(
     length = float(track_config.get("length_m") or 0.0)
     corners = track_config.get("corners") or []
     if length <= 1.0 or not corners or not turns:
-        # fallback: sequential Turn N → display_name order
         labels = [
             str(c.get("display_name") or c.get("name") or f"Corner {i + 1}")
             for i, c in enumerate(corners)
         ]
         renames: Dict[str, str] = {}
-        ordered = [t[0] for t in turns]
         seen = set()
         uniq: List[str] = []
-        for n in ordered:
-            if n not in seen:
-                seen.add(n)
-                uniq.append(n)
+        for t in turns:
+            if t[0] not in seen:
+                seen.add(t[0])
+                uniq.append(t[0])
         for i, name in enumerate(uniq):
             if i < len(labels):
                 renames[name] = labels[i]
@@ -144,7 +141,6 @@ def corner_rename_by_distance(
         label = str(c.get("display_name") or c.get("name") or "Corner")
         targets.append((label, float(apex) * length))
 
-    # unique turns with finite mid
     cand: List[Tuple[str, float]] = []
     seen = set()
     for name, mid, _, _ in turns:
@@ -153,23 +149,36 @@ def corner_rename_by_distance(
         seen.add(name)
         cand.append((name, mid))
 
-    renames = {}
-    used_turns: set[str] = set()
+    renames: Dict[str, str] = {}
+    used: set[str] = set()
     for label, apex_m in targets:
         best = None
         best_d = 1e18
         for name, mid in cand:
-            if name in used_turns:
+            if name in used:
                 continue
             d = abs(mid - apex_m)
             if d < best_d:
                 best_d = d
                 best = name
-        # allow up to ~400m mismatch (Motec section granularity)
         if best is not None and best_d < max(450.0, length * 0.08):
             renames[best] = label
-            used_turns.add(best)
+            used.add(best)
     return renames
+
+
+def _fit_utf16(text: str, blen: int) -> bytes:
+    """Encode text to exactly ``blen`` UTF-16-LE bytes (pad/truncate)."""
+    chars = blen // 2
+    candidate = text.replace(" ", "") if len(text) > chars else text
+    if len(candidate) > chars:
+        candidate = candidate[:chars]
+    candidate = candidate.ljust(chars)[:chars]
+    out = candidate.encode("utf-16-le")
+    if len(out) != blen:
+        # last resort: null pad
+        out = (out + b"\x00" * blen)[:blen]
+    return out
 
 
 def patch_mt2_section_names(
@@ -178,20 +187,20 @@ def patch_mt2_section_names(
     *,
     out_path: Optional[Path | str] = None,
 ) -> Path:
-    """Rewrite UTF-16 section ``Name`` values; adjusts length fields + shifts tail."""
+    """In-place rename: **same byte length only** so track polyline stays valid."""
     path = Path(mt2_path)
-    data = bytearray(path.read_bytes())
-    fields = iter_named_utf16_fields(bytes(data))
-    for offset, blen, text in reversed(fields):
+    raw = path.read_bytes()
+    data = bytearray(raw)
+    for offset, blen, text in iter_named_utf16_fields(raw):
         new = renames.get(text)
         if not new or new == text:
             continue
-        new_bytes = new.encode("utf-16-le")
-        old_total = 4 + blen
-        replacement = struct.pack("<I", len(new_bytes)) + new_bytes
-        data[offset : offset + old_total] = replacement
+        data[offset + 4 : offset + 4 + blen] = _fit_utf16(new, blen)
+        # length field at offset stays unchanged
     out = Path(out_path) if out_path else path
     out.write_bytes(bytes(data))
+    if len(data) != len(raw):
+        raise RuntimeError("mt2 size changed — track geometry would break")
     return out
 
 
@@ -205,6 +214,13 @@ def patch_mt2_from_track_config(
     _markers, turns = parse_markers_and_turns(data)
     renames = corner_rename_by_distance(track_config, turns)
     out = patch_mt2_section_names(mt2_path, renames, out_path=out_path)
+    # Report what actually fits in the slots
+    fitted = {}
+    for _, blen, text in iter_named_utf16_fields(Path(out).read_bytes()):
+        if text.startswith("Turn "):
+            continue
+        if any(v.replace(" ", "") in text.replace(" ", "") or text.strip() == v[: len(text.strip())] for v in renames.values()):
+            fitted[text.strip()] = text.strip()
     return out, renames
 
 
@@ -237,23 +253,24 @@ def track_id_for_mt2(mt2_name: str) -> Optional[str]:
     return _MT2_TO_TRACK_ID.get(mt2_name.strip().lower())
 
 
-def load_track_config(track_id: str, repo_root=None):
-    """Load corner/sector config from the bundled track_pack."""
-    import json
-    from pathlib import Path
+def load_track_config(track_id: str, repo_root: Optional[Path] = None) -> Dict[str, Any]:
+    root = repo_root or Path(__file__).resolve().parents[3]
+    cfg_dir = root / "ac_app" / "config" / "tracks"
     pack_dir = Path(__file__).resolve().parent / "track_pack"
     key = track_id.strip().lower().replace("-", "_")
     candidates = [
+        cfg_dir / f"{key}.json",
+        cfg_dir / f"{key}_acc.json",
         pack_dir / f"{key}.json",
         pack_dir / f"{key}_acc.json",
     ]
     if "spa" in key:
+        candidates.insert(0, cfg_dir / "spa_acc.json")
         candidates.insert(0, pack_dir / "spa_acc.json")
     if "monza" in key:
+        candidates.insert(0, cfg_dir / "monza_acc.json")
         candidates.insert(0, pack_dir / "monza_acc.json")
     for cand in candidates:
-        if cand.is_file():
+        if cand and cand.is_file():
             return json.loads(cand.read_text(encoding="utf-8"))
     return {"track_id": key, "corners": [], "sectors": [], "length_m": 0}
-
-

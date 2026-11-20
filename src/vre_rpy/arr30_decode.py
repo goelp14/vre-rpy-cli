@@ -1,43 +1,4 @@
-"""Decode ACC .rpy arr_30 (0x30) + arr_48 (0x48) packed snapshot streams.
-
-Source: FUN_140fdf850 @ 140fdf850 packs physics fields into counted arrays
-that FUN_140fec540 / FUN_140fdcc00 serialize as opaque blobs.
-
-arr_30 — car-level (Motec-locked where noted):
-  [0:2]   f16 ← physics+0x24c          RPMS |r|≈0.81
-  [2:4]   f16 ← physics+0x270          steer_deg = -f16; STEERANGLE |r|≈0.78
-  [4]     u8  ← physics+0x274          throttle; |r|≈0.77
-  [5]     u8  ← physics+0x278          brake; |r|≈0.86
-  [6:8]   f16 ← physics+0x260          wheel_angular LF; WHEEL_SPEED |r|≈0.98
-  [8:10]  f16 ← physics+0x264          wheel_angular RF
-  [10:12] f16 ← physics+0x268          wheel_angular LR
-  [12:14] f16 ← physics+0x26c          wheel_angular RR
-  [14:16] u16 ← physics+0x288*3.6      speed_kmh; |r|≈0.99
-  [24:26] f16 ← physics+0x48c low      g_lat; |r|≈0.93
-  [28:30] f16 ← physics+0x494          g_lon; |r|≈0.85
-  [32:36] u32 flags                    gear = ((u32>>5)&0xf)-1; |r|≈0.96
-
-arr_48 — per-wheel loop (LF/RF/LR/RR) + time:
-  [0:8]   f16×4  ← nd_slip @ physics+0x2c4+i*4   (FMOD nd_slip; |r|≈0.64 vs |slip|)
-  [8:16]  f16×4  ← tyre_load @ physics+0x2e4+i*4
-  [16:24] f16×4  ← slip_ratio @ physics+0x2b4+i*4
-  [26:30] u8×4   ← marbles @ physics+0x724+i*0x1c  (/255; FMOD marbles_level)
-  [30:34] u8×4   ← is_on_marbles @ physics+0x8e8+i*4  (0|255; FMOD is_on_marbles)
-  [34:38] u8×4   ← physics+0x478+i*4  (/255; Motec SUS_TRAVEL |r_res|≈0.80 → sus_proxy)
-  [38:46] f16×4  ← physics+0x500+i*4  (SUS-related |r|~0.6; Motec name TBD)
-  [46:50] u8×4   ← wheel_dirt @ physics+0x324+i*4  (/255)
-  [50:58] f16×4  ← disc_temp @ physics+0x6c0+i*4   BRAKE_TEMP |r|≈0.97
-  [0x40:0x48] f64 timestamp
-
-Still NO-GO in this packer as Motec-native units: tyre_press, tyre_tair,
-SUS_TRAVEL mm (sus_proxy is normalized 0-1 only), TC/ABS InAction.
-Code-backed physics offsets (FUN_14347b010 state filler; NOT file-packed):
-  tyre_press physics+0x5e4+i*0x3c, tyre_tair +0x5dc+i*0x3c, sus_travel(m)
-  +0x530+i*4, TC InAction u8 +0x8f8, ABS InAction u8 +0x8f9.
-  (physics+0x5ac is the FMOD inflation-loss term, 1-x; not PSI.)
-
-Wheel linear speed (Motec m/s): angular_f16 * WHEEL_RADIUS_M (fitted ≈0.337).
-"""
+"""Decode ACC replay input/physics array channels into named series."""
 
 from __future__ import annotations
 
@@ -159,7 +120,7 @@ def decode_arr30(
         "wheel_dirt": "arr_48[+46..+49] u8/255 ← physics+0x324+i*4",
         "disc_temp": "arr_48[+50/+52/+54/+56] f16 ← physics+0x6c0+i*4",
         "time_s": "arr_48[+0x40] f64",
-        "packer": "FUN_140fdf850",
+        "packer": "internal",
         "not_in_packer": "tyre_press (state +0x5e4), tyre_tair (+0x5dc), SUS mm (+0x530), tc/abs InAction (+0x8f8/9)",
     }
 

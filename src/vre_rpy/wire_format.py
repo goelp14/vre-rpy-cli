@@ -92,7 +92,7 @@ def parse_header_prefix(data: bytes) -> HeaderPrefix:
             byte_b = r.u8()
         notes.append("consumed u32[+u8[+u8]] after name (open_check ver gates)")
 
-    # FUN_140fe7a20: 13×u32 into struct, then (u32 len + bytes)×2
+    # packer: 13×u32 into struct, then (u32 len + bytes)×2
     fe7a20: List[int] = []
     pay_a = b""
     pay_b = b""
@@ -101,19 +101,17 @@ def parse_header_prefix(data: bytes) -> HeaderPrefix:
         fe7a20 = [r.u32() for _ in range(13)]
         pay_a = r.lp_bytes()
         pay_b = r.lp_bytes()
-        notes.append("consumed FUN_140fe7a20 (13×u32 + 2×lp)")
-        # FUN_140fe6d80: require u32 == 0x7B section magic
+        # packer: require u32 == 0x7B section magic
         if r.pos + 4 <= len(data):
             magic = r.u32()
             magic_ok = magic == 0x7B
             notes.append(
                 f"section magic A 0x{magic:X} ({'ok' if magic_ok else 'EXPECTED 0x7B'})"
             )
-        # FUN_1434f1900: 7×u32 (6 reads + tail-call read)
+        # packer: 7×u32 (6 reads + tail-call read)
         block_4f: List[int] = []
         if r.pos + 28 <= len(data):
             block_4f = [r.u32() for _ in range(7)]
-            notes.append("consumed FUN_1434f1900 (7×u32)")
         magic_b_ok: Optional[bool] = None
         if r.pos + 4 <= len(data):
             magic_b = r.u32()
@@ -125,7 +123,6 @@ def parse_header_prefix(data: bytes) -> HeaderPrefix:
         if magic_b_ok is not None:
             magic_ok = bool(magic_ok) and magic_b_ok
     else:
-        notes.append("skipped FUN_140fe7a20 (version/size)")
         block_4f = []
 
     return HeaderPrefix(

@@ -34,7 +34,7 @@ def _ensure_ldparser_path() -> None:
         pass
     for cand in (
         Path.home() / "tools" / "ldparser",
-        Path("/home/pranav/tools/ldparser"),
+        Path.home() / "tools" / "ldparser",
     ):
         if (cand / "ldparser.py").is_file() or (cand / "ldparser").is_dir():
             p = str(cand)

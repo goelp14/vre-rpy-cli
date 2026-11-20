@@ -1,4 +1,14 @@
-"""Pose + track-relative channels from .rpy pose samples."""
+"""Pose + track-relative channels from .rpy rec_68.
+
+Proven layout (Spa Tomato Motec/path validated):
+  f32[0:3]  world position X,Y,Z (Y = elevation)
+  f32[23]   normalized spline 0..1 (wraps each lap); path-speed |r|≈0.98
+  heading   derived from horizontal motion (no reliable quat in record yet)
+
+Lap validity (isValidLap analogue): spline-wrap segments are matched in order
+to lap-timer laps (``lap_validity``: arr24 +8 u8) and get ``valid_flag`` /
+``invalid_at_lap_ms``; unmatched segments keep ``valid_flag=None``.
+"""
 
 from __future__ import annotations
 
@@ -10,7 +20,8 @@ import numpy as np
 
 from .processor import ArrayBlob, extract_rpy
 
-_TRACK_PACK = Path(__file__).resolve().parent / "track_pack"
+_REPO = Path(__file__).resolve().parents[3]
+_TRACK_CFG = _REPO / "ac_app" / "config" / "tracks"
 
 
 def find_pose(ex, car_index: int = 0) -> Optional[ArrayBlob]:
@@ -26,12 +37,12 @@ def find_pose(ex, car_index: int = 0) -> Optional[ArrayBlob]:
 
 
 def load_track_config(track_id: str) -> Dict[str, Any]:
-    key = track_id.strip().lower().replace("-", "_")
+    key = track_id.strip().lower()
     candidates = [
-        _TRACK_PACK / f"{key}.json",
-        _TRACK_PACK / f"{key}_acc.json",
-        _TRACK_PACK / "spa_acc.json" if "spa" in key else None,
-        _TRACK_PACK / "monza_acc.json" if "monza" in key else None,
+        _TRACK_CFG / f"{key}.json",
+        _TRACK_CFG / f"{key}_acc.json",
+        _TRACK_CFG / "spa_acc.json" if "spa" in key else None,
+        _TRACK_CFG / "monza_acc.json" if "monza" in key else None,
     ]
     for c in candidates:
         if c and c.is_file():

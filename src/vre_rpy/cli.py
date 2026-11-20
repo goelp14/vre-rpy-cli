@@ -20,31 +20,18 @@ def _parse_rpy_arg(spec: str) -> Tuple[Path, str]:
     return p, p.stem
 
 
-def main(argv: Optional[List[str]] = None) -> int:
-    ap = argparse.ArgumentParser(
-        prog="vre-rpy",
-        description=(
-            "Convert Assetto Corsa Competizione .rpy replays into AI-labeled "
-            "lap data and a MoTeC i2 Pro workspace (multi-lap beacons, track map, "
-            "Main vs fastest-valid Ref)."
-        ),
-    )
-    ap.add_argument(
-        "--rpy",
-        action="append",
-        required=True,
-        help="PATH or PATH:Label (repeat for compare / overlay)",
-    )
-    ap.add_argument("--out-dir", type=Path, required=True, help="Output directory")
-    ap.add_argument("--car-index", type=int, default=0)
-    ap.add_argument(
-        "--electronics",
-        type=Path,
-        default=None,
-        help='Optional JSON e.g. {"TC1":7,"TC2":5,"ABS":2,"EngineMap":1}',
-    )
-    args = ap.parse_args(argv)
+def _parse_driver_spec(spec: str) -> Tuple[Path, Path, str]:
+    """RPY:LD:Label — last two colon fields are LD and Label."""
+    parts = spec.split(":")
+    if len(parts) < 3:
+        raise SystemExit(f"bad --driver {spec!r}; want RPY:LD:Label")
+    label = parts[-1]
+    ld = Path(parts[-2])
+    rpy = Path(":".join(parts[:-2]))
+    return rpy, ld, label
 
+
+def cmd_export(args: argparse.Namespace) -> int:
     from vre_rpy.export_rpy_analysis import run
 
     elec: Optional[Dict[str, Any]] = None
@@ -52,7 +39,6 @@ def main(argv: Optional[List[str]] = None) -> int:
         elec = json.loads(Path(args.electronics).read_text(encoding="utf-8"))
     specs = [_parse_rpy_arg(s) for s in args.rpy]
     summary = run(specs, args.out_dir, car_index=args.car_index, electronics=elec)
-    # Compact user-facing summary
     out = {
         "out_dir": str(args.out_dir),
         "drivers": [
@@ -71,6 +57,69 @@ def main(argv: Optional[List[str]] = None) -> int:
     }
     print(json.dumps(out, indent=2))
     return 0
+
+
+def cmd_verify(args: argparse.Namespace) -> int:
+    from vre_rpy.verify_motec_export import verify_export
+
+    drivers = [_parse_driver_spec(s) for s in args.driver]
+    report = verify_export(
+        motec_dir=args.motec_dir,
+        drivers=drivers,
+        workspace_name=args.workspace,
+        mt2_name=args.mt2,
+        mt2_source=args.mt2_source,
+    )
+    print(json.dumps(report, indent=2))
+    return 0 if report.get("ok") else 1
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    ap = argparse.ArgumentParser(
+        prog="vre-rpy",
+        description=(
+            "Convert Assetto Corsa Competizione .rpy replays into AI-labeled "
+            "lap data and a MoTeC i2 Pro workspace (multi-lap beacons, track map, "
+            "Main vs fastest-valid Ref)."
+        ),
+    )
+    sub = ap.add_subparsers(dest="cmd")
+
+    # Default export (also works as: vre-rpy --rpy ... --out-dir ...)
+    ex = sub.add_parser("export", help="Export .rpy → Motec workspace + AI pack")
+    ex.add_argument("--rpy", action="append", required=True, help="PATH or PATH:Label")
+    ex.add_argument("--out-dir", type=Path, required=True)
+    ex.add_argument("--car-index", type=int, default=0)
+    ex.add_argument("--electronics", type=Path, default=None)
+    ex.set_defaults(func=cmd_export)
+
+    vf = sub.add_parser(
+        "verify",
+        help="Evidence gate: .ldx lap times vs .rpy, Internal Maths SPEED, venue .mt2",
+    )
+    vf.add_argument("--motec-dir", type=Path, required=True)
+    vf.add_argument(
+        "--driver",
+        action="append",
+        required=True,
+        help="RPY:LD:Label (repeat)",
+    )
+    vf.add_argument("--workspace", default="VRE_Export")
+    vf.add_argument("--mt2", default=None, help="default: <.ld Venue>.mt2")
+    vf.add_argument("--mt2-source", type=Path, default=None)
+    vf.set_defaults(func=cmd_verify)
+
+    # Back-compat: `vre-rpy --rpy X --out-dir Y` (no subcommand)
+    if argv is None:
+        argv = sys.argv[1:]
+    if argv and argv[0] not in ("export", "verify", "-h", "--help") and argv[0].startswith("-"):
+        argv = ["export", *argv]
+
+    args = ap.parse_args(argv)
+    if not getattr(args, "cmd", None):
+        ap.print_help()
+        return 2
+    return int(args.func(args))
 
 
 if __name__ == "__main__":

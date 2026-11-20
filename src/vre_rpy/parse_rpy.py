@@ -4,7 +4,7 @@
 RE spike result (see docs/superpowers/specs/acc-rpy-spike-notes.md):
   NO-GO for ≥20 Hz sample extraction from .rpy in this milestone.
   Filename + cleartext islands still yield useful session metadata.
-  Telemetry product path: SM logger / MoTeC via acc_ingest.
+  Telemetry product path: shared-memory logger / MoTeC.
 """
 
 from __future__ import annotations
@@ -17,14 +17,14 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-# Inputs + wheel/temps Motec-locked via FUN_140fdf850 (arr_30 + arr_48).
+# Inputs + wheel/temps Motec-locked via packer (arr_30 + arr_48).
 RPY_TELEMETRY_GO = True
 RPY_TELEMETRY_GO_REASON = (
-    "FUN_140fdf850 arr_30/arr_48: throttle/brake/steer/gear/speed/rpm/g_lat/g_lon, "
+    "internal arr_30/arr_48: throttle/brake/steer/gear/speed/rpm/g_lat/g_lon, "
     "wheel_angular×4, disc_temp×4, tyre_load×4, slip_ratio×4, wheel_dirt×4, time. "
     "Motec |r| thr≈0.77 brk≈0.86 spd≈0.99 steer≈0.78 gear≈0.96 rpm≈0.81 "
     "g_lat≈0.93 g_lon≈0.85 wheel≈0.98 brake_temp≈0.97. "
-    "Still open: tyre_press/tair, sus_mm, TC/ABS InAction (not in FUN_140fdf850). "
+    "Still open: tyre_press/tair, sus_mm, TC/ABS InAction (not in internal). "
     "nd_slip+marbles file_go. Decode: arr30_decode."
 )
 

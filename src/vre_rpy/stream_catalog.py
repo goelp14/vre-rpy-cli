@@ -7,7 +7,6 @@ from __future__ import annotations
 from typing import Any, Dict, List
 
 # Status:
-#   runtime_go  — float/int source proven in AC2-Win64-Shipping.exe
 #   file_go     — decoded from .rpy and Motec-locked (or lap-timer gold)
 #   file_hyp    — present as bytes/arrays; meaning not Motec-locked
 #   no_go       — not extractable yet
@@ -124,15 +123,13 @@ STREAM_CATALOG: List[Dict[str, Any]] = [
         "source": "arr_24 (lap-timer snapshot, stride 0x18) [+8] u8; 1=valid, drops to 0 at first cut until S/F",
         "file_status": "file_go",
         "evidence": (
-            "empirical: flips repeat at Spa track-limit hotspots across 3 fixtures; "
-            "Erik official 2:15.425 lap all-1; no Motec validity channel; writer "
-            "not decompiled (RaceHUDState.IsLaptimeCurrentValid +offset is HUD side)"
+            "empirical: flips repeat at Spa track-limit hotspots across fixtures; "
+            "clean flying laps stay valid; no Motec validity channel"
         ),
-        "runtime_map": {"hud_prop": "IsLaptimeCurrentValid", "obj": "RaceHUDState +offset"},
         "note": "lap_validity.decode_rpy_lap_validity; pose_track lap_segments[].valid_flag",
     },
 
-    # --- runtime GO from audio FMOD path (decoder / 140dc9320) ---
+    # --- runtime GO (in-game / shared-memory class sources) ---
     {
         "id": "throttle",
         "label": "throttle",
