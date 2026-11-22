@@ -105,3 +105,17 @@ def test_theoretical_best_ignores_position_jitter():
     assert fixed["method"] == "fixed_sectors" and fixed["potential_s"] < 0.6
     # the old 50 m slicing turns the same jitter into seconds of phantom pace
     assert theoretical_best(laps, ms, L, sectors_m=np.arange(50.0, L, 50.0))["potential_s"] > 3 * tb["potential_s"]
+
+
+def test_pedal_handover_events():
+    lap = _lap(brake_ramp_m=12.0)
+    s = lap["s"]
+    lap["input_dt_s"] = 0.04
+    # left-foot: throttle stays past half for 10 m after the brake starts at 250 m
+    lap["throttle"] = np.where(s < 262, 1.0, np.where(s > 365, 1.0, 0.0))
+    ev = corner_events(lap, WIN)
+    assert ev["brake_overlap_s"] > 0.15 and ev["lift_gap_s"] == 0.0 and ev["brake_at_lift"] > 0.9
+    # right-foot with a pause: lift 20 m before the brake
+    lap["throttle"] = np.where(s < 230, 1.0, np.where(s > 365, 1.0, 0.0))
+    ev = corner_events(lap, WIN)
+    assert ev["brake_overlap_s"] == 0.0 and 0.25 < ev["lift_gap_s"] < 0.45

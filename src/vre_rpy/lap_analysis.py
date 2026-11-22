@@ -30,7 +30,10 @@ def lap_on_stations(fr: Dict[str, Any], length_m: float, step: float = STATION_M
     s = np.asarray(fr["s_m"], float)
     s = np.maximum.accumulate(s - s[0])
     st = np.arange(0.0, min(length_m, s[-1]) - 1e-6, step)
-    out: Dict[str, np.ndarray] = {"s": st}
+    out: Dict[str, Any] = {"s": st}
+    tt = np.asarray(fr["t"] if fr.get("t") is not None else [], float)
+    # recorded input interval (replays differ: ~37 ms vs ~69 ms); pedal timings are only this precise
+    out["input_dt_s"] = float(np.median(np.diff(tt))) if len(tt) > 2 else 0.0
     for k in ("t", "speed_kmh", "throttle", "throttle_masked", "brake", "steer_deg", "gear", "g_lat", "g_lon",
               "g_vert", "slip_deg", "yaw_deg", "lat_m", "y", "edge_any_left_m", "edge_any_right_m",
               "edge_all4_left_m", "edge_all4_right_m", "lap_valid_so_far", "rpm"):
@@ -245,6 +248,29 @@ def corner_events(lap: Dict[str, np.ndarray], win: Dict[str, Any], terrain: Sequ
         after = th[k_pick:]
         drops = np.sum((after[:-1] > 0.6) & (after[1:] < after[:-1] - 0.3))
         ev["throttle_lifts"] = int(drops)
+    # pedal handover at the braking point (raw throttle: the masked one is zeroed under braking).
+    # brake_overlap_s: braking (>10 %) while the throttle is still past half — only possible left-footed;
+    # lift_gap_s: neither pedal between lifting (<10 %) and braking. Precision is about one input_dt_s.
+    if "brake_on_m" in ev and "throttle" in lap:
+        thr_all, t_all = lap["throttle"], lap["t"]
+        g = int(idx[k_on])
+        end = int(idx[min(k_vmin, len(idx) - 1)])
+        ev["input_dt_s"] = round(float(lap.get("input_dt_s", 0.0)), 3)
+        if thr_all[g] >= 0.50:
+            b_all = lap["brake"]
+            off = np.nonzero((thr_all[g : end + 1] < 0.50) | (b_all[g : end + 1] < 0.10))[0]
+            ev["brake_overlap_s"] = round(float(t_all[g + off[0]] - t_all[g]) if len(off) else float(t_all[end] - t_all[g]), 3)
+        else:
+            ev["brake_overlap_s"] = 0.0
+        # how much brake is already on when the throttle drops below half (left-foot handover builds early)
+        lift = np.nonzero(thr_all[g : end + 1] < 0.50)[0]
+        if len(lift):
+            ev["brake_at_lift"] = round(float(lap["brake"][g + lift[0]]), 3)
+        if thr_all[g] >= 0.10:
+            ev["lift_gap_s"] = 0.0
+        else:
+            back = np.nonzero((thr_all[:g] >= 0.10) & (t_all[:g] >= t_all[g] - 3.0))[0]
+            ev["lift_gap_s"] = round(float(t_all[g] - t_all[back[-1]]), 3) if len(back) else None
     if "brake_off_m" in ev and "throttle_on_m" in ev:
         a = np.searchsorted(ss, ev["brake_off_m"])
         c = np.searchsorted(ss, ev["throttle_on_m"])
@@ -306,7 +332,7 @@ def consistency(rows: List[Dict[str, Any]], keys: Sequence[str]) -> Dict[str, An
     return out
 
 
-METRICS = ("brake_on_m", "brake_ramp_m", "decel_mean_g", "rebrake_peak", "brake_at_turn_in", "turn_in_kmh",
+METRICS = ("brake_overlap_s", "brake_at_lift", "lift_gap_s", "brake_on_m", "brake_ramp_m", "decel_mean_g", "rebrake_peak", "brake_at_turn_in", "turn_in_kmh",
            "vmin_kmh", "vmin_vs_apex_m", "throttle_on_m", "full_throttle_m", "coast_s", "throttle_lifts",
            "wheel_straight_m", "peak_slip_deg", "apex_margin_m", "exit_margin_m", "exit_wheelspin_max",
            "entry_lock_min")
