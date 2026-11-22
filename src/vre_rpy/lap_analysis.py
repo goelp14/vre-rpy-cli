@@ -99,40 +99,56 @@ def theoretical_best(laps: List[Dict[str, np.ndarray]], lap_ms: List[int], lengt
 
 
 # ----------------------------------------------------------------------------- corner windows
-def brake_points(ref: Dict[str, np.ndarray], corners: Sequence[Dict[str, Any]], length_m: float) -> List[float]:
-    """Per corner: where the reference lap starts braking for it (or None if flat)."""
-    out = []
+def _apexes(corners: Sequence[Dict[str, Any]], length_m: float) -> List[float]:
+    return [float(c.get("apex_m", c.get("apex_spline", 0) * length_m)) for c in corners]
+
+
+def brake_points(ref: Dict[str, np.ndarray], corners: Sequence[Dict[str, Any]], length_m: float) -> List[Optional[float]]:
+    """Per corner: where the reference lap starts braking for it (None if it isn't braked for).
+
+    The search runs back from the apex at most 400 m and never past the previous corner's apex, so a
+    braking zone is only ever attributed to the corner it leads into (otherwise a lightly braked or flat
+    corner "steals" the previous corner's braking and every later window shifts by one corner).
+    """
+    out: List[Optional[float]] = []
     b = ref.get("brake")
-    for c in corners:
-        apex = c.get("apex_m", c.get("apex_spline", 0) * length_m)
-        lo = max(0.0, apex - 400.0)
+    apexes = _apexes(corners, length_m)
+    for i, apex in enumerate(apexes):
+        prev = apexes[i - 1] if i > 0 else -1e9
+        lo = max(0.0, apex - 400.0, prev + 10.0)
         m = (ref["s"] >= lo) & (ref["s"] <= apex)
         on = None
         if b is not None and m.any():
             idx = np.nonzero(m & (b > 0.10))[0]
             if len(idx):
-                # first braking run that reaches the apex region
                 on = float(ref["s"][idx[0]])
         out.append(on)
     return out
 
 
 def corner_windows(ref: Dict[str, np.ndarray], corners: Sequence[Dict[str, Any]], length_m: float) -> List[Dict[str, Any]]:
-    """Brake-to-brake windows: [brake point of corner i − 40 m, brake point of next braked corner − 40 m)."""
+    """Brake-to-brake windows: [brake point of corner i − 40 m, start of corner i+1's window).
+
+    Every window contains its own apex: a start never goes back past the previous apex, and an
+    unbraked corner starts 120 m before its apex (clamped the same way).
+    """
     bp = brake_points(ref, corners, length_m)
+    apexes = _apexes(corners, length_m)
     starts = []
-    for c, b in zip(corners, bp):
-        apex = c.get("apex_m", c.get("apex_spline", 0) * length_m)
-        starts.append((b if b is not None else max(0.0, apex - 120.0)) - 40.0)
+    for i, (apex, b) in enumerate(zip(apexes, bp)):
+        prev = apexes[i - 1] if i > 0 else -1e9
+        st = (b - 40.0) if b is not None else apex - 120.0
+        st = max(st, prev + 5.0, 0.0)
+        starts.append(min(st, apex - 5.0))
     wins = []
     for i, c in enumerate(corners):
-        s0 = max(0.0, starts[i])
+        s0 = starts[i]
         s1 = starts[i + 1] if i + 1 < len(corners) else length_m - 1.0
         if s1 <= s0 + 30:
             s1 = s0 + 30
         wins.append({"corner": c.get("display_name") or c.get("name"), "index": i, "s0_m": round(s0, 1),
                      "s1_m": round(min(s1, length_m - 1.0), 1),
-                     "apex_m": c.get("apex_m", c.get("apex_spline", 0) * length_m),
+                     "apex_m": apexes[i],
                      "direction": c.get("direction"), "inside_edge": c.get("inside_edge"),
                      "braked": bp[i] is not None,
                      "speed_class": c.get("speed_class")})

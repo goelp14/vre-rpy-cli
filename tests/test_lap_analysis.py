@@ -70,3 +70,18 @@ def test_spa_pair_analysis_golden():
     cs = out["car_state"]["Main"]
     assert abs(cs["mass_kg"] - 1384) < 15 and abs(cs["wheelbase_m"] - 2.66) < 0.03
     assert out["delta_best_vs_ref"]["final_s"] > 0
+
+
+def test_windows_contain_their_apex_and_never_steal_braking():
+    import numpy as np
+
+    from vre_rpy.lap_analysis import brake_points, corner_windows
+
+    s = np.arange(0, 3000, 2.0)
+    brake = np.zeros_like(s)
+    brake[(s > 900) & (s < 1000)] = 1.0      # braking for the corner at 1050 only
+    corners = [{"name": "A", "apex_m": 1050.0}, {"name": "B (flat)", "apex_m": 1300.0}, {"name": "C", "apex_m": 1400.0}]
+    ref = {"s": s, "brake": brake}
+    assert brake_points(ref, corners, 3000.0) == [902.0, None, None]
+    for w in corner_windows(ref, corners, 3000.0):
+        assert w["s0_m"] < w["apex_m"] < w["s1_m"] or w["index"] == len(corners) - 1
