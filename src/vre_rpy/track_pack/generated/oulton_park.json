@@ -1,0 +1,403 @@
+{
+ "schema": "vre.track_pack.generated.v1",
+ "track_id": "oulton_park",
+ "length_m": 4287.5,
+ "elevation_range_m": 17.4,
+ "corners": [
+  {
+   "direction": "right",
+   "spline_start": 0.0429,
+   "spline_end": 0.0849,
+   "apex_spline": 0.0681,
+   "start_m": 184.0,
+   "end_m": 364.0,
+   "apex_m": 292.0,
+   "turn_deg": 81.2,
+   "min_radius_m": 86.4,
+   "speed_class": "medium",
+   "complex": 0,
+   "name": "T1",
+   "display_name": "Old Hall",
+   "curated_name": "Turn 1",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.16,
+   "spline_end": 0.2127,
+   "apex_spline": 0.1777,
+   "start_m": 686.0,
+   "end_m": 912.0,
+   "apex_m": 762.0,
+   "turn_deg": 108.5,
+   "min_radius_m": 75.2,
+   "speed_class": "medium",
+   "complex": 1,
+   "name": "T2",
+   "display_name": "T2"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.2999,
+   "spline_end": 0.3597,
+   "apex_spline": 0.3186,
+   "start_m": 1286.0,
+   "end_m": 1542.0,
+   "apex_m": 1366.0,
+   "turn_deg": 77.2,
+   "min_radius_m": 158.1,
+   "speed_class": "medium",
+   "complex": 2,
+   "name": "T3",
+   "display_name": "Island",
+   "curated_name": "Turn 3",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.3671,
+   "spline_end": 0.4133,
+   "apex_spline": 0.3862,
+   "start_m": 1574.0,
+   "end_m": 1772.0,
+   "apex_m": 1656.0,
+   "turn_deg": 196.6,
+   "min_radius_m": 28.2,
+   "speed_class": "slow",
+   "complex": 2,
+   "name": "T4",
+   "display_name": "T4"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.4282,
+   "spline_end": 0.4604,
+   "apex_spline": 0.452,
+   "start_m": 1836.0,
+   "end_m": 1974.0,
+   "apex_m": 1938.0,
+   "turn_deg": 33.6,
+   "min_radius_m": 173.0,
+   "speed_class": "fast",
+   "complex": 2,
+   "name": "T5",
+   "display_name": "Shell",
+   "curated_name": "Turn 4",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.4674,
+   "spline_end": 0.4767,
+   "apex_spline": 0.4735,
+   "start_m": 2004.0,
+   "end_m": 2044.0,
+   "apex_m": 2030.0,
+   "turn_deg": 15.8,
+   "min_radius_m": 119.3,
+   "speed_class": "medium",
+   "complex": 2,
+   "name": "T6",
+   "display_name": "T6"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.4791,
+   "spline_end": 0.4926,
+   "apex_spline": 0.4847,
+   "start_m": 2054.0,
+   "end_m": 2112.0,
+   "apex_m": 2078.0,
+   "turn_deg": 60.6,
+   "min_radius_m": 37.0,
+   "speed_class": "slow",
+   "complex": 2,
+   "name": "T7",
+   "display_name": "T7"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.4949,
+   "spline_end": 0.5071,
+   "apex_spline": 0.4987,
+   "start_m": 2122.0,
+   "end_m": 2174.0,
+   "apex_m": 2138.0,
+   "turn_deg": 19.4,
+   "min_radius_m": 111.6,
+   "speed_class": "medium",
+   "complex": 2,
+   "name": "T8",
+   "display_name": "T8"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.5957,
+   "spline_end": 0.6092,
+   "apex_spline": 0.6032,
+   "start_m": 2554.0,
+   "end_m": 2612.0,
+   "apex_m": 2586.0,
+   "turn_deg": 50.6,
+   "min_radius_m": 44.7,
+   "speed_class": "slow",
+   "complex": 3,
+   "name": "T9",
+   "display_name": "T9"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.6102,
+   "spline_end": 0.6279,
+   "apex_spline": 0.6148,
+   "start_m": 2616.0,
+   "end_m": 2692.0,
+   "apex_m": 2636.0,
+   "turn_deg": 79.1,
+   "min_radius_m": 34.9,
+   "speed_class": "slow",
+   "complex": 3,
+   "name": "T10",
+   "display_name": "T10"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.6302,
+   "spline_end": 0.6605,
+   "apex_spline": 0.6414,
+   "start_m": 2702.0,
+   "end_m": 2832.0,
+   "apex_m": 2750.0,
+   "turn_deg": 85.2,
+   "min_radius_m": 60.1,
+   "speed_class": "medium",
+   "complex": 3,
+   "name": "T11",
+   "display_name": "Knickerbrook",
+   "curated_name": "Turn 6",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.738,
+   "spline_end": 0.766,
+   "apex_spline": 0.7436,
+   "start_m": 3164.0,
+   "end_m": 3284.0,
+   "apex_m": 3188.0,
+   "turn_deg": 17.7,
+   "min_radius_m": 347.9,
+   "speed_class": "fast",
+   "complex": 4,
+   "name": "T12",
+   "display_name": "T12"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.773,
+   "spline_end": 0.8303,
+   "apex_spline": 0.8,
+   "start_m": 3314.0,
+   "end_m": 3560.0,
+   "apex_m": 3430.0,
+   "turn_deg": 99.3,
+   "min_radius_m": 95.3,
+   "speed_class": "medium",
+   "complex": 4,
+   "name": "T13",
+   "display_name": "Druids",
+   "curated_name": "Turn 8",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.9078,
+   "spline_end": 0.9521,
+   "apex_spline": 0.9204,
+   "start_m": 3892.0,
+   "end_m": 4082.0,
+   "apex_m": 3946.0,
+   "turn_deg": 114.1,
+   "min_radius_m": 42.4,
+   "speed_class": "slow",
+   "complex": 5,
+   "name": "T14",
+   "display_name": "T14"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.9595,
+   "spline_end": 0.9866,
+   "apex_spline": 0.9647,
+   "start_m": 4114.0,
+   "end_m": 4230.0,
+   "apex_m": 4136.0,
+   "turn_deg": 22.5,
+   "min_radius_m": 217.4,
+   "speed_class": "fast",
+   "complex": 5,
+   "name": "T15",
+   "display_name": "Lodge",
+   "curated_name": "Turn 9",
+   "name_source": "curated (approximate position)"
+  }
+ ],
+ "terrain": [
+  {
+   "kind": "dip",
+   "start_m": 284.0,
+   "end_m": 294.0,
+   "peak_m": 290.0,
+   "peak_spline": 0.0676,
+   "vert_curv_per_m": 0.00132,
+   "dg_at_100kmh": 0.104,
+   "grade_pct": 1.16
+  },
+  {
+   "kind": "dip",
+   "start_m": 762.0,
+   "end_m": 780.0,
+   "peak_m": 772.0,
+   "peak_spline": 0.1801,
+   "vert_curv_per_m": 0.00156,
+   "dg_at_100kmh": 0.123,
+   "grade_pct": -2.76
+  },
+  {
+   "kind": "dip",
+   "start_m": 1630.0,
+   "end_m": 1642.0,
+   "peak_m": 1634.0,
+   "peak_spline": 0.3811,
+   "vert_curv_per_m": 0.00143,
+   "dg_at_100kmh": 0.112,
+   "grade_pct": 2.19
+  },
+  {
+   "kind": "crest",
+   "start_m": 1730.0,
+   "end_m": 1738.0,
+   "peak_m": 1732.0,
+   "peak_spline": 0.404,
+   "vert_curv_per_m": -0.00137,
+   "dg_at_100kmh": -0.108,
+   "grade_pct": -0.55
+  },
+  {
+   "kind": "dip",
+   "start_m": 2946.0,
+   "end_m": 2968.0,
+   "peak_m": 2960.0,
+   "peak_spline": 0.6904,
+   "vert_curv_per_m": 0.00172,
+   "dg_at_100kmh": 0.135,
+   "grade_pct": 8.44
+  },
+  {
+   "kind": "crest",
+   "start_m": 3018.0,
+   "end_m": 3054.0,
+   "peak_m": 3040.0,
+   "peak_spline": 0.709,
+   "vert_curv_per_m": -0.00164,
+   "dg_at_100kmh": -0.129,
+   "grade_pct": 4.92
+  },
+  {
+   "kind": "crest",
+   "start_m": 3518.0,
+   "end_m": 3546.0,
+   "peak_m": 3532.0,
+   "peak_spline": 0.8238,
+   "vert_curv_per_m": -0.00205,
+   "dg_at_100kmh": -0.161,
+   "grade_pct": -0.11
+  },
+  {
+   "kind": "dip",
+   "start_m": 3938.0,
+   "end_m": 3956.0,
+   "peak_m": 3950.0,
+   "peak_spline": 0.9213,
+   "vert_curv_per_m": 0.00198,
+   "dg_at_100kmh": 0.156,
+   "grade_pct": 1.82
+  },
+  {
+   "kind": "crest",
+   "start_m": 3968.0,
+   "end_m": 4012.0,
+   "peak_m": 3982.0,
+   "peak_spline": 0.9288,
+   "vert_curv_per_m": -0.00309,
+   "dg_at_100kmh": -0.243,
+   "grade_pct": -0.81
+  },
+  {
+   "kind": "dip",
+   "start_m": 4038.0,
+   "end_m": 4082.0,
+   "peak_m": 4062.0,
+   "peak_spline": 0.9474,
+   "vert_curv_per_m": 0.00471,
+   "dg_at_100kmh": 0.37,
+   "grade_pct": 0.26
+  },
+  {
+   "kind": "crest",
+   "start_m": 4100.0,
+   "end_m": 4118.0,
+   "peak_m": 4110.0,
+   "peak_spline": 0.9586,
+   "vert_curv_per_m": -0.00165,
+   "dg_at_100kmh": -0.13,
+   "grade_pct": 4.96
+  }
+ ],
+ "params": {
+  "r_detect_m": 450.0,
+  "min_turn_deg": 12.0,
+  "merge_gap_m": 30.0,
+  "complex_gap_m": 80.0,
+  "vert_curv_thr_per_m": 0.0012,
+  "step_m": 2.0
+ },
+ "source": "fastlane.ai (AI line); corners from curvature, terrain from elevation",
+ "curated_direction_mismatches": [
+  {
+   "corner": "Island",
+   "curated": "right",
+   "generated": "left"
+  },
+  {
+   "corner": "Shell",
+   "curated": "left",
+   "generated": "right"
+  },
+  {
+   "corner": "Druids",
+   "curated": "left",
+   "generated": "right"
+  },
+  {
+   "corner": "Lodge",
+   "curated": "right",
+   "generated": "left"
+  }
+ ],
+ "sectors": [
+  {
+   "name": "S1",
+   "spline_end": 0.33
+  },
+  {
+   "name": "S2",
+   "spline_end": 0.66
+  },
+  {
+   "name": "S3",
+   "spline_end": 1.0
+  }
+ ],
+ "display_name": "Oulton Park Acc"
+}

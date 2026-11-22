@@ -1,0 +1,291 @@
+{
+ "schema": "vre.track_pack.generated.v1",
+ "track_id": "laguna_seca",
+ "length_m": 3560.0,
+ "elevation_range_m": 55.1,
+ "corners": [
+  {
+   "direction": "left",
+   "spline_start": 0.0601,
+   "spline_end": 0.0826,
+   "apex_spline": 0.0674,
+   "start_m": 214.0,
+   "end_m": 294.0,
+   "apex_m": 240.0,
+   "turn_deg": 13.7,
+   "min_radius_m": 296.2,
+   "speed_class": "fast",
+   "complex": 0,
+   "name": "T1",
+   "display_name": "Andretti",
+   "curated_name": "Turn 1",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.1107,
+   "spline_end": 0.1612,
+   "apex_spline": 0.1326,
+   "start_m": 394.0,
+   "end_m": 574.0,
+   "apex_m": 472.0,
+   "turn_deg": 186.5,
+   "min_radius_m": 34.0,
+   "speed_class": "slow",
+   "complex": 1,
+   "name": "T2",
+   "display_name": "Turn 2",
+   "curated_name": "Turn 2",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.1843,
+   "spline_end": 0.2421,
+   "apex_spline": 0.2197,
+   "start_m": 656.0,
+   "end_m": 862.0,
+   "apex_m": 782.0,
+   "turn_deg": 111.6,
+   "min_radius_m": 61.5,
+   "speed_class": "medium",
+   "complex": 2,
+   "name": "T3",
+   "display_name": "Turn 3",
+   "curated_name": "Turn 3",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.2702,
+   "spline_end": 0.3152,
+   "apex_spline": 0.2893,
+   "start_m": 962.0,
+   "end_m": 1122.0,
+   "apex_m": 1030.0,
+   "turn_deg": 70.2,
+   "min_radius_m": 88.2,
+   "speed_class": "medium",
+   "complex": 3,
+   "name": "T4",
+   "display_name": "T4"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.4051,
+   "spline_end": 0.459,
+   "apex_spline": 0.4292,
+   "start_m": 1442.0,
+   "end_m": 1634.0,
+   "apex_m": 1528.0,
+   "turn_deg": 113.6,
+   "min_radius_m": 59.4,
+   "speed_class": "slow",
+   "complex": 4,
+   "name": "T5",
+   "display_name": "T5"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.5213,
+   "spline_end": 0.582,
+   "apex_spline": 0.5416,
+   "start_m": 1856.0,
+   "end_m": 2072.0,
+   "apex_m": 1928.0,
+   "turn_deg": 73.3,
+   "min_radius_m": 73.1,
+   "speed_class": "medium",
+   "complex": 5,
+   "name": "T6",
+   "display_name": "T6"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.6725,
+   "spline_end": 0.6893,
+   "apex_spline": 0.6815,
+   "start_m": 2394.0,
+   "end_m": 2454.0,
+   "apex_m": 2426.0,
+   "turn_deg": 76.7,
+   "min_radius_m": 30.1,
+   "speed_class": "slow",
+   "complex": 6,
+   "name": "T7",
+   "display_name": "T7"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.6921,
+   "spline_end": 0.7197,
+   "apex_spline": 0.6994,
+   "start_m": 2464.0,
+   "end_m": 2562.0,
+   "apex_m": 2490.0,
+   "turn_deg": 68.7,
+   "min_radius_m": 58.5,
+   "speed_class": "slow",
+   "complex": 6,
+   "name": "T8",
+   "display_name": "Corkscrew",
+   "curated_name": "Turn 8",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.7253,
+   "spline_end": 0.7921,
+   "apex_spline": 0.7528,
+   "start_m": 2582.0,
+   "end_m": 2820.0,
+   "apex_m": 2680.0,
+   "turn_deg": 121.1,
+   "min_radius_m": 74.3,
+   "speed_class": "medium",
+   "complex": 6,
+   "name": "T9",
+   "display_name": "T9"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.8101,
+   "spline_end": 0.8595,
+   "apex_spline": 0.8303,
+   "start_m": 2884.0,
+   "end_m": 3060.0,
+   "apex_m": 2956.0,
+   "turn_deg": 87.4,
+   "min_radius_m": 74.6,
+   "speed_class": "medium",
+   "complex": 6,
+   "name": "T10",
+   "display_name": "Rainey",
+   "curated_name": "Turn 9",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.8972,
+   "spline_end": 0.9298,
+   "apex_spline": 0.9112,
+   "start_m": 3194.0,
+   "end_m": 3310.0,
+   "apex_m": 3244.0,
+   "turn_deg": 116.3,
+   "min_radius_m": 27.8,
+   "speed_class": "slow",
+   "complex": 7,
+   "name": "T11",
+   "display_name": "T11"
+  }
+ ],
+ "terrain": [
+  {
+   "kind": "crest",
+   "start_m": 148.0,
+   "end_m": 174.0,
+   "peak_m": 162.0,
+   "peak_spline": 0.0455,
+   "vert_curv_per_m": -0.0014,
+   "dg_at_100kmh": -0.11,
+   "grade_pct": 0.0
+  },
+  {
+   "kind": "dip",
+   "start_m": 2010.0,
+   "end_m": 2036.0,
+   "peak_m": 2022.0,
+   "peak_spline": 0.568,
+   "vert_curv_per_m": 0.00127,
+   "dg_at_100kmh": 0.1,
+   "grade_pct": 6.7
+  },
+  {
+   "kind": "crest",
+   "start_m": 2350.0,
+   "end_m": 2380.0,
+   "peak_m": 2362.0,
+   "peak_spline": 0.6635,
+   "vert_curv_per_m": -0.00189,
+   "dg_at_100kmh": -0.149,
+   "grade_pct": 3.55
+  },
+  {
+   "kind": "crest",
+   "start_m": 2412.0,
+   "end_m": 2474.0,
+   "peak_m": 2462.0,
+   "peak_spline": 0.6916,
+   "vert_curv_per_m": -0.00598,
+   "dg_at_100kmh": -0.471,
+   "grade_pct": -15.05
+  },
+  {
+   "kind": "dip",
+   "start_m": 2480.0,
+   "end_m": 2504.0,
+   "peak_m": 2490.0,
+   "peak_spline": 0.6994,
+   "vert_curv_per_m": 0.00405,
+   "dg_at_100kmh": 0.318,
+   "grade_pct": -16.18
+  },
+  {
+   "kind": "dip",
+   "start_m": 2674.0,
+   "end_m": 2704.0,
+   "peak_m": 2690.0,
+   "peak_spline": 0.7556,
+   "vert_curv_per_m": 0.00174,
+   "dg_at_100kmh": 0.136,
+   "grade_pct": -8.85
+  },
+  {
+   "kind": "dip",
+   "start_m": 2958.0,
+   "end_m": 2988.0,
+   "peak_m": 2972.0,
+   "peak_spline": 0.8348,
+   "vert_curv_per_m": 0.00199,
+   "dg_at_100kmh": 0.157,
+   "grade_pct": -3.56
+  }
+ ],
+ "params": {
+  "r_detect_m": 450.0,
+  "min_turn_deg": 12.0,
+  "merge_gap_m": 30.0,
+  "complex_gap_m": 80.0,
+  "vert_curv_thr_per_m": 0.0012,
+  "step_m": 2.0
+ },
+ "source": "fastlane.ai (AI line); corners from curvature, terrain from elevation",
+ "curated_direction_mismatches": [
+  {
+   "corner": "Andretti",
+   "curated": "right",
+   "generated": "left"
+  },
+  {
+   "corner": "Corkscrew",
+   "curated": "left",
+   "generated": "right"
+  }
+ ],
+ "sectors": [
+  {
+   "name": "S1",
+   "spline_end": 0.33
+  },
+  {
+   "name": "S2",
+   "spline_end": 0.66
+  },
+  {
+   "name": "S3",
+   "spline_end": 1.0
+  }
+ ],
+ "display_name": "Laguna Seca Acc"
+}

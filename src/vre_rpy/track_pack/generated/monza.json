@@ -1,0 +1,179 @@
+{
+ "schema": "vre.track_pack.generated.v1",
+ "track_id": "monza",
+ "length_m": 5758.1,
+ "elevation_range_m": 12.8,
+ "corners": [
+  {
+   "direction": "left",
+   "spline_start": 0.1535,
+   "spline_end": 0.1758,
+   "apex_spline": 0.1671,
+   "start_m": 884.0,
+   "end_m": 1012.0,
+   "apex_m": 962.0,
+   "turn_deg": 21.5,
+   "min_radius_m": 25.3,
+   "speed_class": "slow",
+   "complex": 0,
+   "name": "T1",
+   "display_name": "Curva Grande",
+   "curated_name": "Turn 4",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.1851,
+   "spline_end": 0.1983,
+   "apex_spline": 0.189,
+   "start_m": 1066.0,
+   "end_m": 1142.0,
+   "apex_m": 1088.0,
+   "turn_deg": 13.0,
+   "min_radius_m": 320.8,
+   "speed_class": "fast",
+   "complex": 0,
+   "name": "T2",
+   "display_name": "T2"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.2199,
+   "spline_end": 0.2855,
+   "apex_spline": 0.2581,
+   "start_m": 1266.0,
+   "end_m": 1644.0,
+   "apex_m": 1486.0,
+   "turn_deg": 64.6,
+   "min_radius_m": 264.8,
+   "speed_class": "fast",
+   "complex": 1,
+   "name": "T3",
+   "display_name": "Variante della Roggia",
+   "curated_name": "Turn 6",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.4213,
+   "spline_end": 0.4606,
+   "apex_spline": 0.439,
+   "start_m": 2426.0,
+   "end_m": 2652.0,
+   "apex_m": 2528.0,
+   "turn_deg": 106.7,
+   "min_radius_m": 71.9,
+   "speed_class": "medium",
+   "complex": 2,
+   "name": "T4",
+   "display_name": "T4"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.4856,
+   "spline_end": 0.5075,
+   "apex_spline": 0.496,
+   "start_m": 2796.0,
+   "end_m": 2922.0,
+   "apex_m": 2856.0,
+   "turn_deg": 65.4,
+   "min_radius_m": 62.5,
+   "speed_class": "medium",
+   "complex": 3,
+   "name": "T5",
+   "display_name": "T5"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.6731,
+   "spline_end": 0.6898,
+   "apex_spline": 0.6822,
+   "start_m": 3876.0,
+   "end_m": 3972.0,
+   "apex_m": 3928.0,
+   "turn_deg": 53.3,
+   "min_radius_m": 81.3,
+   "speed_class": "medium",
+   "complex": 4,
+   "name": "T6",
+   "display_name": "T6"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.6915,
+   "spline_end": 0.7072,
+   "apex_spline": 0.6981,
+   "start_m": 3982.0,
+   "end_m": 4072.0,
+   "apex_m": 4020.0,
+   "turn_deg": 41.8,
+   "min_radius_m": 92.7,
+   "speed_class": "medium",
+   "complex": 4,
+   "name": "T7",
+   "display_name": "T7"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.7107,
+   "spline_end": 0.728,
+   "apex_spline": 0.7152,
+   "start_m": 4092.0,
+   "end_m": 4192.0,
+   "apex_m": 4118.0,
+   "turn_deg": 32.8,
+   "min_radius_m": 139.4,
+   "speed_class": "medium",
+   "complex": 4,
+   "name": "T8",
+   "display_name": "T8"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.8777,
+   "spline_end": 0.9468,
+   "apex_spline": 0.9006,
+   "start_m": 5054.0,
+   "end_m": 5452.0,
+   "apex_m": 5186.0,
+   "turn_deg": 165.7,
+   "min_radius_m": 82.0,
+   "speed_class": "medium",
+   "complex": 5,
+   "name": "T9",
+   "display_name": "T9"
+  }
+ ],
+ "terrain": [],
+ "params": {
+  "r_detect_m": 450.0,
+  "min_turn_deg": 12.0,
+  "merge_gap_m": 30.0,
+  "complex_gap_m": 80.0,
+  "vert_curv_thr_per_m": 0.0012,
+  "step_m": 2.0
+ },
+ "source": "fastlane.ai (AI line); corners from curvature, terrain from elevation",
+ "curated_direction_mismatches": [
+  {
+   "corner": "Curva Grande",
+   "curated": "right",
+   "generated": "left"
+  }
+ ],
+ "sectors": [
+  {
+   "name": "S1",
+   "spline_end": 0.33
+  },
+  {
+   "name": "S2",
+   "spline_end": 0.66
+  },
+  {
+   "name": "S3",
+   "spline_end": 1.0
+  }
+ ],
+ "display_name": "Monza ACC"
+}

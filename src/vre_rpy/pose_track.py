@@ -40,6 +40,14 @@ def find_pose(ex, car_index: Optional[int] = None) -> Optional[ArrayBlob]:
 def load_track_config(track_id: str) -> Dict[str, Any]:
     key = track_id.strip().lower()
     base = key[:-4] if key.endswith("_acc") else key
+    # Prefer the pack generated from the track's AI line (+ notes / curated names); fall back to
+    # hand-made configs for tracks without one.
+    from .track_pack_gen import load_track_pack
+
+    gen = load_track_pack(base)
+    if gen is not None:
+        gen.setdefault("display_name", gen.get("display_name") or base)
+        return gen
     candidates = []
     for d in (_PACK, _TRACK_CFG):
         candidates += [d / f"{base}_acc.json", d / f"{key}.json", d / f"{base}.json"]

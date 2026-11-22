@@ -1,0 +1,267 @@
+{
+ "schema": "vre.track_pack.generated.v1",
+ "track_id": "zolder",
+ "length_m": 3957.8,
+ "elevation_range_m": 10.6,
+ "corners": [
+  {
+   "direction": "left",
+   "spline_start": 0.0546,
+   "spline_end": 0.1097,
+   "apex_spline": 0.0763,
+   "start_m": 216.0,
+   "end_m": 434.0,
+   "apex_m": 302.0,
+   "turn_deg": 97.9,
+   "min_radius_m": 79.7,
+   "speed_class": "medium",
+   "complex": 0,
+   "name": "T1",
+   "display_name": "T1"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.1273,
+   "spline_end": 0.2375,
+   "apex_spline": 0.1556,
+   "start_m": 504.0,
+   "end_m": 940.0,
+   "apex_m": 616.0,
+   "turn_deg": 187.6,
+   "min_radius_m": 60.6,
+   "speed_class": "medium",
+   "complex": 0,
+   "name": "T2",
+   "display_name": "Earste",
+   "curated_name": "Turn 2",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.2618,
+   "spline_end": 0.3093,
+   "apex_spline": 0.286,
+   "start_m": 1036.0,
+   "end_m": 1224.0,
+   "apex_m": 1132.0,
+   "turn_deg": 80.9,
+   "min_radius_m": 79.0,
+   "speed_class": "medium",
+   "complex": 1,
+   "name": "T3",
+   "display_name": "T3"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.4331,
+   "spline_end": 0.4472,
+   "apex_spline": 0.4412,
+   "start_m": 1714.0,
+   "end_m": 1770.0,
+   "apex_m": 1746.0,
+   "turn_deg": 49.8,
+   "min_radius_m": 40.0,
+   "speed_class": "slow",
+   "complex": 2,
+   "name": "T4",
+   "display_name": "T4"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.4482,
+   "spline_end": 0.4629,
+   "apex_spline": 0.4513,
+   "start_m": 1774.0,
+   "end_m": 1832.0,
+   "apex_m": 1786.0,
+   "turn_deg": 25.9,
+   "min_radius_m": 95.2,
+   "speed_class": "medium",
+   "complex": 2,
+   "name": "T5",
+   "display_name": "T5"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.5119,
+   "spline_end": 0.5538,
+   "apex_spline": 0.5402,
+   "start_m": 2026.0,
+   "end_m": 2192.0,
+   "apex_m": 2138.0,
+   "turn_deg": 42.2,
+   "min_radius_m": 207.2,
+   "speed_class": "fast",
+   "complex": 3,
+   "name": "T6",
+   "display_name": "Jackie Ickx",
+   "curated_name": "Turn 7",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.572,
+   "spline_end": 0.6655,
+   "apex_spline": 0.5902,
+   "start_m": 2264.0,
+   "end_m": 2634.0,
+   "apex_m": 2336.0,
+   "turn_deg": 153.0,
+   "min_radius_m": 30.6,
+   "speed_class": "slow",
+   "complex": 3,
+   "name": "T7",
+   "display_name": "T7"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.6837,
+   "spline_end": 0.7049,
+   "apex_spline": 0.6898,
+   "start_m": 2706.0,
+   "end_m": 2790.0,
+   "apex_m": 2730.0,
+   "turn_deg": 16.7,
+   "min_radius_m": 266.6,
+   "speed_class": "fast",
+   "complex": 3,
+   "name": "T8",
+   "display_name": "T8"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.7509,
+   "spline_end": 0.7757,
+   "apex_spline": 0.7605,
+   "start_m": 2972.0,
+   "end_m": 3070.0,
+   "apex_m": 3010.0,
+   "turn_deg": 125.6,
+   "min_radius_m": 26.2,
+   "speed_class": "slow",
+   "complex": 4,
+   "name": "T9",
+   "display_name": "Bianca",
+   "curated_name": "Turn 10",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.7772,
+   "spline_end": 0.7888,
+   "apex_spline": 0.7823,
+   "start_m": 3076.0,
+   "end_m": 3122.0,
+   "apex_m": 3096.0,
+   "turn_deg": 12.9,
+   "min_radius_m": 166.6,
+   "speed_class": "fast",
+   "complex": 4,
+   "name": "T10",
+   "display_name": "T10"
+  }
+ ],
+ "terrain": [
+  {
+   "kind": "dip",
+   "start_m": 1864.0,
+   "end_m": 1896.0,
+   "peak_m": 1882.0,
+   "peak_spline": 0.4755,
+   "vert_curv_per_m": 0.00218,
+   "dg_at_100kmh": 0.172,
+   "grade_pct": 4.59
+  },
+  {
+   "kind": "crest",
+   "start_m": 1918.0,
+   "end_m": 1958.0,
+   "peak_m": 1932.0,
+   "peak_spline": 0.4882,
+   "vert_curv_per_m": -0.00196,
+   "dg_at_100kmh": -0.154,
+   "grade_pct": 4.46
+  },
+  {
+   "kind": "crest",
+   "start_m": 1966.0,
+   "end_m": 2006.0,
+   "peak_m": 1990.0,
+   "peak_spline": 0.5028,
+   "vert_curv_per_m": -0.00185,
+   "dg_at_100kmh": -0.146,
+   "grade_pct": -4.42
+  },
+  {
+   "kind": "dip",
+   "start_m": 2060.0,
+   "end_m": 2074.0,
+   "peak_m": 2064.0,
+   "peak_spline": 0.5215,
+   "vert_curv_per_m": 0.00127,
+   "dg_at_100kmh": 0.1,
+   "grade_pct": -6.42
+  },
+  {
+   "kind": "dip",
+   "start_m": 2084.0,
+   "end_m": 2098.0,
+   "peak_m": 2092.0,
+   "peak_spline": 0.5286,
+   "vert_curv_per_m": 0.00132,
+   "dg_at_100kmh": 0.104,
+   "grade_pct": -2.98
+  },
+  {
+   "kind": "crest",
+   "start_m": 2716.0,
+   "end_m": 2732.0,
+   "peak_m": 2722.0,
+   "peak_spline": 0.6878,
+   "vert_curv_per_m": -0.00156,
+   "dg_at_100kmh": -0.123,
+   "grade_pct": 0.09
+  },
+  {
+   "kind": "dip",
+   "start_m": 3584.0,
+   "end_m": 3592.0,
+   "peak_m": 3590.0,
+   "peak_spline": 0.9071,
+   "vert_curv_per_m": 0.00144,
+   "dg_at_100kmh": 0.113,
+   "grade_pct": 2.58
+  }
+ ],
+ "params": {
+  "r_detect_m": 450.0,
+  "min_turn_deg": 12.0,
+  "merge_gap_m": 30.0,
+  "complex_gap_m": 80.0,
+  "vert_curv_thr_per_m": 0.0012,
+  "step_m": 2.0
+ },
+ "source": "fastlane.ai (AI line); corners from curvature, terrain from elevation",
+ "curated_direction_mismatches": [
+  {
+   "corner": "Earste",
+   "curated": "left",
+   "generated": "right"
+  }
+ ],
+ "sectors": [
+  {
+   "name": "S1",
+   "spline_end": 0.33
+  },
+  {
+   "name": "S2",
+   "spline_end": 0.66
+  },
+  {
+   "name": "S3",
+   "spline_end": 1.0
+  }
+ ],
+ "display_name": "Zolder Acc"
+}

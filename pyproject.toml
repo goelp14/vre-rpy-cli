@@ -25,4 +25,4 @@ vre-rpy = "vre_rpy.cli:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-vre_rpy = ["track_pack/*.json"]
+vre_rpy = ["track_pack/*.json", "track_pack/generated/*.json", "track_pack/notes/*.json"]

@@ -1,0 +1,262 @@
+{
+ "schema": "vre.track_pack.generated.v1",
+ "track_id": "donington",
+ "length_m": 3944.7,
+ "elevation_range_m": 35.8,
+ "corners": [
+  {
+   "direction": "right",
+   "spline_start": 0.0847,
+   "spline_end": 0.1379,
+   "apex_spline": 0.1121,
+   "start_m": 334.0,
+   "end_m": 544.0,
+   "apex_m": 442.0,
+   "turn_deg": 118.7,
+   "min_radius_m": 51.4,
+   "speed_class": "slow",
+   "complex": 0,
+   "name": "T1",
+   "display_name": "Hollywood",
+   "curated_name": "Turn 2",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.146,
+   "spline_end": 0.214,
+   "apex_spline": 0.1577,
+   "start_m": 576.0,
+   "end_m": 844.0,
+   "apex_m": 622.0,
+   "turn_deg": 60.1,
+   "min_radius_m": 206.0,
+   "speed_class": "fast",
+   "complex": 0,
+   "name": "T2",
+   "display_name": "T2"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.219,
+   "spline_end": 0.2571,
+   "apex_spline": 0.2454,
+   "start_m": 864.0,
+   "end_m": 1014.0,
+   "apex_m": 968.0,
+   "turn_deg": 39.3,
+   "min_radius_m": 173.6,
+   "speed_class": "fast",
+   "complex": 0,
+   "name": "T3",
+   "display_name": "T3"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.2697,
+   "spline_end": 0.3199,
+   "apex_spline": 0.2956,
+   "start_m": 1064.0,
+   "end_m": 1262.0,
+   "apex_m": 1166.0,
+   "turn_deg": 75.3,
+   "min_radius_m": 80.7,
+   "speed_class": "medium",
+   "complex": 0,
+   "name": "T4",
+   "display_name": "Old Hairpin",
+   "curated_name": "Turn 4",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.3356,
+   "spline_end": 0.3813,
+   "apex_spline": 0.3701,
+   "start_m": 1324.0,
+   "end_m": 1504.0,
+   "apex_m": 1460.0,
+   "turn_deg": 41.4,
+   "min_radius_m": 222.7,
+   "speed_class": "fast",
+   "complex": 0,
+   "name": "T5",
+   "display_name": "T5"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.396,
+   "spline_end": 0.4264,
+   "apex_spline": 0.4107,
+   "start_m": 1562.0,
+   "end_m": 1682.0,
+   "apex_m": 1620.0,
+   "turn_deg": 27.1,
+   "min_radius_m": 198.1,
+   "speed_class": "fast",
+   "complex": 0,
+   "name": "T6",
+   "display_name": "T6"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.437,
+   "spline_end": 0.4847,
+   "apex_spline": 0.4568,
+   "start_m": 1724.0,
+   "end_m": 1912.0,
+   "apex_m": 1802.0,
+   "turn_deg": 89.8,
+   "min_radius_m": 76.9,
+   "speed_class": "medium",
+   "complex": 0,
+   "name": "T7",
+   "display_name": "Starkeys",
+   "curated_name": "Turn 5",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.5258,
+   "spline_end": 0.5968,
+   "apex_spline": 0.5415,
+   "start_m": 2074.0,
+   "end_m": 2354.0,
+   "apex_m": 2136.0,
+   "turn_deg": 126.3,
+   "min_radius_m": 72.2,
+   "speed_class": "medium",
+   "complex": 1,
+   "name": "T8",
+   "display_name": "T8"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.7134,
+   "spline_end": 0.7311,
+   "apex_spline": 0.7266,
+   "start_m": 2814.0,
+   "end_m": 2884.0,
+   "apex_m": 2866.0,
+   "turn_deg": 43.0,
+   "min_radius_m": 67.8,
+   "speed_class": "medium",
+   "complex": 2,
+   "name": "T9",
+   "display_name": "T9"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.7336,
+   "spline_end": 0.761,
+   "apex_spline": 0.7372,
+   "start_m": 2894.0,
+   "end_m": 3002.0,
+   "apex_m": 2908.0,
+   "turn_deg": 42.3,
+   "min_radius_m": 107.9,
+   "speed_class": "medium",
+   "complex": 2,
+   "name": "T10",
+   "display_name": "T10"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.8351,
+   "spline_end": 0.8726,
+   "apex_spline": 0.8513,
+   "start_m": 3294.0,
+   "end_m": 3442.0,
+   "apex_m": 3358.0,
+   "turn_deg": 178.4,
+   "min_radius_m": 21.9,
+   "speed_class": "slow",
+   "complex": 3,
+   "name": "T11",
+   "display_name": "T11"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.9365,
+   "spline_end": 0.974,
+   "apex_spline": 0.9552,
+   "start_m": 3694.0,
+   "end_m": 3842.0,
+   "apex_m": 3768.0,
+   "turn_deg": 168.2,
+   "min_radius_m": 29.4,
+   "speed_class": "slow",
+   "complex": 4,
+   "name": "T12",
+   "display_name": "T12"
+  }
+ ],
+ "terrain": [
+  {
+   "kind": "dip",
+   "start_m": 1156.0,
+   "end_m": 1178.0,
+   "peak_m": 1170.0,
+   "peak_spline": 0.2966,
+   "vert_curv_per_m": 0.00158,
+   "dg_at_100kmh": 0.124,
+   "grade_pct": 0.93
+  },
+  {
+   "kind": "dip",
+   "start_m": 2000.0,
+   "end_m": 2016.0,
+   "peak_m": 2010.0,
+   "peak_spline": 0.5095,
+   "vert_curv_per_m": 0.00136,
+   "dg_at_100kmh": 0.107,
+   "grade_pct": 3.5
+  },
+  {
+   "kind": "crest",
+   "start_m": 2096.0,
+   "end_m": 2114.0,
+   "peak_m": 2102.0,
+   "peak_spline": 0.5329,
+   "vert_curv_per_m": -0.00126,
+   "dg_at_100kmh": -0.099,
+   "grade_pct": 4.35
+  }
+ ],
+ "params": {
+  "r_detect_m": 450.0,
+  "min_turn_deg": 12.0,
+  "merge_gap_m": 30.0,
+  "complex_gap_m": 80.0,
+  "vert_curv_thr_per_m": 0.0012,
+  "step_m": 2.0
+ },
+ "source": "fastlane.ai (AI line); corners from curvature, terrain from elevation",
+ "curated_direction_mismatches": [
+  {
+   "corner": "Hollywood",
+   "curated": "left",
+   "generated": "right"
+  },
+  {
+   "corner": "Starkeys",
+   "curated": "left",
+   "generated": "right"
+  }
+ ],
+ "sectors": [
+  {
+   "name": "S1",
+   "spline_end": 0.33
+  },
+  {
+   "name": "S2",
+   "spline_end": 0.66
+  },
+  {
+   "name": "S3",
+   "spline_end": 1.0
+  }
+ ],
+ "display_name": "Donington Acc"
+}

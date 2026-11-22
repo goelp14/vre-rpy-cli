@@ -1,0 +1,311 @@
+{
+ "schema": "vre.track_pack.generated.v1",
+ "track_id": "brands_hatch",
+ "length_m": 3882.1,
+ "elevation_range_m": 34.7,
+ "corners": [
+  {
+   "direction": "right",
+   "spline_start": 0.0371,
+   "spline_end": 0.1061,
+   "apex_spline": 0.0649,
+   "start_m": 144.0,
+   "end_m": 412.0,
+   "apex_m": 252.0,
+   "turn_deg": 107.1,
+   "min_radius_m": 86.4,
+   "speed_class": "medium",
+   "complex": 0,
+   "name": "T1",
+   "display_name": "Paddock Hill",
+   "curated_name": "Turn 1",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.1329,
+   "spline_end": 0.1813,
+   "apex_spline": 0.1551,
+   "start_m": 516.0,
+   "end_m": 704.0,
+   "apex_m": 602.0,
+   "turn_deg": 177.5,
+   "min_radius_m": 27.4,
+   "speed_class": "slow",
+   "complex": 1,
+   "name": "T2",
+   "display_name": "Druids",
+   "curated_name": "Turn 2",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.1891,
+   "spline_end": 0.238,
+   "apex_spline": 0.219,
+   "start_m": 734.0,
+   "end_m": 924.0,
+   "apex_m": 850.0,
+   "turn_deg": 107.4,
+   "min_radius_m": 63.9,
+   "speed_class": "medium",
+   "complex": 1,
+   "name": "T3",
+   "display_name": "T3"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.29,
+   "spline_end": 0.3462,
+   "apex_spline": 0.3179,
+   "start_m": 1126.0,
+   "end_m": 1344.0,
+   "apex_m": 1234.0,
+   "turn_deg": 136.6,
+   "min_radius_m": 57.8,
+   "speed_class": "slow",
+   "complex": 2,
+   "name": "T4",
+   "display_name": "T4"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.4951,
+   "spline_end": 0.5518,
+   "apex_spline": 0.5188,
+   "start_m": 1922.0,
+   "end_m": 2142.0,
+   "apex_m": 2014.0,
+   "turn_deg": 83.8,
+   "min_radius_m": 110.6,
+   "speed_class": "medium",
+   "complex": 3,
+   "name": "T5",
+   "display_name": "Hawthorns",
+   "curated_name": "Turn 5",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.5858,
+   "spline_end": 0.678,
+   "apex_spline": 0.5997,
+   "start_m": 2274.0,
+   "end_m": 2632.0,
+   "apex_m": 2328.0,
+   "turn_deg": 108.8,
+   "min_radius_m": 92.5,
+   "speed_class": "medium",
+   "complex": 4,
+   "name": "T6",
+   "display_name": "T6"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.6862,
+   "spline_end": 0.7295,
+   "apex_spline": 0.7007,
+   "start_m": 2664.0,
+   "end_m": 2832.0,
+   "apex_m": 2720.0,
+   "turn_deg": 64.5,
+   "min_radius_m": 97.1,
+   "speed_class": "medium",
+   "complex": 4,
+   "name": "T7",
+   "display_name": "T7"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.7501,
+   "spline_end": 0.7841,
+   "apex_spline": 0.765,
+   "start_m": 2912.0,
+   "end_m": 3044.0,
+   "apex_m": 2970.0,
+   "turn_deg": 83.0,
+   "min_radius_m": 57.3,
+   "speed_class": "slow",
+   "complex": 4,
+   "name": "T8",
+   "display_name": "Sheene",
+   "curated_name": "Turn 7",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.8635,
+   "spline_end": 0.951,
+   "apex_spline": 0.8748,
+   "start_m": 3352.0,
+   "end_m": 3692.0,
+   "apex_m": 3396.0,
+   "turn_deg": 126.6,
+   "min_radius_m": 95.5,
+   "speed_class": "medium",
+   "complex": 5,
+   "name": "T9",
+   "display_name": "Stirling",
+   "curated_name": "Turn 8",
+   "name_source": "curated (approximate position)"
+  }
+ ],
+ "terrain": [
+  {
+   "kind": "crest",
+   "start_m": 206.0,
+   "end_m": 236.0,
+   "peak_m": 222.0,
+   "peak_spline": 0.0572,
+   "vert_curv_per_m": -0.00187,
+   "dg_at_100kmh": -0.147,
+   "grade_pct": -6.91
+  },
+  {
+   "kind": "dip",
+   "start_m": 322.0,
+   "end_m": 412.0,
+   "peak_m": 342.0,
+   "peak_spline": 0.0881,
+   "vert_curv_per_m": 0.00502,
+   "dg_at_100kmh": 0.395,
+   "grade_pct": -7.32
+  },
+  {
+   "kind": "crest",
+   "start_m": 544.0,
+   "end_m": 632.0,
+   "peak_m": 610.0,
+   "peak_spline": 0.1571,
+   "vert_curv_per_m": -0.00242,
+   "dg_at_100kmh": -0.19,
+   "grade_pct": -3.58
+  },
+  {
+   "kind": "dip",
+   "start_m": 764.0,
+   "end_m": 786.0,
+   "peak_m": 774.0,
+   "peak_spline": 0.1994,
+   "vert_curv_per_m": 0.00136,
+   "dg_at_100kmh": 0.107,
+   "grade_pct": -6.44
+  },
+  {
+   "kind": "crest",
+   "start_m": 1310.0,
+   "end_m": 1320.0,
+   "peak_m": 1312.0,
+   "peak_spline": 0.338,
+   "vert_curv_per_m": -0.00145,
+   "dg_at_100kmh": -0.114,
+   "grade_pct": 8.5
+  },
+  {
+   "kind": "dip",
+   "start_m": 1814.0,
+   "end_m": 1880.0,
+   "peak_m": 1862.0,
+   "peak_spline": 0.4796,
+   "vert_curv_per_m": 0.00203,
+   "dg_at_100kmh": 0.159,
+   "grade_pct": 2.66
+  },
+  {
+   "kind": "dip",
+   "start_m": 2536.0,
+   "end_m": 2604.0,
+   "peak_m": 2562.0,
+   "peak_spline": 0.66,
+   "vert_curv_per_m": 0.00241,
+   "dg_at_100kmh": 0.189,
+   "grade_pct": -2.05
+  },
+  {
+   "kind": "crest",
+   "start_m": 2688.0,
+   "end_m": 2714.0,
+   "peak_m": 2702.0,
+   "peak_spline": 0.696,
+   "vert_curv_per_m": -0.00149,
+   "dg_at_100kmh": -0.117,
+   "grade_pct": 5.34
+  },
+  {
+   "kind": "dip",
+   "start_m": 2972.0,
+   "end_m": 2994.0,
+   "peak_m": 2982.0,
+   "peak_spline": 0.7681,
+   "vert_curv_per_m": 0.00178,
+   "dg_at_100kmh": 0.14,
+   "grade_pct": -0.97
+  },
+  {
+   "kind": "crest",
+   "start_m": 3416.0,
+   "end_m": 3450.0,
+   "peak_m": 3432.0,
+   "peak_spline": 0.8841,
+   "vert_curv_per_m": -0.00178,
+   "dg_at_100kmh": -0.14,
+   "grade_pct": -3.8
+  },
+  {
+   "kind": "dip",
+   "start_m": 3486.0,
+   "end_m": 3512.0,
+   "peak_m": 3500.0,
+   "peak_spline": 0.9016,
+   "vert_curv_per_m": 0.00163,
+   "dg_at_100kmh": 0.129,
+   "grade_pct": -4.88
+  },
+  {
+   "kind": "dip",
+   "start_m": 3832.0,
+   "end_m": 3846.0,
+   "peak_m": 3840.0,
+   "peak_spline": 0.9892,
+   "vert_curv_per_m": 0.00146,
+   "dg_at_100kmh": 0.115,
+   "grade_pct": -0.98
+  }
+ ],
+ "params": {
+  "r_detect_m": 450.0,
+  "min_turn_deg": 12.0,
+  "merge_gap_m": 30.0,
+  "complex_gap_m": 80.0,
+  "vert_curv_thr_per_m": 0.0012,
+  "step_m": 2.0
+ },
+ "source": "fastlane.ai (AI line); corners from curvature, terrain from elevation",
+ "curated_direction_mismatches": [
+  {
+   "corner": "Sheene",
+   "curated": "right",
+   "generated": "left"
+  },
+  {
+   "corner": "Stirling",
+   "curated": "left",
+   "generated": "right"
+  }
+ ],
+ "sectors": [
+  {
+   "name": "S1",
+   "spline_end": 0.33
+  },
+  {
+   "name": "S2",
+   "spline_end": 0.66
+  },
+  {
+   "name": "S3",
+   "spline_end": 1.0
+  }
+ ],
+ "display_name": "Brands Hatch ACC"
+}

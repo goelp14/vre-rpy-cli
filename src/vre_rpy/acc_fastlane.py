@@ -301,21 +301,22 @@ def _looks_world_loose(x: float, y: float, z: float) -> bool:
         math.isfinite(x)
         and math.isfinite(y)
         and math.isfinite(z)
-        and abs(x) < 5000
-        and abs(z) < 5000
-        and abs(y) < 500
+        and abs(x) < 20000
+        and abs(z) < 20000
+        and -500 < y < 3000
     )
 
 
 def _looks_world(x: float, y: float, z: float) -> bool:
-    # Spa-class world bounds (also works for other ACC tracks with km-scale maps)
+    # World bounds for any ACC track: km-scale maps, elevation up to mountain circuits
+    # (Red Bull Ring's AI line sits at ~665 m; a 500 m cap misaligned the whole parse).
     return (
         math.isfinite(x)
         and math.isfinite(y)
         and math.isfinite(z)
-        and abs(x) < 5000
-        and abs(z) < 5000
-        and -200 < y < 500
+        and abs(x) < 20000
+        and abs(z) < 20000
+        and -500 < y < 3000
         and not (abs(x) < 1 and abs(z) < 1)
     )
 

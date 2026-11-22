@@ -1,0 +1,35 @@
+{
+  "track": "spa",
+  "sources": [
+    "Corner names: standard Spa-Francorchamps naming (e.g. Wikipedia 'Circuit de Spa-Francorchamps')",
+    "La Source technique: Coach Dave Academy / Track Titan Spa guides (brake around the 100-120 m board, late apex, exit priority for Kemmel)",
+    "Track-limit hotspots: vre-rpy zone model learned from 13 local Spa replays (2026-11-21)",
+    "Terrain at La Source (crest at turn-in, dip at apex): measured from replay elevation and tyre load"
+  ],
+  "corners": [
+    {"name": "La Source", "apex_m_range": [300, 420], "type": "hairpin",
+     "cues": ["Brake around the 100-120 m board; uphill and compressing, so full pressure early is usable",
+              "Crest at turn-in unloads the car: finish braking before it",
+              "Dip at the apex loads the car: good place to go to throttle"],
+     "priority": "exit speed for Eau Rouge / Kemmel"},
+    {"name": "Eau Rouge / Raidillon", "apex_m_range": [1000, 1200], "type": "fast compression + crest",
+     "cues": ["Compression at the bottom (~1060 m) adds grip; crest at the top (~1200 m) takes it away"]},
+    {"name": "Les Combes", "apex_m_range": [2330, 2420], "type": "chicane entry (right)",
+     "hotspots": ["track-limit cut ~2300 m is judged ~11 s later (~2700 m)"]},
+    {"name": "Les Combes exit", "apex_m_range": [2420, 2500], "type": "chicane exit (left)"},
+    {"name": "Malmedy", "apex_m_range": [2560, 2660], "type": "medium right"},
+    {"name": "Bruxelles", "apex_m_range": [2950, 3100], "type": "hairpin (right)"},
+    {"name": "No Name", "apex_m_range": [3150, 3300], "type": "medium left",
+     "hotspots": ["track-limit cuts around 3250-3300 m are judged quickly"]},
+    {"name": "Pouhon", "apex_m_range": [3700, 3950], "type": "fast double left"},
+    {"name": "Fagnes", "apex_m_range": [4400, 4520], "type": "right"},
+    {"name": "Campus", "apex_m_range": [4560, 4680], "type": "left"},
+    {"name": "Stavelot", "apex_m_range": [4800, 4920], "type": "right"},
+    {"name": "Blanchimont", "apex_m_range": [6000, 6200], "type": "fast left"},
+    {"name": "Bus Stop", "apex_m_range": [6650, 6800], "type": "chicane"}
+  ],
+  "hotspots": [
+    {"cut_m": 610, "judged_m": 1300, "lag_s": 10.2, "where": "Raidillon exit", "source": "zone model, 16 laps"},
+    {"cut_m": 2300, "judged_m": 2700, "lag_s": 11.2, "where": "Les Combes entry", "source": "zone model, 24 laps"}
+  ]
+}

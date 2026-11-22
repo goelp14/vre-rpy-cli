@@ -1,0 +1,291 @@
+{
+ "schema": "vre.track_pack.generated.v1",
+ "track_id": "spa",
+ "length_m": 6942.1,
+ "elevation_range_m": 102.3,
+ "corners": [
+  {
+   "direction": "right",
+   "spline_start": 0.0438,
+   "spline_end": 0.0619,
+   "apex_spline": 0.051,
+   "start_m": 304.0,
+   "end_m": 430.0,
+   "apex_m": 354.0,
+   "turn_deg": 147.1,
+   "min_radius_m": 23.9,
+   "speed_class": "slow",
+   "complex": 0,
+   "name": "T1",
+   "display_name": "T1"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.1521,
+   "spline_end": 0.1703,
+   "apex_spline": 0.1579,
+   "start_m": 1056.0,
+   "end_m": 1182.0,
+   "apex_m": 1096.0,
+   "turn_deg": 36.1,
+   "min_radius_m": 144.4,
+   "speed_class": "medium",
+   "complex": 1,
+   "name": "T2",
+   "display_name": "Raidillon",
+   "curated_name": "Turn 5",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.3333,
+   "spline_end": 0.3477,
+   "apex_spline": 0.3428,
+   "start_m": 2314.0,
+   "end_m": 2414.0,
+   "apex_m": 2380.0,
+   "turn_deg": 60.6,
+   "min_radius_m": 59.3,
+   "speed_class": "slow",
+   "complex": 2,
+   "name": "T3",
+   "display_name": "T3"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.3492,
+   "spline_end": 0.3633,
+   "apex_spline": 0.3535,
+   "start_m": 2424.0,
+   "end_m": 2522.0,
+   "apex_m": 2454.0,
+   "turn_deg": 70.0,
+   "min_radius_m": 58.8,
+   "speed_class": "slow",
+   "complex": 2,
+   "name": "T4",
+   "display_name": "Bruxelles",
+   "curated_name": "Turn 11",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.365,
+   "spline_end": 0.3878,
+   "apex_spline": 0.3754,
+   "start_m": 2534.0,
+   "end_m": 2692.0,
+   "apex_m": 2606.0,
+   "turn_deg": 75.4,
+   "min_radius_m": 84.6,
+   "speed_class": "medium",
+   "complex": 2,
+   "name": "T5",
+   "display_name": "T5"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.4157,
+   "spline_end": 0.4529,
+   "apex_spline": 0.4359,
+   "start_m": 2886.0,
+   "end_m": 3144.0,
+   "apex_m": 3026.0,
+   "turn_deg": 188.3,
+   "min_radius_m": 41.8,
+   "speed_class": "slow",
+   "complex": 3,
+   "name": "T6",
+   "display_name": "Pouhon",
+   "curated_name": "Turn 13",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.4558,
+   "spline_end": 0.4797,
+   "apex_spline": 0.4667,
+   "start_m": 3164.0,
+   "end_m": 3330.0,
+   "apex_m": 3240.0,
+   "turn_deg": 85.2,
+   "min_radius_m": 69.0,
+   "speed_class": "medium",
+   "complex": 3,
+   "name": "T7",
+   "display_name": "T7"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.5318,
+   "spline_end": 0.5935,
+   "apex_spline": 0.55,
+   "start_m": 3692.0,
+   "end_m": 4120.0,
+   "apex_m": 3818.0,
+   "turn_deg": 145.2,
+   "min_radius_m": 113.3,
+   "speed_class": "medium",
+   "complex": 4,
+   "name": "T8",
+   "display_name": "Fagnes",
+   "curated_name": "Turn 15",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.6283,
+   "spline_end": 0.6517,
+   "apex_spline": 0.6422,
+   "start_m": 4362.0,
+   "end_m": 4524.0,
+   "apex_m": 4458.0,
+   "turn_deg": 93.0,
+   "min_radius_m": 75.8,
+   "speed_class": "medium",
+   "complex": 5,
+   "name": "T9",
+   "display_name": "T9"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.6531,
+   "spline_end": 0.6759,
+   "apex_spline": 0.6641,
+   "start_m": 4534.0,
+   "end_m": 4692.0,
+   "apex_m": 4610.0,
+   "turn_deg": 84.8,
+   "min_radius_m": 80.0,
+   "speed_class": "medium",
+   "complex": 5,
+   "name": "T10",
+   "display_name": "Stavelot",
+   "curated_name": "Turn 18",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.6917,
+   "spline_end": 0.7635,
+   "apex_spline": 0.6998,
+   "start_m": 4802.0,
+   "end_m": 5300.0,
+   "apex_m": 4858.0,
+   "turn_deg": 189.3,
+   "min_radius_m": 63.3,
+   "speed_class": "medium",
+   "complex": 6,
+   "name": "T11",
+   "display_name": "T11"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.8706,
+   "spline_end": 0.8937,
+   "apex_spline": 0.8781,
+   "start_m": 6044.0,
+   "end_m": 6204.0,
+   "apex_m": 6096.0,
+   "turn_deg": 35.8,
+   "min_radius_m": 180.0,
+   "speed_class": "fast",
+   "complex": 7,
+   "name": "T12",
+   "display_name": "T12"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.9539,
+   "spline_end": 0.9769,
+   "apex_spline": 0.9683,
+   "start_m": 6622.0,
+   "end_m": 6782.0,
+   "apex_m": 6722.0,
+   "turn_deg": 26.8,
+   "min_radius_m": 22.8,
+   "speed_class": "slow",
+   "complex": 8,
+   "name": "T13",
+   "display_name": "T13"
+  }
+ ],
+ "terrain": [
+  {
+   "kind": "crest",
+   "start_m": 324.0,
+   "end_m": 350.0,
+   "peak_m": 340.0,
+   "peak_spline": 0.049,
+   "vert_curv_per_m": -0.00251,
+   "dg_at_100kmh": -0.197,
+   "grade_pct": -0.27
+  },
+  {
+   "kind": "crest",
+   "start_m": 380.0,
+   "end_m": 390.0,
+   "peak_m": 382.0,
+   "peak_spline": 0.055,
+   "vert_curv_per_m": -0.00145,
+   "dg_at_100kmh": -0.114,
+   "grade_pct": -2.99
+  },
+  {
+   "kind": "dip",
+   "start_m": 1008.0,
+   "end_m": 1102.0,
+   "peak_m": 1064.0,
+   "peak_spline": 0.1533,
+   "vert_curv_per_m": 0.0022,
+   "dg_at_100kmh": 0.173,
+   "grade_pct": 7.34
+  },
+  {
+   "kind": "crest",
+   "start_m": 1188.0,
+   "end_m": 1208.0,
+   "peak_m": 1200.0,
+   "peak_spline": 0.1729,
+   "vert_curv_per_m": -0.00145,
+   "dg_at_100kmh": -0.114,
+   "grade_pct": 10.53
+  }
+ ],
+ "params": {
+  "r_detect_m": 450.0,
+  "min_turn_deg": 12.0,
+  "merge_gap_m": 30.0,
+  "complex_gap_m": 80.0,
+  "vert_curv_thr_per_m": 0.0012,
+  "step_m": 2.0
+ },
+ "source": "fastlane.ai (AI line); corners from curvature, terrain from elevation",
+ "curated_direction_mismatches": [
+  {
+   "corner": "Pouhon",
+   "curated": "left",
+   "generated": "right"
+  },
+  {
+   "corner": "Stavelot",
+   "curated": "right",
+   "generated": "left"
+  }
+ ],
+ "sectors": [
+  {
+   "name": "S1",
+   "spline_end": 0.33
+  },
+  {
+   "name": "S2",
+   "spline_end": 0.66
+  },
+  {
+   "name": "S3",
+   "spline_end": 1.0
+  }
+ ],
+ "display_name": "Spa-Francorchamps ACC"
+}

@@ -125,6 +125,23 @@ def cmd_limits(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_track_pack(args: argparse.Namespace) -> int:
+    from vre_rpy.acc_fastlane import default_cache_dir
+    from vre_rpy.track_pack_gen import build_pack
+
+    cache = Path(args.acc_cache) if args.acc_cache else Path(default_cache_dir())
+    tracks = args.track or sorted(d.name for d in cache.iterdir() if (d / "fastlane.ai").is_file())
+    args.out_dir.mkdir(parents=True, exist_ok=True)
+    rows = []
+    for t in tracks:
+        pack = build_pack(t, cache_dir=cache)
+        (args.out_dir / f"{t}.json").write_text(json.dumps(pack, indent=1), encoding="utf-8")
+        rows.append({"track": t, "length_m": pack["length_m"], "corners": len(pack["corners"]),
+                     "terrain_features": len(pack["terrain"])})
+    print(json.dumps(rows, indent=1))
+    return 0
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(
         prog="vre-rpy",
@@ -178,10 +195,16 @@ def main(argv: Optional[List[str]] = None) -> int:
     lm.add_argument("--acc-cache", type=Path, default=None)
     lm.set_defaults(func=cmd_limits)
 
+    tp = sub.add_parser("track-pack", help="Generate corner/terrain packs from your ACC install's AI lines")
+    tp.add_argument("--track", action="append", help="Cache folder name (repeat); default: every track")
+    tp.add_argument("--out-dir", type=Path, required=True)
+    tp.add_argument("--acc-cache", type=Path, default=None)
+    tp.set_defaults(func=cmd_track_pack)
+
     # Back-compat: `vre-rpy --rpy X --out-dir Y` (no subcommand)
     if argv is None:
         argv = sys.argv[1:]
-    if argv and argv[0] not in ("export", "verify", "frames", "limits", "-h", "--help") and argv[0].startswith("-"):
+    if argv and argv[0] not in ("export", "verify", "frames", "limits", "track-pack", "-h", "--help") and argv[0].startswith("-"):
         argv = ["export", *argv]
 
     args = ap.parse_args(argv)

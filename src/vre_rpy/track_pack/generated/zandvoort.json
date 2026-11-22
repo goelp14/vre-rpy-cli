@@ -1,0 +1,268 @@
+{
+ "schema": "vre.track_pack.generated.v1",
+ "track_id": "zandvoort",
+ "length_m": 4181.9,
+ "elevation_range_m": 10.1,
+ "corners": [
+  {
+   "direction": "right",
+   "spline_start": 0.0684,
+   "spline_end": 0.1176,
+   "apex_spline": 0.0913,
+   "start_m": 286.0,
+   "end_m": 492.0,
+   "apex_m": 382.0,
+   "turn_deg": 182.2,
+   "min_radius_m": 34.8,
+   "speed_class": "slow",
+   "complex": 0,
+   "name": "T1",
+   "display_name": "T1"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.1234,
+   "spline_end": 0.1468,
+   "apex_spline": 0.1425,
+   "start_m": 516.0,
+   "end_m": 614.0,
+   "apex_m": 596.0,
+   "turn_deg": 22.5,
+   "min_radius_m": 178.1,
+   "speed_class": "fast",
+   "complex": 0,
+   "name": "T2",
+   "display_name": "Hugenholtz",
+   "curated_name": "Turn 3",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.1516,
+   "spline_end": 0.1822,
+   "apex_spline": 0.165,
+   "start_m": 634.0,
+   "end_m": 762.0,
+   "apex_m": 690.0,
+   "turn_deg": 70.8,
+   "min_radius_m": 67.1,
+   "speed_class": "medium",
+   "complex": 0,
+   "name": "T3",
+   "display_name": "Hugenholtz",
+   "curated_name": "Turn 3",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.187,
+   "spline_end": 0.2248,
+   "apex_spline": 0.199,
+   "start_m": 782.0,
+   "end_m": 940.0,
+   "apex_m": 832.0,
+   "turn_deg": 181.1,
+   "min_radius_m": 33.0,
+   "speed_class": "slow",
+   "complex": 0,
+   "name": "T4",
+   "display_name": "T4"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.2401,
+   "spline_end": 0.2731,
+   "apex_spline": 0.2645,
+   "start_m": 1004.0,
+   "end_m": 1142.0,
+   "apex_m": 1106.0,
+   "turn_deg": 27.9,
+   "min_radius_m": 236.2,
+   "speed_class": "fast",
+   "complex": 0,
+   "name": "T5",
+   "display_name": "T5"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.2855,
+   "spline_end": 0.3209,
+   "apex_spline": 0.3027,
+   "start_m": 1194.0,
+   "end_m": 1342.0,
+   "apex_m": 1266.0,
+   "turn_deg": 39.6,
+   "min_radius_m": 175.5,
+   "speed_class": "fast",
+   "complex": 0,
+   "name": "T6",
+   "display_name": "T6"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.3305,
+   "spline_end": 0.3663,
+   "apex_spline": 0.3396,
+   "start_m": 1382.0,
+   "end_m": 1532.0,
+   "apex_m": 1420.0,
+   "turn_deg": 29.4,
+   "min_radius_m": 209.1,
+   "speed_class": "fast",
+   "complex": 0,
+   "name": "T7",
+   "display_name": "T7"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.3783,
+   "spline_end": 0.4424,
+   "apex_spline": 0.3936,
+   "start_m": 1582.0,
+   "end_m": 1850.0,
+   "apex_m": 1646.0,
+   "turn_deg": 123.0,
+   "min_radius_m": 95.9,
+   "speed_class": "medium",
+   "complex": 0,
+   "name": "T8",
+   "display_name": "Scheivlak",
+   "curated_name": "Turn 7",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.4696,
+   "spline_end": 0.5648,
+   "apex_spline": 0.5385,
+   "start_m": 1964.0,
+   "end_m": 2362.0,
+   "apex_m": 2252.0,
+   "turn_deg": 242.5,
+   "min_radius_m": 42.7,
+   "speed_class": "slow",
+   "complex": 1,
+   "name": "T9",
+   "display_name": "Masters",
+   "curated_name": "Turn 8",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.5682,
+   "spline_end": 0.6275,
+   "apex_spline": 0.5916,
+   "start_m": 2376.0,
+   "end_m": 2624.0,
+   "apex_m": 2474.0,
+   "turn_deg": 176.8,
+   "min_radius_m": 45.7,
+   "speed_class": "slow",
+   "complex": 1,
+   "name": "T10",
+   "display_name": "T10"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.7231,
+   "spline_end": 0.7394,
+   "apex_spline": 0.7332,
+   "start_m": 3024.0,
+   "end_m": 3092.0,
+   "apex_m": 3066.0,
+   "turn_deg": 68.9,
+   "min_radius_m": 40.4,
+   "speed_class": "slow",
+   "complex": 2,
+   "name": "T11",
+   "display_name": "Hans Ernst",
+   "curated_name": "Turn 11",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.7418,
+   "spline_end": 0.7729,
+   "apex_spline": 0.7494,
+   "start_m": 3102.0,
+   "end_m": 3232.0,
+   "apex_m": 3134.0,
+   "turn_deg": 144.8,
+   "min_radius_m": 30.9,
+   "speed_class": "slow",
+   "complex": 2,
+   "name": "T12",
+   "display_name": "Hans Ernst",
+   "curated_name": "Turn 11",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.8092,
+   "spline_end": 0.9235,
+   "apex_spline": 0.8322,
+   "start_m": 3384.0,
+   "end_m": 3862.0,
+   "apex_m": 3480.0,
+   "turn_deg": 206.6,
+   "min_radius_m": 65.7,
+   "speed_class": "medium",
+   "complex": 3,
+   "name": "T13",
+   "display_name": "T13"
+  }
+ ],
+ "terrain": [
+  {
+   "kind": "dip",
+   "start_m": 834.0,
+   "end_m": 876.0,
+   "peak_m": 858.0,
+   "peak_spline": 0.2052,
+   "vert_curv_per_m": 0.00216,
+   "dg_at_100kmh": 0.17,
+   "grade_pct": 1.7
+  }
+ ],
+ "params": {
+  "r_detect_m": 450.0,
+  "min_turn_deg": 12.0,
+  "merge_gap_m": 30.0,
+  "complex_gap_m": 80.0,
+  "vert_curv_thr_per_m": 0.0012,
+  "step_m": 2.0
+ },
+ "source": "fastlane.ai (AI line); corners from curvature, terrain from elevation",
+ "curated_direction_mismatches": [
+  {
+   "corner": "Hugenholtz",
+   "curated": "left",
+   "generated": "right"
+  },
+  {
+   "corner": "Masters",
+   "curated": "left",
+   "generated": "right"
+  },
+  {
+   "corner": "Hans Ernst",
+   "curated": "right",
+   "generated": "left"
+  }
+ ],
+ "sectors": [
+  {
+   "name": "S1",
+   "spline_end": 0.33
+  },
+  {
+   "name": "S2",
+   "spline_end": 0.66
+  },
+  {
+   "name": "S3",
+   "spline_end": 1.0
+  }
+ ],
+ "display_name": "Zandvoort Acc"
+}

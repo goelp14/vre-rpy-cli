@@ -1,0 +1,286 @@
+{
+ "schema": "vre.track_pack.generated.v1",
+ "track_id": "nurburgring",
+ "length_m": 5065.0,
+ "elevation_range_m": 56.3,
+ "corners": [
+  {
+   "direction": "right",
+   "spline_start": 0.1117,
+   "spline_end": 0.1422,
+   "apex_spline": 0.1228,
+   "start_m": 566.0,
+   "end_m": 720.0,
+   "apex_m": 622.0,
+   "turn_deg": 160.5,
+   "min_radius_m": 25.1,
+   "speed_class": "slow",
+   "complex": 0,
+   "name": "T1",
+   "display_name": "Hatzenbach",
+   "curated_name": "Turn 2",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.1453,
+   "spline_end": 0.2215,
+   "apex_spline": 0.2116,
+   "start_m": 736.0,
+   "end_m": 1122.0,
+   "apex_m": 1072.0,
+   "turn_deg": 300.2,
+   "min_radius_m": 33.4,
+   "speed_class": "slow",
+   "complex": 0,
+   "name": "T2",
+   "display_name": "T2"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.2223,
+   "spline_end": 0.2476,
+   "apex_spline": 0.2302,
+   "start_m": 1126.0,
+   "end_m": 1254.0,
+   "apex_m": 1166.0,
+   "turn_deg": 93.9,
+   "min_radius_m": 45.6,
+   "speed_class": "slow",
+   "complex": 0,
+   "name": "T3",
+   "display_name": "T3"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.3108,
+   "spline_end": 0.3424,
+   "apex_spline": 0.3242,
+   "start_m": 1574.0,
+   "end_m": 1734.0,
+   "apex_m": 1642.0,
+   "turn_deg": 81.9,
+   "min_radius_m": 73.6,
+   "speed_class": "medium",
+   "complex": 1,
+   "name": "T4",
+   "display_name": "T4"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.3479,
+   "spline_end": 0.3775,
+   "apex_spline": 0.3566,
+   "start_m": 1762.0,
+   "end_m": 1912.0,
+   "apex_m": 1806.0,
+   "turn_deg": 129.4,
+   "min_radius_m": 33.7,
+   "speed_class": "slow",
+   "complex": 1,
+   "name": "T5",
+   "display_name": "T5"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.4584,
+   "spline_end": 0.4999,
+   "apex_spline": 0.4786,
+   "start_m": 2322.0,
+   "end_m": 2532.0,
+   "apex_m": 2424.0,
+   "turn_deg": 195.1,
+   "min_radius_m": 35.1,
+   "speed_class": "slow",
+   "complex": 2,
+   "name": "T6",
+   "display_name": "T6"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.5378,
+   "spline_end": 0.567,
+   "apex_spline": 0.556,
+   "start_m": 2724.0,
+   "end_m": 2872.0,
+   "apex_m": 2816.0,
+   "turn_deg": 56.0,
+   "min_radius_m": 100.0,
+   "speed_class": "medium",
+   "complex": 3,
+   "name": "T7",
+   "display_name": "Bit Curve",
+   "curated_name": "Turn 7",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.5714,
+   "spline_end": 0.5966,
+   "apex_spline": 0.5761,
+   "start_m": 2894.0,
+   "end_m": 3022.0,
+   "apex_m": 2918.0,
+   "turn_deg": 28.2,
+   "min_radius_m": 162.9,
+   "speed_class": "fast",
+   "complex": 3,
+   "name": "T8",
+   "display_name": "T8"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.6519,
+   "spline_end": 0.6811,
+   "apex_spline": 0.6661,
+   "start_m": 3302.0,
+   "end_m": 3450.0,
+   "apex_m": 3374.0,
+   "turn_deg": 88.2,
+   "min_radius_m": 57.7,
+   "speed_class": "slow",
+   "complex": 4,
+   "name": "T9",
+   "display_name": "T9"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.6863,
+   "spline_end": 0.725,
+   "apex_spline": 0.7001,
+   "start_m": 3476.0,
+   "end_m": 3672.0,
+   "apex_m": 3546.0,
+   "turn_deg": 112.2,
+   "min_radius_m": 60.5,
+   "speed_class": "medium",
+   "complex": 4,
+   "name": "T10",
+   "display_name": "T10"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.7763,
+   "spline_end": 0.8115,
+   "apex_spline": 0.7972,
+   "start_m": 3932.0,
+   "end_m": 4110.0,
+   "apex_m": 4038.0,
+   "turn_deg": 32.4,
+   "min_radius_m": 247.0,
+   "speed_class": "fast",
+   "complex": 5,
+   "name": "T11",
+   "display_name": "T11"
+  },
+  {
+   "direction": "left",
+   "spline_start": 0.8731,
+   "spline_end": 0.8904,
+   "apex_spline": 0.8857,
+   "start_m": 4422.0,
+   "end_m": 4510.0,
+   "apex_m": 4486.0,
+   "turn_deg": 41.1,
+   "min_radius_m": 74.8,
+   "speed_class": "medium",
+   "complex": 6,
+   "name": "T12",
+   "display_name": "NGK Chicane",
+   "curated_name": "Turn 11",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.8928,
+   "spline_end": 0.9121,
+   "apex_spline": 0.8975,
+   "start_m": 4522.0,
+   "end_m": 4620.0,
+   "apex_m": 4546.0,
+   "turn_deg": 41.2,
+   "min_radius_m": 103.4,
+   "speed_class": "medium",
+   "complex": 6,
+   "name": "T13",
+   "display_name": "NGK Chicane",
+   "curated_name": "Turn 11",
+   "name_source": "curated (approximate position)"
+  },
+  {
+   "direction": "right",
+   "spline_start": 0.9264,
+   "spline_end": 0.9619,
+   "apex_spline": 0.9445,
+   "start_m": 4692.0,
+   "end_m": 4872.0,
+   "apex_m": 4784.0,
+   "turn_deg": 143.1,
+   "min_radius_m": 46.9,
+   "speed_class": "slow",
+   "complex": 6,
+   "name": "T14",
+   "display_name": "Coca-Cola",
+   "curated_name": "Turn 12",
+   "name_source": "curated (approximate position)"
+  }
+ ],
+ "terrain": [
+  {
+   "kind": "dip",
+   "start_m": 634.0,
+   "end_m": 656.0,
+   "peak_m": 642.0,
+   "peak_spline": 0.1268,
+   "vert_curv_per_m": 0.00219,
+   "dg_at_100kmh": 0.173,
+   "grade_pct": -3.34
+  }
+ ],
+ "params": {
+  "r_detect_m": 450.0,
+  "min_turn_deg": 12.0,
+  "merge_gap_m": 30.0,
+  "complex_gap_m": 80.0,
+  "vert_curv_thr_per_m": 0.0012,
+  "step_m": 2.0
+ },
+ "source": "fastlane.ai (AI line); corners from curvature, terrain from elevation",
+ "curated_direction_mismatches": [
+  {
+   "corner": "Hatzenbach",
+   "curated": "left",
+   "generated": "right"
+  },
+  {
+   "corner": "Bit Curve",
+   "curated": "right",
+   "generated": "left"
+  },
+  {
+   "corner": "NGK Chicane",
+   "curated": "right",
+   "generated": "left"
+  },
+  {
+   "corner": "Coca-Cola",
+   "curated": "left",
+   "generated": "right"
+  }
+ ],
+ "sectors": [
+  {
+   "name": "S1",
+   "spline_end": 0.33
+  },
+  {
+   "name": "S2",
+   "spline_end": 0.66
+  },
+  {
+   "name": "S3",
+   "spline_end": 1.0
+  }
+ ],
+ "display_name": "Nurburgring Acc"
+}

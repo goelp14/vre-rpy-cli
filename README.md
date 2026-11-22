@@ -176,6 +176,17 @@ Beyond raw inputs (throttle, brake, steer, speed, G, wheels, temps, slip, …), 
 - Venue name on the `.ld` must match the `.mt2` basename (case-insensitive)
 - Track maps: install any ACC MoTeC workspace once, or point `MOTEC_ACC_TRACK_MAPS` at a folder of `.mt2` files
 
+## Track packs
+
+`vre_rpy/track_pack/generated/` ships a pack for every ACC track, generated from the game's AI line:
+corners (position, direction, tightest radius, speed class, complexes) and terrain features (crests and
+dips with the load change they cause, `dg_at_100kmh`, which scales with speed squared). Regenerate from
+your own install with `vre-rpy track-pack --out-dir packs/`.
+
+Optional `track_pack/notes/<track>.json` files add researched corner names, cues and known
+track-limit hotspots (each with sources). Notes only relabel and annotate; they never change detection,
+so every track works the same with or without them.
+
 ## Track configs
 
 Named corners for ACC circuits live in `src/vre_rpy/track_pack/*.json`. Add or edit a JSON to improve labels for a venue — the next export patches that track’s `.mt2` section names automatically (same-length renames only).
