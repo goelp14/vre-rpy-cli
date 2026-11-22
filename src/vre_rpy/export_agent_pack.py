@@ -62,7 +62,7 @@ def build_pack(
     rpy_path: Path,
     out_dir: Path,
     motec_path: Optional[Path] = None,
-    car_index: int = 0,
+    car_index: Optional[int] = None,
 ) -> Dict[str, Any]:
     from vre_rpy.stream_catalog import catalog_json
     from vre_rpy.processor import (
@@ -85,6 +85,10 @@ def build_pack(
     )
 
     ex = extract_rpy(rpy_path)
+    if car_index is None:
+        from vre_rpy.processor import player_car_index
+
+        car_index = player_car_index(ex)
     meta = extract_to_dict(ex, include_raw=False)
     file_meta = parse_rpy_metadata(rpy_path)
     laps = extract_lap_times_ms(rpy_path.read_bytes())
@@ -187,12 +191,12 @@ def build_pack(
 
     # arr_30 throttle / brake / speed (file_go)
     try:
-        from .arr30_decode import decode_arr30, find_arr, series_json
+        from .arr30_decode import decode_arr30, find_arr, series_json, tyre_radii
 
         a30 = find_arr(ex, 0x30, car_index)
         a48 = find_arr(ex, 0x48, car_index)
         if a30 is not None:
-            decoded = decode_arr30(a30, a48)
+            decoded = decode_arr30(a30, a48, wheel_radius_m=tyre_radii(ex, car_index))
             pedals = {
                 "id": "arr30_inputs",
                 "status": "file_go",

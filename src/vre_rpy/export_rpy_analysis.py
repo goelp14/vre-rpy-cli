@@ -48,7 +48,7 @@ def _slug(s: str) -> str:
 def run(
     specs: List[Tuple[Path, str]],
     out_dir: Path,
-    car_index: int = 0,
+    car_index: Optional[int] = None,
     electronics: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     from vre_rpy.arr30_decode import decode_rpy_inputs
@@ -81,6 +81,7 @@ def run(
     track_grip_used: Optional[float] = None
 
     from vre_rpy.pose_track import (
+        best_segment_index,
         decode_rpy_pose_track,
         line_polyline,
         series_json as pose_series_json,
@@ -215,7 +216,7 @@ def run(
         )
         (pose_dir / f"{slug}_line.json").write_text(
             json.dumps(
-                {"label": slug, **line_polyline(pose_dec, lap_index=0, stride=3)},
+                {"label": slug, **line_polyline(pose_dec, lap_index=best_segment_index(pose_dec) or 0, stride=3)},
                 indent=2,
             ),
             encoding="utf-8",

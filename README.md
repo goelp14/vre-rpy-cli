@@ -68,6 +68,29 @@ echo '{"TC1":7,"TC2":5,"ABS":2,"EngineMap":1}' > elec.json
 vre-rpy export --rpy session.rpy:Me --electronics elec.json --out-dir ./out
 ```
 
+### Frame-by-frame lap data
+
+```bash
+vre-rpy frames \
+  --rpy /path/to/my_lap.rpy:Me \
+  --rpy /path/to/reference.rpy:Ref \
+  --out-dir ./frames --laps all        # or: best | 3,7,12
+```
+
+Writes `frames/<Label>/lap_NN.json` (one frame per recorded car position, 14–30 Hz depending on
+replay quality) and `frames/index.json`. Each frame has distance along the track's AI line, car
+position and elevation, body yaw, slip angle, how far the wheels are from each track edge, and the
+driver inputs (speed, throttle, brake, steering, gear, rpm, G incl. vertical) synced onto the frame.
+
+- **Any car, any track.** Car and track come from ids stored inside the replay, not the filename.
+- **Race replays:** every car in the session is in the file. The default is your car; pick another
+  with `--car-index` (`index.json` lists drivers). Other cars have position and inputs but no
+  per-wheel tyre data.
+- **Sync is fitted, not assumed**, and every lap reports `sync.lap_r` / `sync.lap_sync_go`. Laps that
+  fail the check keep positions but should not be used for input-level comparison.
+- Distances and track edges need your ACC install's `Content/Cache/<track>/fastlane.ai`
+  (found automatically on a default Steam install; else set `VRE_ACC_CACHE`).
+
 ## What you get
 
 | Path | Purpose |
@@ -139,6 +162,16 @@ Beyond raw inputs (throttle, brake, steer, speed, G, wheels, temps, slip, …), 
 ## Track configs
 
 Named corners for ACC circuits live in `src/vre_rpy/track_pack/*.json`. Add or edit a JSON to improve labels for a venue — the next export patches that track’s `.mt2` section names automatically (same-length renames only).
+
+## Development
+
+```bash
+python -m pip install -e ".[dev]"
+python -m pytest tests -q
+```
+
+Tests that need real replays skip unless `VRE_RPY_FIXTURES` points at local folders
+(`os.pathsep`-separated) holding them. Replays are never committed.
 
 ## License
 

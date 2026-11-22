@@ -58,7 +58,7 @@ def check_lap_times(
     rpy_path: Path,
     ldx_path: Path,
     *,
-    car_index: int = 0,
+    car_index: Optional[int] = None,
 ) -> Dict[str, Any]:
     from vre_rpy.lap_validity import (
         best_valid_flying_time_s,

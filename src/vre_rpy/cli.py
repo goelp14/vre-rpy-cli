@@ -74,6 +74,37 @@ def cmd_verify(args: argparse.Namespace) -> int:
     return 0 if report.get("ok") else 1
 
 
+def cmd_frames(args: argparse.Namespace) -> int:
+    from vre_rpy.replay_frames import write_frames
+
+    specs = [_parse_rpy_arg(s) for s in args.rpy]
+    laps: Any = args.laps
+    if laps not in ("all", "best"):
+        laps = [int(x) for x in str(laps).split(",") if x.strip()]
+    index = write_frames(specs, args.out_dir, laps=laps, cache_dir=args.acc_cache)
+    print(
+        json.dumps(
+            {
+                "out_dir": str(args.out_dir),
+                "drivers": [
+                    {
+                        "label": d["label"],
+                        "track": d["identity"].get("track"),
+                        "car": d["identity"].get("car"),
+                        "sync": d["sync"],
+                        "best_lap_index": d["best_lap_index"],
+                        "written": len([w for w in d["written"] if "file" in w]),
+                    }
+                    for d in index["drivers"]
+                ],
+            },
+            indent=2,
+            default=float,
+        )
+    )
+    return 0
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(
         prog="vre-rpy",
@@ -89,7 +120,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     ex = sub.add_parser("export", help="Export .rpy → Motec workspace + AI pack")
     ex.add_argument("--rpy", action="append", required=True, help="PATH or PATH:Label")
     ex.add_argument("--out-dir", type=Path, required=True)
-    ex.add_argument("--car-index", type=int, default=0)
+    ex.add_argument("--car-index", type=int, default=None, help="car in a race replay (default: your car)")
     ex.add_argument("--electronics", type=Path, default=None)
     ex.set_defaults(func=cmd_export)
 
@@ -109,10 +140,20 @@ def main(argv: Optional[List[str]] = None) -> int:
     vf.add_argument("--mt2-source", type=Path, default=None)
     vf.set_defaults(func=cmd_verify)
 
+    fr = sub.add_parser(
+        "frames",
+        help="Full-rate per-lap frames (position, wheels, synced inputs) for frame-by-frame review",
+    )
+    fr.add_argument("--rpy", action="append", required=True, help="PATH or PATH:Label")
+    fr.add_argument("--out-dir", type=Path, required=True)
+    fr.add_argument("--laps", default="all", help="all | best | comma-separated lap indices")
+    fr.add_argument("--acc-cache", type=Path, default=None, help="ACC Content/Cache (or env VRE_ACC_CACHE)")
+    fr.set_defaults(func=cmd_frames)
+
     # Back-compat: `vre-rpy --rpy X --out-dir Y` (no subcommand)
     if argv is None:
         argv = sys.argv[1:]
-    if argv and argv[0] not in ("export", "verify", "-h", "--help") and argv[0].startswith("-"):
+    if argv and argv[0] not in ("export", "verify", "frames", "-h", "--help") and argv[0].startswith("-"):
         argv = ["export", *argv]
 
     args = ap.parse_args(argv)

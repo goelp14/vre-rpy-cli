@@ -355,6 +355,7 @@ def _fdcc00_modern_tail(r: _R, ver: int, flag: int, name_prefix: str) -> List[Ar
 def _read_car_records(r: _R, ver: int) -> Tuple[List[CarRecord], int, str]:
     """Detect SP (no count) vs MP (u16 count) car payload."""
     mark = r.pos
+    sp_err: Exception = RuntimeError("single-car parse not attempted")
     # Try SP: immediate car record
     try:
         car = _read_car_record(r, ver, 0)
@@ -373,7 +374,8 @@ def _read_car_records(r: _R, ver: int) -> Tuple[List[CarRecord], int, str]:
                 r.pos = cmark
                 break
         return cars, len(cars), f"car_mode=single+extra n={len(cars)} start=0x{mark:x}"
-    except Exception as sp_err:
+    except Exception as exc:
+        sp_err = exc
         r.pos = mark
 
     # Try MP: u16 count then N records
@@ -388,9 +390,9 @@ def _read_car_records(r: _R, ver: int) -> Tuple[List[CarRecord], int, str]:
         for i in range(count):
             cars.append(_read_car_record(r, ver, i))
         return cars, count, f"car_mode=counted n={count} start=0x{mark:x}"
-    except Exception as mp_err:
+    except Exception as exc:
         r.pos = mark
-        return [], 0, f"car_mode=fail SP={sp_err!r} MP={mp_err!r}"
+        return [], 0, f"car_mode=fail SP={sp_err!r} MP={exc!r}"
 
 
 def _read_car_record(r: _R, ver: int, index: int) -> CarRecord:
@@ -533,6 +535,49 @@ def _drain_fdcc00_until_magic(
     return arrays
 
 
+def car_snapshots(ex: "RpyExtract") -> List[SnapshotEntry]:
+    """One snapshot per car, in file order. Race replays store every car as a snapshot of one record."""
+    return [sn for rec in (ex.car_records or []) for sn in rec.snapshots]
+
+
+def player_car_index(ex: "RpyExtract") -> int:
+    """Index (into ``car_snapshots``) of the recording driver's car: the one with per-wheel data."""
+    snaps = car_snapshots(ex)
+    for i, sn in enumerate(snaps):
+        if any(a.stride == 0x48 and a.count > 0 for a in sn.arrays):
+            return i
+    return 0
+
+
+def snapshot_arrays(ex: "RpyExtract", car_index: Optional[int] = None) -> Optional[List[ArrayBlob]]:
+    snaps = car_snapshots(ex)
+    if not snaps:
+        return None
+    i = player_car_index(ex) if car_index is None else int(car_index)
+    if i < 0 or i >= len(snaps):
+        return None
+    return snaps[i].arrays
+
+
+def list_cars(ex: "RpyExtract") -> List[Dict[str, Any]]:
+    """Cars in the replay with driver names (from carInfo) and what data each has."""
+    names = {c.car_key: [d.strings[0] for d in c.drivers if d.strings] for c in (ex.cars_info or [])}
+    player = player_car_index(ex)
+    out = []
+    for i, sn in enumerate(car_snapshots(ex)):
+        cnt = {a.stride: a.count for a in sn.arrays if a.stride in (0x68, 0x30, 0x48, 0x18)}
+        out.append({
+            "car_index": i,
+            "car_key": sn.snap_id,
+            "drivers": names.get(sn.snap_id, []),
+            "is_player": i == player,
+            "pose_frames": cnt.get(0x68, 0),
+            "input_records": cnt.get(0x30, 0),
+            "has_wheel_data": cnt.get(0x48, 0) > 0,
+        })
+    return out
+
+
 def extract_rpy(path: str | Path) -> RpyExtract:
     path = Path(path)
     data = path.read_bytes()
@@ -611,7 +656,11 @@ def extract_rpy(path: str | Path) -> RpyExtract:
     opaque.append(r.opaque_bytes("sess_blob_98"))
     opaque.append(r.opaque_bytes("sess_blob_b2"))
     if version > 9:
-        opaque.append(r.opaque_bytes("sess_blob_3a"))
+        # Single-player saves have one more blob (per-lap records) before the leaderboard magic;
+        # multiplayer saves can reach the magic directly. A blob length of 123 is
+        # indistinguishable from the magic (0x7B), so prefer the magic when it is at the cursor.
+        if struct.unpack_from("<I", r.data, r.pos)[0] != SECTION_MAGIC:
+            opaque.append(r.opaque_bytes("sess_blob_3a"))
         r.section_magic("leaderboard")
     if version > 7:
         opaque.append(r.opaque_bytes("sess_blob_bc"))
@@ -738,7 +787,7 @@ def extract_to_dict(ex: RpyExtract, include_raw: bool = False) -> Dict[str, Any]
     return base
 
 
-def iter_pose_samples(ex: RpyExtract, car_index: int = 0) -> List[Dict[str, float]]:
+def iter_pose_samples(ex: RpyExtract, car_index: Optional[int] = None) -> List[Dict[str, float]]:
     """Decode primary 0x68-stride pose stream (world x/y/z + secondary copy).
 
     Layout hypothesis (Spa/Monza/Imola v25, not yet MoTeC-locked for GO):
@@ -747,12 +796,10 @@ def iter_pose_samples(ex: RpyExtract, car_index: int = 0) -> List[Dict[str, floa
       f32[4] ≈ stable scalar (~heading-related constant on Spa)
       f32[15] (off 60) ≈ elevation-like span on Spa
     """
-    if car_index >= len(ex.car_records):
+    arrays = snapshot_arrays(ex, car_index)
+    if not arrays:
         return []
-    car = ex.car_records[car_index]
-    if not car.snapshots:
-        return []
-    pose = next((a for a in car.snapshots[0].arrays if a.stride == 0x68), None)
+    pose = next((a for a in arrays if a.stride == 0x68), None)
     if pose is None or pose.count == 0:
         return []
     out: List[Dict[str, float]] = []
@@ -774,7 +821,7 @@ def iter_pose_samples(ex: RpyExtract, car_index: int = 0) -> List[Dict[str, floa
     return out
 
 
-def write_pose_csv(ex: RpyExtract, path: Path, car_index: int = 0, stride: int = 1) -> int:
+def write_pose_csv(ex: RpyExtract, path: Path, car_index: Optional[int] = None, stride: int = 1) -> int:
     import csv
 
     samples = iter_pose_samples(ex, car_index)

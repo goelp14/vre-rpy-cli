@@ -34,6 +34,18 @@ _SYNTHETIC_HALF_W = 7.5
 
 
 def default_cache_dir() -> Path:
+    """ACC ``Content/Cache`` (per-track fastlane.ai). Override with env ``VRE_ACC_CACHE``."""
+    import os
+
+    env = os.environ.get("VRE_ACC_CACHE")
+    if env:
+        return Path(env)
+    for cand in (
+        _DEFAULT_ACC_CACHE,
+        Path("C:/Program Files (x86)/Steam/steamapps/common/Assetto Corsa Competizione/AC2/Content/Cache"),
+    ):
+        if cand.is_dir():
+            return cand
     return _DEFAULT_ACC_CACHE
 
 
@@ -54,7 +66,7 @@ def resolve_fastlane(
         "imola": "imola",
         "imola_acc": "imola",
     }
-    folder = aliases.get(key, key)
+    folder = aliases.get(key, key[:-4] if key.endswith("_acc") else key)
     path = cache / folder / "fastlane.ai"
     if not path.is_file():
         raise FileNotFoundError(path)
@@ -88,7 +100,7 @@ def parse_acc_fastlane(path: Path | str) -> Dict[str, Any]:
         left_limit, right_limit = _limits_from_widths(pts, left_w, right_w)
         limit_note = (
             f"official ACC side widths from fastlane.ai sec2 "
-            f"(S={_SIDE_FLOATS} f32; {side_meta})"
+            f"(S={_SIDE_FLOATS} f32; variant={side_meta.get('variant')}, rows={side_meta.get('count')})"
         )
         limits_official = True
         ideal_speed = side_meta.get("ideal_speed")

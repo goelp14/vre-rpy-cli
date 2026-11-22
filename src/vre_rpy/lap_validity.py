@@ -33,14 +33,14 @@ _FLYING_MIN_MS = 60_000
 _FLYING_MAX_MS = 600_000
 
 
-def find_lap_timer_array(ex, car_index: int = 0):
+def find_lap_timer_array(ex, car_index: Optional[int] = None):
     """Return the stride-24 lap-timer ArrayBlob (largest) for a car, or None."""
-    if not ex.car_records or car_index >= len(ex.car_records):
+    from .processor import snapshot_arrays
+
+    arrays = snapshot_arrays(ex, car_index)
+    if arrays is None:
         return None
-    snaps = ex.car_records[car_index].snapshots
-    if not snaps:
-        return None
-    cands = [a for a in snaps[0].arrays if a.stride == 24 and a.count >= 100]
+    cands = [a for a in arrays if a.stride == 24 and a.count >= 100]
     return max(cands, key=lambda a: a.count) if cands else None
 
 
@@ -98,7 +98,9 @@ def decode_lap_validity(data: bytes) -> List[Dict[str, Any]]:
         marker_ms: Optional[int] = None
         if len(after) and (after[0] - end_rec) <= 16:
             marker_ms = int(t[after[0]])
-        completed = marker_ms is not None
+        # Older replays carry no lap-complete marker records: then a lap counts as completed
+        # when another lap follows it.
+        completed = marker_ms is not None if len(marker_idx) else lap_index + 1 < len(runs)
         lap_ms = end_ms  # last in-lap clock sample (Motec-locked, Δ≤7 ms)
         f = flag[run]
         bad = np.nonzero(f == 0)[0]
@@ -120,12 +122,14 @@ def decode_lap_validity(data: bytes) -> List[Dict[str, Any]]:
                 "invalid_at_session_s": invalid_time_s,
                 "session_start_s": float(ts[run[0]]),
                 "session_end_s": float(ts[end_rec]),
+                # exact S/F crossing: first record's session time minus its own lap clock
+                "sf_time_s": float(ts[run[0]] - t[run[0]] / 1000.0),
             }
         )
     return laps
 
 
-def decode_rpy_lap_validity(path: str | Path, car_index: int = 0) -> Dict[str, Any]:
+def decode_rpy_lap_validity(path: str | Path, car_index: Optional[int] = None) -> Dict[str, Any]:
     from .processor import extract_rpy
 
     ex = extract_rpy(path)
@@ -376,19 +380,45 @@ def order_drivers_main_ref(
     }
 
 
+def decode_predicted_lap(data: bytes) -> Dict[str, np.ndarray]:
+    """ACC's live predicted lap time (ms) per lap-timer record; NaN where the game has none."""
+    c = _columns(data)
+    ref = c["ref_ms"].astype(np.float64)
+    ref[(c["ref_ms"] == _NO_REF) | (c["ref_ms"] == 0)] = np.nan
+    return {"time_s": c["time_s"], "lap_ms": c["lap_ms"], "predicted_ms": ref}
+
+
 def attach_validity_to_segments(
     segments: Sequence[Dict[str, Any]],
     laps: Sequence[Dict[str, Any]],
     *,
     tol: float = 0.03,
+    pose_time_s: Optional[np.ndarray] = None,
+    max_dt_s: float = 1.0,
 ) -> List[Dict[str, Any]]:
     """Fill ``valid_flag`` on pose spline-wrap segments from timer laps.
 
-    Pose and lap-timer clocks are matched in order by lap duration (pose
-    samples per ms is constant); unmatched segments keep ``valid_flag=None``.
+    With ``pose_time_s`` (from ``frame_clock.fit_pose_clock``) each segment is matched to the
+    lap whose S/F crossing is within ``max_dt_s`` of the segment start — robust when a replay
+    starts mid-lap. Without it, falls back to in-order duration matching (can drift by a lap).
     """
-    flying = [l for l in laps if l.get("flying_candidate")]
     segs = [dict(s) for s in segments]
+    if pose_time_s is not None and segs and laps:
+        sf = np.array([l.get("sf_time_s", l["session_start_s"]) for l in laps], dtype=np.float64)
+        for s in segs:
+            t0 = float(pose_time_s[s["i0"]])
+            j = int(np.argmin(np.abs(sf - t0)))
+            if abs(sf[j] - t0) > max_dt_s:
+                continue
+            lap = laps[j]
+            s["lap_index"] = lap["lap_index"]
+            s["valid_flag"] = lap["valid"]
+            s["lap_ms"] = lap["lap_ms"]
+            s["completed"] = lap.get("completed")
+            s["invalid_at_lap_ms"] = lap["invalid_at_lap_ms"]
+            s["status"] = "timer_matched_time"
+        return segs
+    flying = [l for l in laps if l.get("flying_candidate")]
     if not segs or not flying:
         return segs
     rate = float(np.median([s["n_samples"] for s in segs])) / float(

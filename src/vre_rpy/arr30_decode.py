@@ -8,7 +8,9 @@ import numpy as np
 
 from .processor import ArrayBlob, extract_rpy
 
-# Fitted: Motec WHEEL_SPEED_m/s ≈ f16(angular) * radius
+# Fallback only: per-car tyre radii come from the snapshot header (``tyre_radii``).
+# MoTeC WHEEL_SPEED matches the header radii within ~0.8 % (296: 0.34 F / 0.3525 R);
+# this single fitted value under-reads rear wheel speed by ~5 % on that car.
 WHEEL_RADIUS_M = 0.337
 
 CORNERS = ("LF", "RF", "LR", "RR")
@@ -18,15 +20,30 @@ def _arr_payload(blob: ArrayBlob) -> bytes:
     return blob.data
 
 
-def find_arr(ex, stride: int, car_index: int = 0) -> Optional[ArrayBlob]:
-    if not ex.car_records or car_index >= len(ex.car_records):
+def find_arr(ex, stride: int, car_index: Optional[int] = None) -> Optional[ArrayBlob]:
+    from .processor import snapshot_arrays
+
+    arrays = snapshot_arrays(ex, car_index)
+    if arrays is None:
         return None
-    snaps = ex.car_records[car_index].snapshots
-    if not snaps:
-        return None
-    for a in snaps[0].arrays:
+    for a in arrays:
         if a.stride == stride and a.count > 0:
             return a
+    return None
+
+
+def tyre_radii(ex, car_index: Optional[int] = None) -> Optional[Dict[str, float]]:
+    """Per-wheel tyre radius (m) from the 16-byte snapshot header: f32 [LF, RF, LR, RR]."""
+    from .processor import snapshot_arrays
+
+    arrays = snapshot_arrays(ex, car_index)
+    if arrays is None:
+        return None
+    for a in arrays:
+        if a.stride == 16 and a.count == 1 and len(a.data) >= 16:
+            vals = np.frombuffer(a.data[:16], dtype="<f4").astype(np.float64)
+            if np.all((vals > 0.2) & (vals < 0.6)):
+                return {c: float(v) for c, v in zip(CORNERS, vals)}
     return None
 
 
@@ -41,6 +58,8 @@ def _u16(rec: np.ndarray, offset: int) -> np.ndarray:
 def decode_arr30(
     arr30: ArrayBlob,
     arr48: Optional[ArrayBlob] = None,
+    *,
+    wheel_radius_m: Optional[Dict[str, float]] = None,
 ) -> Dict[str, Any]:
     """Decode all Motec-locked / code-backed lanes from arr_30 (+ arr_48)."""
     raw = _arr_payload(arr30)
@@ -60,10 +79,24 @@ def decode_arr30(
     u108 = rec[:, 32:36].view("<u4").ravel()
     gear = np.maximum(((u108 >> 5) & 0xF).astype(np.int16) - 1, 0).astype(np.float64)
 
-    wheel_angular = {_c: _f16(rec, off) for _c, off in zip(CORNERS, (6, 8, 10, 12))}
-    wheel_speed_ms = {c: wheel_angular[c] * WHEEL_RADIUS_M for c in CORNERS}
+    # World velocity vector (m/s, Y up): |v| matches speed_kmh/3.6 at r > 0.99999.
+    vel_x = _f16(rec, 16)
+    vel_y = _f16(rec, 18)
+    vel_z = _f16(rec, 20)
+    # Vertical acceleration (g, deviation from 1 g; Y component of the G vector).
+    g_vert = _f16(rec, 26)
+    # Drivetrain-side speed (units unconfirmed; ~0.8x km/h under power) — hypothesis name.
+    drivetrain_speed = _f16(rec, 22)
+    flag_bit0 = (u108 & 1).astype(np.float64)
+    flag_bits1_4 = ((u108 >> 1) & 0xF).astype(np.float64)
 
-    time_s: Optional[np.ndarray] = None
+    radii = dict(wheel_radius_m) if wheel_radius_m else {c: WHEEL_RADIUS_M for c in CORNERS}
+    wheel_angular = {_c: _f16(rec, off) for _c, off in zip(CORNERS, (6, 8, 10, 12))}
+    wheel_speed_ms = {c: wheel_angular[c] * radii.get(c, WHEEL_RADIUS_M) for c in CORNERS}
+
+    # Every input record carries its own session timestamp (f64 at +40); the per-wheel stream
+    # (player car only) repeats it at +0x40. Other cars in race replays have only this one.
+    time_s: Optional[np.ndarray] = rec[:, 40:48].copy().view("<f8").ravel().astype(np.float64)
     nd_slip: Dict[str, np.ndarray] = {}
     tyre_load: Dict[str, np.ndarray] = {}
     slip_ratio: Dict[str, np.ndarray] = {}
@@ -108,7 +141,11 @@ def decode_arr30(
         "g_lat": "arr_30[+24] f16 ← physics+0x48c",
         "g_lon": "arr_30[+28] f16 ← physics+0x494",
         "wheel_angular": "arr_30[+6/+8/+10/+12] f16 ← physics+0x260..0x26c",
-        "wheel_speed_ms": f"wheel_angular * {WHEEL_RADIUS_M} (Motec-fitted radius)",
+        "wheel_speed_ms": "wheel_angular * tyre radius (snapshot header; fallback %.3f m)" % WHEEL_RADIUS_M,
+        "vel_xyz": "arr_30[+16/+18/+20] f16 world velocity m/s (Y up)",
+        "g_vert": "arr_30[+26] f16 vertical g (deviation)",
+        "drivetrain_speed": "arr_30[+22] f16 drivetrain-side speed (hypothesis name, units TBD)",
+        "flags": "arr_30[+32] bit0, bits1-4 (meaning unknown)",
         "nd_slip": "arr_48[+0/+2/+4/+6] f16 ← physics+0x2c4+i*4 (FMOD nd_slip)",
         "tyre_load": "arr_48[+8/+10/+12/+14] f16 ← physics+0x2e4+i*4",
         "slip_ratio": "arr_48[+16/+18/+20/+22] f16 ← physics+0x2b4+i*4",
@@ -119,7 +156,7 @@ def decode_arr30(
         "phys_500": "arr_48[+38/+40/+42/+44] f16 ← physics+0x500+i*4 (SUS-related)",
         "wheel_dirt": "arr_48[+46..+49] u8/255 ← physics+0x324+i*4",
         "disc_temp": "arr_48[+50/+52/+54/+56] f16 ← physics+0x6c0+i*4",
-        "time_s": "arr_48[+0x40] f64",
+        "time_s": "arr_30[+40] f64 (= arr_48[+0x40] when present)",
         "packer": "internal",
         "not_in_packer": "tyre_press (state +0x5e4), tyre_tair (+0x5dc), SUS mm (+0x530), tc/abs InAction (+0x8f8/9)",
     }
@@ -134,6 +171,14 @@ def decode_arr30(
         "rpm": rpm,
         "g_lat": g_lat,
         "g_lon": g_lon,
+        "vel_x": vel_x,
+        "vel_y": vel_y,
+        "vel_z": vel_z,
+        "g_vert": g_vert,
+        "drivetrain_speed": drivetrain_speed,
+        "flag_bit0": flag_bit0,
+        "flag_bits1_4": flag_bits1_4,
+        "wheel_radius_m": radii,
         "wheel_angular": wheel_angular,
         "wheel_speed_ms": wheel_speed_ms,
         "nd_slip": nd_slip,
@@ -152,13 +197,13 @@ def decode_arr30(
     return out
 
 
-def decode_rpy_inputs(path, car_index: int = 0) -> Dict[str, Any]:
+def decode_rpy_inputs(path, car_index: Optional[int] = None) -> Dict[str, Any]:
     ex = extract_rpy(path)
     a30 = find_arr(ex, 0x30, car_index)
     a48 = find_arr(ex, 0x48, car_index)
     if a30 is None:
         raise ValueError("no arr_30 in snapshot")
-    return decode_arr30(a30, a48)
+    return decode_arr30(a30, a48, wheel_radius_m=tyre_radii(ex, car_index))
 
 
 def _take_arr(arr: Optional[np.ndarray], idx: np.ndarray) -> List[float]:
@@ -191,6 +236,10 @@ def series_json(decoded: Dict[str, Any], *, max_samples: int = 0) -> Dict[str, A
         "rpm": _take_arr(decoded["rpm"], idx),
         "g_lat": _take_arr(decoded["g_lat"], idx),
         "g_lon": _take_arr(decoded["g_lon"], idx),
+        "vel_x": _take_arr(decoded.get("vel_x"), idx),
+        "vel_y": _take_arr(decoded.get("vel_y"), idx),
+        "vel_z": _take_arr(decoded.get("vel_z"), idx),
+        "g_vert": _take_arr(decoded.get("g_vert"), idx),
         "wheel_angular": _take_corner(decoded.get("wheel_angular") or {}, idx),
         "wheel_speed_ms": _take_corner(decoded.get("wheel_speed_ms") or {}, idx),
         "nd_slip": _take_corner(decoded.get("nd_slip") or {}, idx),
@@ -220,6 +269,9 @@ def flat_channel_map(decoded: Dict[str, Any]) -> Dict[str, np.ndarray]:
         "G_LAT": np.asarray(decoded["g_lat"]),
         "G_LON": np.asarray(decoded["g_lon"]),
     }
+    for key, name in (("g_vert", "G_VERT"), ("vel_x", "VEL_X"), ("vel_y", "VEL_Y"), ("vel_z", "VEL_Z")):
+        if decoded.get(key) is not None:
+            out[name] = np.asarray(decoded[key])
     if decoded.get("time_s") is not None:
         out["TIME"] = np.asarray(decoded["time_s"])
     for c in CORNERS:

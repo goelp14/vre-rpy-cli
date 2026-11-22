@@ -20,17 +20,18 @@ import numpy as np
 
 from .processor import ArrayBlob, extract_rpy
 
-_REPO = Path(__file__).resolve().parents[3]
-_TRACK_CFG = _REPO / "ac_app" / "config" / "tracks"
+_PACK = Path(__file__).resolve().parent / "track_pack"
+# Legacy location when vendored inside assetto-corsa-mechanic (external/query_tools/acc_rpy).
+_TRACK_CFG = Path(__file__).resolve().parents[3] / "ac_app" / "config" / "tracks"
 
 
-def find_pose(ex, car_index: int = 0) -> Optional[ArrayBlob]:
-    if not ex.car_records or car_index >= len(ex.car_records):
+def find_pose(ex, car_index: Optional[int] = None) -> Optional[ArrayBlob]:
+    from .processor import snapshot_arrays
+
+    arrays = snapshot_arrays(ex, car_index)
+    if arrays is None:
         return None
-    snaps = ex.car_records[car_index].snapshots
-    if not snaps:
-        return None
-    for a in snaps[0].arrays:
+    for a in arrays:
         if a.stride == 0x68 and a.count > 0:
             return a
     return None
@@ -38,14 +39,12 @@ def find_pose(ex, car_index: int = 0) -> Optional[ArrayBlob]:
 
 def load_track_config(track_id: str) -> Dict[str, Any]:
     key = track_id.strip().lower()
-    candidates = [
-        _TRACK_CFG / f"{key}.json",
-        _TRACK_CFG / f"{key}_acc.json",
-        _TRACK_CFG / "spa_acc.json" if "spa" in key else None,
-        _TRACK_CFG / "monza_acc.json" if "monza" in key else None,
-    ]
+    base = key[:-4] if key.endswith("_acc") else key
+    candidates = []
+    for d in (_PACK, _TRACK_CFG):
+        candidates += [d / f"{base}_acc.json", d / f"{key}.json", d / f"{base}.json"]
     for c in candidates:
-        if c and c.is_file():
+        if c.is_file():
             return json.loads(c.read_text(encoding="utf-8"))
     return {
         "track_id": key,
@@ -63,6 +62,11 @@ def decode_pose_track(
 ) -> Dict[str, Any]:
     n = pose.count
     rec = np.frombuffer(pose.data[: n * 0x68], dtype=np.float32).reshape(n, 26)
+    # Wheel contact points, world XYZ: front +side, front -side, rear +side, rear -side.
+    wheels = np.stack([rec[:, a : a + 3] for a in (5, 8, 11, 14)], axis=1).astype(np.float64)
+    fwd = wheels[:, 0:2, :].mean(axis=1) - wheels[:, 2:4, :].mean(axis=1)
+    # Body yaw from the wheel axis (independent of motion; differs from course by the slip angle).
+    yaw_deg = np.degrees(np.arctan2(fwd[:, 0], fwd[:, 2]))
     x = rec[:, 0].astype(np.float64)
     y = rec[:, 1].astype(np.float64)
     z = rec[:, 2].astype(np.float64)
@@ -114,12 +118,16 @@ def decode_pose_track(
         "spline": spline,
         "dist_m": dist_m,
         "heading_deg": heading_deg,
+        "yaw_deg": yaw_deg,
+        "wheels": wheels,
         "lap_segments": lap_segments,
         "corner_id": corner_id,
         "layout": {
             "position": "rec_68 f32[0:3] world XYZ (Y up)",
             "spline": "rec_68 f32[23] normalized 0..1 (lap wraps)",
-            "heading_deg": "derived atan2(dx,dz) from pose deltas",
+            "heading_deg": "derived atan2(dx,dz) from pose deltas (course)",
+            "yaw_deg": "body yaw from wheel axis rec_68 f32[5:17] (front mid - rear mid)",
+            "wheels": "rec_68 f32[5:17] wheel contact XYZ: front +side, front -side, rear +side, rear -side",
             "dist_m": f"spline * track_length_m ({track_length_m})",
             "valid_lap": "file_go_empirical — arr24[+8] u8 via lap_validity (segments matched by lap duration)",
         },
@@ -130,7 +138,7 @@ def decode_rpy_pose_track(
     path,
     *,
     track_id: Optional[str] = None,
-    car_index: int = 0,
+    car_index: Optional[int] = None,
 ) -> Dict[str, Any]:
     from .parse_rpy import parse_rpy_metadata
 
@@ -157,10 +165,29 @@ def decode_rpy_pose_track(
 
         arr24 = find_lap_timer_array(ex, car_index)
         if arr24 is not None:
+            from .frame_clock import fit_pose_clock
+
             timer_laps = decode_lap_validity(arr24.data)
             decoded["timer_laps"] = timer_laps
+            span = None
+            from .processor import player_car_index, snapshot_arrays
+
+            # clock span from the player's per-wheel stream, or this car's own input timestamps
+            a48 = next((a for a in (snapshot_arrays(ex, player_car_index(ex)) or []) if a.stride == 0x48 and a.count), None)
+            if a48 is not None:
+                tt = np.frombuffer(a48.data[: a48.count * 0x48], dtype=np.uint8).reshape(a48.count, 0x48)
+                tt = tt[:, 0x40:0x48].copy().view("<f8").ravel()
+                span = (float(tt[0]), float(tt[-1]))
+            pose_time = None
+            try:
+                clock = fit_pose_clock(decoded["spline"], timer_laps, span_s=span)
+                pose_time = clock["t"]
+                decoded["time_s"] = pose_time
+                decoded["clock"] = {k: v for k, v in clock.items() if k != "t"}
+            except ValueError as exc:
+                decoded["clock_error"] = str(exc)
             decoded["lap_segments"] = attach_validity_to_segments(
-                decoded["lap_segments"], timer_laps
+                decoded["lap_segments"], timer_laps, pose_time_s=pose_time
             )
     except Exception as exc:  # validity is additive; never break pose export
         decoded["timer_laps_error"] = str(exc)
@@ -198,11 +225,25 @@ def series_json(
         "spline": take("spline"),
         "dist_m": take("dist_m"),
         "heading_deg": take("heading_deg"),
+        "yaw_deg": take("yaw_deg") if "yaw_deg" in decoded else [],
+        "time_s": take("time_s") if decoded.get("time_s") is not None else [],
+        "clock": decoded.get("clock"),
         "corner_id": [str(decoded["corner_id"][i]) for i in idx],
         "lap_segments": decoded.get("lap_segments"),
         "layout": decoded.get("layout"),
         "track_config": decoded.get("track_config"),
     }
+
+
+def best_segment_index(decoded: Dict[str, Any]) -> Optional[int]:
+    """Index into ``lap_segments`` of the fastest valid completed lap (None if unknown)."""
+    segs = decoded.get("lap_segments") or []
+    good = [
+        (s["lap_ms"], i)
+        for i, s in enumerate(segs)
+        if s.get("valid_flag") is True and s.get("lap_ms") and s.get("completed", True)
+    ]
+    return min(good)[1] if good else None
 
 
 def line_polyline(
