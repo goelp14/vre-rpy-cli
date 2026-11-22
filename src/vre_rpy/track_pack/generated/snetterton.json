@@ -5,6 +5,7 @@
  "elevation_range_m": 5.8,
  "corners": [
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.0603,
    "spline_end": 0.1169,
@@ -20,6 +21,7 @@
    "display_name": "T1"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.1553,
    "spline_end": 0.1861,
@@ -35,6 +37,7 @@
    "display_name": "T2"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.2186,
    "spline_end": 0.268,
@@ -52,6 +55,7 @@
    "name_source": "curated (approximate position)"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.341,
    "spline_end": 0.3722,
@@ -67,6 +71,7 @@
    "display_name": "T4"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.406,
    "spline_end": 0.4372,
@@ -84,6 +89,7 @@
    "name_source": "curated (approximate position)"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.4562,
    "spline_end": 0.4942,
@@ -99,6 +105,7 @@
    "display_name": "T6"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.5034,
    "spline_end": 0.5431,
@@ -114,6 +121,7 @@
    "display_name": "T7"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.6887,
    "spline_end": 0.7174,
@@ -129,6 +137,7 @@
    "display_name": "T8"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.7182,
    "spline_end": 0.7372,
@@ -144,6 +153,7 @@
    "display_name": "T9"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.7562,
    "spline_end": 0.7955,
@@ -161,6 +171,7 @@
    "name_source": "curated (approximate position)"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.809,
    "spline_end": 0.8904,
@@ -176,6 +187,7 @@
    "display_name": "T11"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.8913,
    "spline_end": 0.9115,

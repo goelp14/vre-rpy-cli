@@ -5,6 +5,7 @@
  "elevation_range_m": 30.0,
  "corners": [
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.1711,
    "spline_end": 0.1968,
@@ -22,6 +23,7 @@
    "name_source": "curated (approximate position)"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.1977,
    "spline_end": 0.2212,
@@ -37,6 +39,7 @@
    "display_name": "T2"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.226,
    "spline_end": 0.3151,
@@ -52,6 +55,7 @@
    "display_name": "T3"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.3587,
    "spline_end": 0.4281,
@@ -67,6 +71,7 @@
    "display_name": "T4"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.446,
    "spline_end": 0.4826,
@@ -82,6 +87,7 @@
    "display_name": "T5"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.5245,
    "spline_end": 0.5677,
@@ -97,6 +103,7 @@
    "display_name": "T6"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.5686,
    "spline_end": 0.5896,
@@ -114,6 +121,7 @@
    "name_source": "curated (approximate position)"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.6118,
    "spline_end": 0.6555,
@@ -129,6 +137,7 @@
    "display_name": "T8"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.7445,
    "spline_end": 0.7925,
@@ -146,6 +155,7 @@
    "name_source": "curated (approximate position)"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.7951,
    "spline_end": 0.8405,
@@ -161,6 +171,7 @@
    "display_name": "T10"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.854,
    "spline_end": 0.8819,
@@ -178,6 +189,7 @@
    "name_source": "curated (approximate position)"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.8863,
    "spline_end": 0.9151,
@@ -193,6 +205,7 @@
    "display_name": "T12"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.9168,
    "spline_end": 0.9622,

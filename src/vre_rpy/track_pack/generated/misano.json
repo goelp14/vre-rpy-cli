@@ -5,6 +5,7 @@
  "elevation_range_m": 8.5,
  "corners": [
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.0447,
    "spline_end": 0.0755,
@@ -22,6 +23,7 @@
    "name_source": "curated (approximate position)"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.0784,
    "spline_end": 0.1015,
@@ -37,6 +39,7 @@
    "display_name": "T2"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.1067,
    "spline_end": 0.1592,
@@ -52,6 +55,7 @@
    "display_name": "T3"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.1813,
    "spline_end": 0.2222,
@@ -69,6 +73,7 @@
    "name_source": "curated (approximate position)"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.2246,
    "spline_end": 0.2577,
@@ -84,6 +89,7 @@
    "display_name": "T5"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.3808,
    "spline_end": 0.4308,
@@ -101,6 +107,7 @@
    "name_source": "curated (approximate position)"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.4746,
    "spline_end": 0.5414,
@@ -116,6 +123,7 @@
    "display_name": "T7"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.6573,
    "spline_end": 0.6828,
@@ -131,6 +139,7 @@
    "display_name": "T8"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.7174,
    "spline_end": 0.7915,
@@ -146,6 +155,7 @@
    "display_name": "T9"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.8011,
    "spline_end": 0.8347,
@@ -163,6 +173,7 @@
    "name_source": "curated (approximate position)"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.84,
    "spline_end": 0.8833,
@@ -178,6 +189,7 @@
    "display_name": "T11"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.9117,
    "spline_end": 0.9453,

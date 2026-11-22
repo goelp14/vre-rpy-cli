@@ -5,6 +5,7 @@
  "elevation_range_m": 10.1,
  "corners": [
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.0684,
    "spline_end": 0.1176,
@@ -20,6 +21,7 @@
    "display_name": "T1"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.1234,
    "spline_end": 0.1468,
@@ -37,6 +39,7 @@
    "name_source": "curated (approximate position)"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.1516,
    "spline_end": 0.1822,
@@ -54,6 +57,7 @@
    "name_source": "curated (approximate position)"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.187,
    "spline_end": 0.2248,
@@ -69,6 +73,7 @@
    "display_name": "T4"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.2401,
    "spline_end": 0.2731,
@@ -84,6 +89,7 @@
    "display_name": "T5"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.2855,
    "spline_end": 0.3209,
@@ -99,6 +105,7 @@
    "display_name": "T6"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.3305,
    "spline_end": 0.3663,
@@ -114,6 +121,7 @@
    "display_name": "T7"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.3783,
    "spline_end": 0.4424,
@@ -131,6 +139,7 @@
    "name_source": "curated (approximate position)"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.4696,
    "spline_end": 0.5648,
@@ -148,6 +157,7 @@
    "name_source": "curated (approximate position)"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.5682,
    "spline_end": 0.6275,
@@ -163,6 +173,7 @@
    "display_name": "T10"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.7231,
    "spline_end": 0.7394,
@@ -180,6 +191,7 @@
    "name_source": "curated (approximate position)"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.7418,
    "spline_end": 0.7729,
@@ -197,6 +209,7 @@
    "name_source": "curated (approximate position)"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.8092,
    "spline_end": 0.9235,

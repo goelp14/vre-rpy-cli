@@ -5,6 +5,7 @@
  "elevation_range_m": 30.5,
  "corners": [
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.1078,
    "spline_end": 0.137,
@@ -20,6 +21,7 @@
    "display_name": "T1"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.1396,
    "spline_end": 0.1887,
@@ -35,6 +37,7 @@
    "display_name": "T2"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.1931,
    "spline_end": 0.2182,
@@ -50,6 +53,7 @@
    "display_name": "T3"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.2242,
    "spline_end": 0.2386,
@@ -65,6 +69,7 @@
    "display_name": "T4"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.2408,
    "spline_end": 0.257,
@@ -80,6 +85,7 @@
    "display_name": "T5"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.2592,
    "spline_end": 0.2995,
@@ -95,6 +101,7 @@
    "display_name": "T6"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.3017,
    "spline_end": 0.3309,
@@ -110,6 +117,7 @@
    "display_name": "T7"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.3327,
    "spline_end": 0.353,
@@ -125,6 +133,7 @@
    "display_name": "T8"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.3549,
    "spline_end": 0.3711,
@@ -140,6 +149,7 @@
    "display_name": "T9"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.3852,
    "spline_end": 0.4081,
@@ -155,6 +165,7 @@
    "display_name": "T10"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.4568,
    "spline_end": 0.4808,
@@ -170,6 +181,7 @@
    "display_name": "T11"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.6799,
    "spline_end": 0.7035,
@@ -185,6 +197,7 @@
    "display_name": "T12"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.7079,
    "spline_end": 0.7552,
@@ -200,6 +213,7 @@
    "display_name": "T13"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.7578,
    "spline_end": 0.7936,
@@ -215,6 +229,7 @@
    "display_name": "T14"
   },
   {
+   "inside_edge": "left",
    "direction": "right",
    "spline_start": 0.8021,
    "spline_end": 0.89,
@@ -230,6 +245,7 @@
    "display_name": "T15"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.8981,
    "spline_end": 0.9343,
@@ -245,6 +261,7 @@
    "display_name": "T16"
   },
   {
+   "inside_edge": "right",
    "direction": "left",
    "spline_start": 0.9601,
    "spline_end": 0.9838,

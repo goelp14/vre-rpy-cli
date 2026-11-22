@@ -72,7 +72,7 @@ class ReplayFrames:
     # ------------------------------------------------------------------ helpers
     def _lap_window(self, i: int):
         lap = self.laps[i]
-        t0 = lap.get("sf_time_s", lap["session_start_s"]) if i > 0 else lap["session_start_s"]
+        t0 = lap.get("sf_time_s", lap["session_start_s"])
         if i + 1 < len(self.laps):
             nxt = self.laps[i + 1]
             t1 = nxt.get("sf_time_s", nxt["session_start_s"])
@@ -181,6 +181,8 @@ class ReplayFrames:
             "valid": lap.get("valid"),
             "invalid_at_lap_ms": lap.get("invalid_at_lap_ms"),
             "frames": int(len(idx)),
+            # recording started after this lap's S/F crossing (or ended early): not a full lap
+            "partial": bool(cols["t"][0] > 0.5 or cols["t"][-1] < lap["lap_ms"] / 1000.0 - 1.0),
             "pose_hz": round(float(self.clock["hz"]), 3),
             "input_hz": round(float(len(self.inputs["time_s"]) / max(self.inputs["time_s"][-1] - self.inputs["time_s"][0], 1e-9)), 3),
             "clock": {k: v for k, v in self.clock.items() if k not in ("t", "anchors")},

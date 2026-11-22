@@ -142,6 +142,28 @@ def cmd_track_pack(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_analyze(args: argparse.Namespace) -> int:
+    from vre_rpy.lap_analysis import run_analysis
+    from vre_rpy.replay_frames import ReplayFrames
+
+    p, label = _parse_rpy_arg(args.rpy)
+    me = ReplayFrames(p, car_index=args.car_index, cache_dir=args.acc_cache)
+    me.label = label
+    ref = None
+    if args.ref:
+        rp, rl = _parse_rpy_arg(args.ref)
+        ref = ReplayFrames(rp, car_index=args.ref_car_index, cache_dir=args.acc_cache)
+        ref.label = rl
+    out = run_analysis(me, ref)
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    args.out.write_text(json.dumps(out, indent=1, default=float), encoding="utf-8")
+    summary = {"out": str(args.out), "ok": out.get("ok"), "track": out.get("track"),
+               "corner_loss_top": (out.get("corner_loss_best_vs_ref") or [])[:5],
+               "theoretical": {k: v["theoretical"] for k, v in (out.get("drivers") or {}).items()}}
+    print(json.dumps(summary, indent=1, default=float))
+    return 0
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(
         prog="vre-rpy",
@@ -201,10 +223,19 @@ def main(argv: Optional[List[str]] = None) -> int:
     tp.add_argument("--acc-cache", type=Path, default=None)
     tp.set_defaults(func=cmd_track_pack)
 
+    an = sub.add_parser("analyze", help="Corner-by-corner analysis vs a reference (events, losses, car state)")
+    an.add_argument("--rpy", required=True, help="your replay PATH or PATH:Label")
+    an.add_argument("--ref", default=None, help="reference replay PATH or PATH:Label")
+    an.add_argument("--out", type=Path, required=True)
+    an.add_argument("--car-index", type=int, default=None)
+    an.add_argument("--ref-car-index", type=int, default=None, help="car in the reference replay (race replays)")
+    an.add_argument("--acc-cache", type=Path, default=None)
+    an.set_defaults(func=cmd_analyze)
+
     # Back-compat: `vre-rpy --rpy X --out-dir Y` (no subcommand)
     if argv is None:
         argv = sys.argv[1:]
-    if argv and argv[0] not in ("export", "verify", "frames", "limits", "track-pack", "-h", "--help") and argv[0].startswith("-"):
+    if argv and argv[0] not in ("export", "verify", "frames", "limits", "track-pack", "analyze", "-h", "--help") and argv[0].startswith("-"):
         argv = ["export", *argv]
 
     args = ap.parse_args(argv)

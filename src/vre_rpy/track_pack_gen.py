@@ -90,7 +90,19 @@ def generate(geo: Dict[str, Any], *, track_id: str) -> Dict[str, Any]:
             continue
         apex = idx[int(np.argmax(np.abs(k_s[idx])))]
         r_min = 1.0 / max(float(np.max(np.abs(k_s[idx]))), 1e-6)
+        inside = None
+        if geo.get("left_limit") is not None:
+            # which official edge is on the inside: the one the line bends toward
+            ll = np.asarray(geo["left_limit"], dtype=np.float64)
+            P = xz[apex]
+            P2 = xz[(apex + int(20 / STEP_M)) % n]
+            q = ll[int(np.argmin(((ll - P) ** 2).sum(1)))]
+            tng = d[apex]
+            step = P2 - P
+            bend = step - tng * float(np.dot(step, tng))   # sideways part of the path ahead
+            inside = "left" if float(np.dot(bend, q - P)) > 0 else "right"
         corners.append({
+            "inside_edge": inside,
             "direction": "right" if sign > 0 else "left",
             "spline_start": round(float(s[a % n] / L), 4),
             "spline_end": round(float(s[(b - 1) % n] / L), 4),
@@ -103,6 +115,15 @@ def generate(geo: Dict[str, Any], *, track_id: str) -> Dict[str, Any]:
             "speed_class": "slow" if r_min < 60 else ("medium" if r_min < 160 else "fast"),
         })
     corners.sort(key=lambda c: c["apex_m"])
+    # The fastlane's edge labels are fixed for the whole lap, so the inside edge is a property of the
+    # turn direction: take the majority per direction (single corners can pick a neighbouring edge).
+    for dr in ("left", "right"):
+        votes = [c["inside_edge"] for c in corners if c["direction"] == dr and c["inside_edge"]]
+        if votes:
+            maj = max(set(votes), key=votes.count)
+            for c in corners:
+                if c["direction"] == dr:
+                    c["inside_edge"] = maj
     # complexes: consecutive corners closer than COMPLEX_GAP_M
     cx = 0
     for i, c in enumerate(corners):

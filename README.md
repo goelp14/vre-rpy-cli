@@ -91,6 +91,21 @@ driver inputs (speed, throttle, brake, steering, gear, rpm, G incl. vertical) sy
 - Distances and track edges need your ACC install's `Content/Cache/<track>/fastlane.ai`
   (found automatically on a default Steam install; else set `VRE_ACC_CACHE`).
 
+### Corner-by-corner analysis
+
+```bash
+vre-rpy analyze --rpy me.rpy:Me --ref fast.rpy:Ref --out analysis.json
+```
+
+Distances are metres from the S/F line. For each corner window (from one braking point to the next)
+and every valid lap of both drivers: braking onset, metres to full pressure, deceleration, any second
+brake application, brake at turn-in, entry and minimum speed (and where), throttle pickup, full throttle
+that stays, coasting, lifts, wheel straight, peak slip angle, inside/outside edge margins, wheelspin and
+lock (your car), and what the car was doing on each crest and dip. Plus per-metric consistency and
+correlation with section time, the time gap to the reference along the lap, the steepest loss windows,
+a sanity-checked theoretical best, and car state estimated from the data (mass, weight split,
+wheelbase, downforce and aero balance, load transfer, understeer gradient, axle slip angles).
+
 ### Track limits
 
 ```bash
