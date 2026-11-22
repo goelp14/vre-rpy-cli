@@ -91,6 +91,23 @@ driver inputs (speed, throttle, brake, steering, gear, rpm, G incl. vertical) sy
 - Distances and track edges need your ACC install's `Content/Cache/<track>/fastlane.ai`
   (found automatically on a default Steam install; else set `VRE_ACC_CACHE`).
 
+### Track limits
+
+```bash
+vre-rpy limits --rpy a.rpy --rpy b.rpy --rpy c.rpy --out limits.json --zone-model spa_zones.json
+```
+
+For every lap: whether the game invalidated it, **where the cut happened**, which side, and how long
+the game took to judge it. Every time wheels went past the edge is listed, labelled *judged* or
+*over the line — not judged* (never "illegal"). Also writes the widest track use seen on still-valid
+laps, per 10 m.
+
+How it works: a replay stores the game's verdict (the lap-valid flag drops at the first cut of a lap).
+ACC often judges cuts later, at fixed places per track, so the place a flag drops is not always where
+the cut was. `--zone-model` learns, per track, which excursion each judging point belongs to; give it
+more replays of the same track to make attribution more reliable. Edges are the AI line's official
+widths, which match the painted lines in many but not all places.
+
 ## What you get
 
 | Path | Purpose |

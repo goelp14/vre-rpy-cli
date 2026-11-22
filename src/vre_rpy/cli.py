@@ -105,6 +105,26 @@ def cmd_frames(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_limits(args: argparse.Namespace) -> int:
+    from vre_rpy.replay_frames import ReplayFrames
+    from vre_rpy.track_limits import analyze
+
+    rfs = []
+    for spec in args.rpy:
+        path, label = _parse_rpy_arg(spec)
+        rf = ReplayFrames(path, car_index=args.car_index, cache_dir=args.acc_cache)
+        rf.label = label
+        rfs.append(rf)
+    tracks = {str(rf.ident.get("track")) for rf in rfs}
+    if len(tracks) != 1:
+        raise SystemExit(f"all replays must be the same track (got {sorted(tracks)})")
+    report = analyze(rfs, zone_model_path=args.zone_model)
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    args.out.write_text(json.dumps(report, indent=1), encoding="utf-8")
+    print(json.dumps({"out": str(args.out), "track": report["track"], "zones": report["zones"][:12]}, indent=2))
+    return 0
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(
         prog="vre-rpy",
@@ -150,10 +170,18 @@ def main(argv: Optional[List[str]] = None) -> int:
     fr.add_argument("--acc-cache", type=Path, default=None, help="ACC Content/Cache (or env VRE_ACC_CACHE)")
     fr.set_defaults(func=cmd_frames)
 
+    lm = sub.add_parser("limits", help="Track-limit report: cut attribution, excursions, legal track use")
+    lm.add_argument("--rpy", action="append", required=True, help="PATH or PATH:Label (same track; more = better)")
+    lm.add_argument("--out", type=Path, required=True, help="report JSON")
+    lm.add_argument("--zone-model", type=Path, default=None, help="per-track zone model JSON to load/update")
+    lm.add_argument("--car-index", type=int, default=None)
+    lm.add_argument("--acc-cache", type=Path, default=None)
+    lm.set_defaults(func=cmd_limits)
+
     # Back-compat: `vre-rpy --rpy X --out-dir Y` (no subcommand)
     if argv is None:
         argv = sys.argv[1:]
-    if argv and argv[0] not in ("export", "verify", "frames", "-h", "--help") and argv[0].startswith("-"):
+    if argv and argv[0] not in ("export", "verify", "frames", "limits", "-h", "--help") and argv[0].startswith("-"):
         argv = ["export", *argv]
 
     args = ap.parse_args(argv)

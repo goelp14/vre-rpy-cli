@@ -78,6 +78,7 @@ def run(
     overlay_pairs: List[Tuple[str, Dict[str, Any]]] = []
     decoded_by_label: Dict[str, Dict[str, Any]] = {}
     pose_extras: Dict[str, Dict[str, Any]] = {}
+    track_limits_by_label: Dict[str, Dict[str, Any]] = {}
     track_id_used: Optional[str] = None
     track_grip_used: Optional[float] = None
 
@@ -110,6 +111,24 @@ def run(
             if len(rf.inputs["time_s"]) == len(decoded["time_s"]):
                 pose_extra = pose_channels_for_inputs(rf)
                 pose_extras[slug] = pose_extra
+                # judged cuts (track limits) as a flag at the attributed excursion
+                from vre_rpy.track_limits import analyze as _limits
+
+                import numpy as _np
+
+                rep = _limits([rf])
+                it_ = _np.asarray(rf.inputs["time_s"], float)
+                judged = _np.zeros(len(it_))
+                for row in rep["drivers"][0]["laps"]:
+                    cut = row.get("cut") or {}
+                    if cut.get("cut_t") is None:
+                        continue
+                    lap = rf.laps[row["lap_index"]]
+                    t0 = lap.get("sf_time_s", lap["session_start_s"]) if row["lap_index"] > 0 else lap["session_start_s"]
+                    judged[_np.abs(it_ - (t0 + cut["cut_t"])) < 0.4] = 1.0
+                pose_extra["channels"]["VRE_CUT_JUDGED"] = judged
+                pose_extra["units"]["VRE_CUT_JUDGED"] = "flag"
+                track_limits_by_label[slug] = rep
             else:
                 pose_note = "pose channels skipped: input length mismatch"
         except Exception as exc:  # pose channels are additive; never break the export
@@ -282,6 +301,11 @@ def run(
             track_grip=track_grip_used,
             electronics=electronics,
             extras=pose_extras,
+        )
+
+    if track_limits_by_label:
+        (out_dir / "track_limits.json").write_text(
+            json.dumps(track_limits_by_label, indent=1), encoding="utf-8"
         )
 
     # Combined AI summary for multi-driver coaching prompts

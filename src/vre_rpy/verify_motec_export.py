@@ -220,7 +220,7 @@ def check_ld_channels(ld_path: Path) -> Dict[str, Any]:
     # v2 checks: no unexpected all-zero VRE channels; lap distance and GPS line sane.
     may_be_flat = {"VRE_TC_LEVEL", "VRE_ABS_LEVEL", "VRE_TCCUT", "VRE_ENG_MAP", "VRE_TC_EST",
                    "VRE_ABS_EST", "VRE_SPIN", "VRE_LOCK", "VRE_TRACK_GRIP", "VRE_SYNC_OK",
-                   "VRE_PRED_LAP_S", "VRE_PRED_DELTA_S", "VRE_VALID", "VRE_TRAIL_BRAKE"}
+                   "VRE_PRED_LAP_S", "VRE_PRED_DELTA_S", "VRE_VALID", "VRE_TRAIL_BRAKE", "VRE_CUT_JUDGED"}
     zero_bad, zero_warn = [], []
     for n in names:
         if not n.startswith("VRE_"):
