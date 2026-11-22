@@ -106,6 +106,28 @@ correlation with section time, the time gap to the reference along the lap, the 
 a sanity-checked theoretical best, and car state estimated from the data (mass, weight split,
 wheelbase, downforce and aero balance, load transfer, understeer gradient, axle slip angles).
 
+### Setups
+
+```bash
+vre-rpy setup --rpy me.rpy:Me --ref fast.rpy:Ref --out setup.json
+vre-rpy setup --rpy me.rpy --use-setup "…/Setups/<car>/<track>/My setup.json" --calibration cal.json --out setup.json
+```
+
+A replay does **not** store the car setup (the loader accounts for every byte of the file). So this
+command reports what can be known:
+
+- **Exact, from the replay:** gearing (km/h per 1000 rpm per gear), tyre radii, static mass and weight
+  split, car dimensions.
+- **Estimated behaviour** with lap-to-lap spread: downforce and aero balance, braking slip split
+  (brake-bias proxy), roll-stiffness split, pitch under braking, rake change with speed, diff
+  behaviour, TC/ABS estimate rates. With `--ref`, a plain comparison that says "can't tell" when the
+  difference is inside the noise.
+- **Your setup library:** setups for that car/track saved before the session (unconfirmed until you
+  pass `--use-setup`). Setup diffs are in clicks with what each change does; physical units are only
+  shown where the file stores them (camber in degrees, fuel) or a convention is labelled as such.
+- **Calibration:** each confirmed session teaches, per car, how a click moves each measured item.
+  Nothing is ever written out as a loadable setup for someone else's replay.
+
 ### Track limits
 
 ```bash

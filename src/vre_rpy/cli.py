@@ -164,6 +164,57 @@ def cmd_analyze(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_setup(args: argparse.Namespace) -> int:
+    import datetime as _dt
+
+    from vre_rpy.replay_frames import ReplayFrames
+    from vre_rpy.setup_files import candidates_for_session, default_setups_dir, diff_setups, load_setup, physical
+    from vre_rpy.setup_fingerprint import Calibration, compare_fingerprints, fingerprint
+
+    p, label = _parse_rpy_arg(args.rpy)
+    rf = ReplayFrames(p, car_index=args.car_index)
+    fp = fingerprint(rf)
+    car, track = rf.ident.get("car"), rf.ident.get("track")
+    out: Dict[str, Any] = {"schema": "vre.acc_rpy.setup.v1", "label": label, "car": car, "track": track,
+                           "note": "Replays do not store the setup: exact values below are measured; "
+                                   "'estimated' items describe what the setup does and are not a loadable setup.",
+                           "fingerprint": fp}
+    sdir = Path(args.setups_dir) if args.setups_dir else default_setups_dir()
+    hints = rf.ident  # noqa: F841
+    epoch = None
+    from vre_rpy.parse_rpy import extract_filename_hints
+
+    h = extract_filename_hints(p.name)
+    if h.get("date_yymmdd") and h.get("time_hhmmss"):
+        try:
+            epoch = _dt.datetime.strptime(h["date_yymmdd"] + h["time_hhmmss"], "%y%m%d%H%M%S").timestamp()
+        except ValueError:
+            epoch = None
+    if car and rf.car.get("is_player", True):
+        cands = candidates_for_session(sdir, car, str(track or ""), epoch)
+        out["setup_candidates"] = [{"name": c["name"], "path": c["path"], "physical": physical(c)} for c in cands]
+        out["setup_candidates_note"] = "saved before this session, newest first — unconfirmed until --use-setup"
+    if args.use_setup:
+        st = load_setup(Path(args.use_setup))
+        out["confirmed_setup"] = {"name": st["name"], "physical": physical(st)}
+        if args.calibration:
+            cal = Calibration(Path(args.calibration))
+            cal.add(str(car), st, fp, session=p.name)
+            out["calibration"] = {"pairs_for_car": len([q for q in cal.pairs if q["car"] == car]),
+                                  "sensitivities": cal.sensitivities(str(car))}
+        if args.compare_setup:
+            out["setup_diff"] = diff_setups(st, load_setup(Path(args.compare_setup)))
+    if args.ref:
+        rp, rl = _parse_rpy_arg(args.ref)
+        rref = ReplayFrames(rp, car_index=args.ref_car_index)
+        out["reference"] = {"label": rl, "fingerprint": fingerprint(rref)}
+        out["comparison"] = compare_fingerprints(fp, out["reference"]["fingerprint"], labels=(label, rl))
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    args.out.write_text(json.dumps(out, indent=1, default=float), encoding="utf-8")
+    print(json.dumps({"out": str(args.out), "exact": fp["exact"], "comparison": out.get("comparison")}, indent=1, default=float))
+    return 0
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(
         prog="vre-rpy",
@@ -232,10 +283,22 @@ def main(argv: Optional[List[str]] = None) -> int:
     an.add_argument("--acc-cache", type=Path, default=None)
     an.set_defaults(func=cmd_analyze)
 
+    su = sub.add_parser("setup", help="What the setup does (measured) + you-vs-reference + your setup library")
+    su.add_argument("--rpy", required=True)
+    su.add_argument("--ref", default=None)
+    su.add_argument("--out", type=Path, required=True)
+    su.add_argument("--setups-dir", default=None, help="ACC Setups folder (or env VRE_ACC_SETUPS)")
+    su.add_argument("--use-setup", default=None, help="confirm which setup file this session used")
+    su.add_argument("--compare-setup", default=None, help="second setup file to diff against --use-setup")
+    su.add_argument("--calibration", default=None, help="per-car calibration JSON to update")
+    su.add_argument("--car-index", type=int, default=None)
+    su.add_argument("--ref-car-index", type=int, default=None)
+    su.set_defaults(func=cmd_setup)
+
     # Back-compat: `vre-rpy --rpy X --out-dir Y` (no subcommand)
     if argv is None:
         argv = sys.argv[1:]
-    if argv and argv[0] not in ("export", "verify", "frames", "limits", "track-pack", "analyze", "-h", "--help") and argv[0].startswith("-"):
+    if argv and argv[0] not in ("export", "verify", "frames", "limits", "track-pack", "analyze", "setup", "-h", "--help") and argv[0].startswith("-"):
         argv = ["export", *argv]
 
     args = ap.parse_args(argv)
