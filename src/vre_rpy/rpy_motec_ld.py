@@ -61,8 +61,8 @@ _UNITS = {
     "VRE_YAW_DEG": "deg/s",
     "VRE_SPIN": "flag",
     "VRE_LOCK": "flag",
-    "VRE_TC_ACT": "flag",
-    "VRE_ABS_ACT": "flag",
+    "VRE_TC_EST": "flag",
+    "VRE_ABS_EST": "flag",
     "VRE_TC_LEVEL": "map",
     "VRE_ABS_LEVEL": "map",
     "VRE_TCCUT": "map",
@@ -101,7 +101,20 @@ def _unit_for(name: str) -> str:
     return ""
 
 
-_STEP_UNITS = {"gear", "flag", "map"}
+_STEP_UNITS = {"gear", "flag", "map", "id"}
+_WRAPPING = {"LAP_DIST"}
+
+
+def _fill_gaps(a: np.ndarray) -> np.ndarray:
+    """MoTeC cannot store NaN: hold the nearest valid sample (0 if none)."""
+    a = np.asarray(a, dtype=np.float64)
+    ok = np.isfinite(a)
+    if ok.all():
+        return a
+    if not ok.any():
+        return np.zeros_like(a)
+    idx = np.arange(len(a))
+    return np.interp(idx, idx[ok], a[ok])
 MOTEC_EXPORT_HZ = int(os.environ.get("VRE_MOTEC_HZ", "50"))
 
 
@@ -129,6 +142,13 @@ def resample_uniform(flat: Dict[str, Any], hz: float) -> Dict[str, Any]:
             out[name] = grid.copy()
             continue
         a = arr.astype(np.float64)
+        if name in _WRAPPING:
+            # lap distance wraps at S/F: interpolate the unwrapped distance, wrap again after
+            period = float(np.nanmax(a)) if a.size else 0.0
+            if period > 0:
+                un = np.unwrap(a, period=period)
+                out[name] = np.mod(np.interp(grid, t_rel, un), period)
+                continue
         if _unit_for(name) in _STEP_UNITS:
             idx = np.clip(np.searchsorted(t_rel, grid, side="right") - 1, 0, n - 1)
             out[name] = a[idx]
@@ -144,6 +164,7 @@ def channels_from_decoded(
     track_grip: Optional[float] = None,
     steering_lock_deg: float = 400.0,
     electronics: Optional[Dict[str, Any]] = None,
+    extra: Optional[Dict[str, Any]] = None,
 ) -> List[Dict[str, Any]]:
     from .setup_calcs import compute_setup_channels
 
@@ -162,6 +183,15 @@ def channels_from_decoded(
             electronics=electronics,
         )
     )
+    extra_names: List[str] = []
+    if extra:
+        for name, unit in (extra.get("units") or {}).items():
+            _UNITS.setdefault(name, unit)
+        for name, arr in (extra.get("channels") or {}).items():
+            flat[name] = _fill_gaps(arr)
+            extra_names.append(name)
+        if "VRE_YAW_RATE" in flat:
+            flat["VRE_YAW_DEG"] = flat["VRE_YAW_RATE"]  # real yaw rate (was all zeros without pose)
     if flat.get("TIME") is not None:
         # Motec draws sample-and-hold, so 8-11 Hz rpy streams render as stairs.
         # Linear interp between real samples is within 0.53 km/h RMS of the
@@ -204,8 +234,8 @@ def channels_from_decoded(
         "VRE_YAW_DEG",
         "VRE_SPIN",
         "VRE_LOCK",
-        "VRE_TC_ACT",
-        "VRE_ABS_ACT",
+        "VRE_TC_EST",
+        "VRE_ABS_EST",
         "VRE_TC_LEVEL",
         "VRE_ABS_LEVEL",
         "VRE_TCCUT",
@@ -227,9 +257,26 @@ def channels_from_decoded(
         "VRE_THROTTLE_RATE",
         "VRE_BRAKE_RELEASE",
         "VRE_DIST_M",
+        "G_VERT",
+        "VEL_X",
+        "VEL_Y",
+        "VEL_Z",
     ]
+    order += [n for n in extra_names if n not in order]
 
     seen = set()
+    used_short: set = set()
+
+    def _unique_short(base: str) -> str:
+        cand = base[:8]
+        k = 1
+        while cand in used_short:
+            suffix = str(k)
+            cand = base[: 8 - len(suffix)] + suffix
+            k += 1
+        used_short.add(cand)
+        return cand
+
     for name in order:
         if name not in flat or name in seen:
             continue
@@ -240,7 +287,9 @@ def channels_from_decoded(
         out.append(
             {
                 "name": f"{p}{name}"[:32],
-                "short_name": (f"{prefix[:2]}{short}" if prefix else short)[:8],
+                "short_name": _unique_short(
+                    (f"{prefix[:2]}{short}" if prefix else short).replace("VRE_", "V").replace("_", "")
+                ),
                 "unit": _unit_for(name)[:12],
                 "freq": hz,
                 "data": np.asarray(flat[name], dtype=np.float32),
@@ -673,6 +722,7 @@ def write_driver_ld(
     venue: str = "ACC",
     beacon_times_s: Optional[Sequence[float]] = None,
     preferred_fastest_s: Optional[float] = None,
+    extra: Optional[Dict[str, Any]] = None,
 ) -> Path:
     return write_ld_from_channels(
         channels_from_decoded(
@@ -681,6 +731,7 @@ def write_driver_ld(
             track_grip=track_grip,
             steering_lock_deg=steering_lock_deg,
             electronics=electronics,
+            extra=extra,
         ),
         out_path,
         driver=label[:64],
@@ -698,6 +749,7 @@ def write_overlay_ld(
     track_grip: Optional[float] = None,
     steering_lock_deg: float = 400.0,
     electronics: Optional[Dict[str, Any]] = None,
+    extras: Optional[Dict[str, Dict[str, Any]]] = None,
 ) -> Path:
     all_ch: List[Dict[str, Any]] = []
     labels: List[str] = []
@@ -711,6 +763,7 @@ def write_overlay_ld(
                 track_grip=track_grip,
                 steering_lock_deg=steering_lock_deg,
                 electronics=electronics,
+                extra=(extras or {}).get(label),
             )
         )
     return write_ld_from_channels(

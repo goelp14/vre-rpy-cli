@@ -77,6 +77,7 @@ def run(
     drivers_meta: List[Dict[str, Any]] = []
     overlay_pairs: List[Tuple[str, Dict[str, Any]]] = []
     decoded_by_label: Dict[str, Dict[str, Any]] = {}
+    pose_extras: Dict[str, Dict[str, Any]] = {}
     track_id_used: Optional[str] = None
     track_grip_used: Optional[float] = None
 
@@ -97,6 +98,22 @@ def run(
         decoded = decode_rpy_inputs(rpy_path, car_index=car_index)
         decoded_by_label[slug] = decoded
         overlay_pairs.append((slug, decoded))
+        # Pose-derived channels (GPS line, lap distance, edges, slip, terrain, validity) on the
+        # input clock. Optional: missing fastlane / failed sync only drops those channels.
+        pose_extra = None
+        pose_note = None
+        try:
+            from vre_rpy.motec_pose_channels import pose_channels_for_inputs
+            from vre_rpy.replay_frames import ReplayFrames
+
+            rf = ReplayFrames(rpy_path, car_index=car_index)
+            if len(rf.inputs["time_s"]) == len(decoded["time_s"]):
+                pose_extra = pose_channels_for_inputs(rf)
+                pose_extras[slug] = pose_extra
+            else:
+                pose_note = "pose channels skipped: input length mismatch"
+        except Exception as exc:  # pose channels are additive; never break the export
+            pose_note = f"pose channels skipped: {type(exc).__name__}: {exc}"
 
         # Session grip from weatherData[6] (raw GO; name is hypothesis)
         ex = extract_rpy(rpy_path)
@@ -163,6 +180,7 @@ def run(
             venue=venue,
             beacon_times_s=beacons,
             preferred_fastest_s=preferred_fastest,
+            extra=pose_extra,
         )
 
         labeled_laps = build_labeled_laps(
@@ -230,6 +248,13 @@ def run(
                 "rpy": str(rpy_path.resolve()),
                 "count": int(decoded["count"]),
                 "pose_count": int(pose_dec["count"]),
+                "pose_channels": sorted((pose_extra or {}).get("channels", {}).keys()),
+                "pose_sync": (pose_extra or {}).get("meta", {}).get("sync"),
+                "pose_note": pose_note,
+                "estimate_quality": {
+                    "VRE_TC_EST": "precision 0.50 / recall 0.59 vs MoTeC TC (Spa gold)",
+                    "VRE_ABS_EST": "precision 0.42 / recall 0.31 vs MoTeC ABS (Spa gold)",
+                },
                 "lap_candidates": len(pose_dec.get("lap_segments") or []),
                 "venue": venue,
                 "motec_beacons": len(beacons or []),
@@ -256,6 +281,7 @@ def run(
             overlay_path,
             track_grip=track_grip_used,
             electronics=electronics,
+            extras=pose_extras,
         )
 
     # Combined AI summary for multi-driver coaching prompts
@@ -300,8 +326,8 @@ def run(
                 "VRE_YAW_DEG",
                 "VRE_SPIN",
                 "VRE_LOCK",
-                "VRE_TC_ACT",
-                "VRE_ABS_ACT",
+                "VRE_TC_EST",
+                "VRE_ABS_EST",
                 "VRE_TC_LEVEL",
                 "VRE_ABS_LEVEL",
                 "VRE_TCCUT",

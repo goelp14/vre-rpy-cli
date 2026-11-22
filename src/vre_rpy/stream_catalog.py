@@ -371,7 +371,7 @@ STREAM_CATALOG: List[Dict[str, Any]] = [
             "asm": "decoder @14347b0dc; Motec 1434a2225 CMP byte [RAX+offset]",
         },
         "file_status": "no_go",
-        "note": "STATE. Export VRE_TC_ACT wheelspin proxy until packer Motec-locks.",
+        "note": "STATE. Export VRE_TC_EST wheelspin proxy until packer Motec-locks.",
     },
     {
         "id": "traction_control",
@@ -523,7 +523,7 @@ STREAM_CATALOG: List[Dict[str, Any]] = [
             "asm": "decoder @14347b0cf; Motec 1434a223e CMP byte [RAX+offset]",
         },
         "file_status": "no_go",
-        "note": "STATE. Export VRE_ABS_ACT front-lock+brake proxy until packer Motec-locks.",
+        "note": "STATE. Export VRE_ABS_EST front-lock+brake proxy until packer Motec-locks.",
     },
     {
         "id": "abs",

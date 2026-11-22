@@ -217,10 +217,42 @@ def check_ld_channels(ld_path: Path) -> Dict[str, Any]:
                 "freq": float(d[n].freq),
                 "unit": d[n].unit,
             }
+    # v2 checks: no unexpected all-zero VRE channels; lap distance and GPS line sane.
+    may_be_flat = {"VRE_TC_LEVEL", "VRE_ABS_LEVEL", "VRE_TCCUT", "VRE_ENG_MAP", "VRE_TC_EST",
+                   "VRE_ABS_EST", "VRE_SPIN", "VRE_LOCK", "VRE_TRACK_GRIP", "VRE_SYNC_OK",
+                   "VRE_PRED_LAP_S", "VRE_PRED_DELTA_S", "VRE_VALID", "VRE_TRAIL_BRAKE"}
+    zero_bad, zero_warn = [], []
+    for n in names:
+        if not n.startswith("VRE_"):
+            continue
+        a = np.asarray(d[n].data, dtype=np.float64)
+        if a.size and np.nanmax(np.abs(a)) == 0:
+            (zero_warn if n in may_be_flat else zero_bad).append(n)
+    warnings = [f"all-zero (allowed): {n}" for n in zero_warn]
+    lap_dist = None
+    if "LAP_DIST" in names:
+        ld_ = np.asarray(d["LAP_DIST"].data, dtype=np.float64)
+        resets = int(np.sum(np.diff(ld_) < -0.5 * np.nanmax(ld_)))
+        lap_dist = {"max_m": float(np.nanmax(ld_)), "resets": resets}
+        if "GPS_LATITUDE" in names and "GPS_LONGITUDE" in names:
+            lat = np.radians(np.asarray(d["GPS_LATITUDE"].data, dtype=np.float64))
+            lon = np.radians(np.asarray(d["GPS_LONGITUDE"].data, dtype=np.float64))
+            seg = np.hypot(np.diff(lat), np.diff(lon) * np.cos(lat[:-1])) * 6_371_000.0
+            dl = np.diff(ld_)
+            ok = (dl > 0) & (dl < 50) & (seg < 50)
+            ratio = float(seg[ok].sum() / max(dl[ok].sum(), 1e-6)) if ok.any() else None
+            lap_dist["gps_vs_lapdist_ratio"] = ratio
+            if ratio is None or abs(ratio - 1.0) > 0.02:
+                warnings.append(f"GPS path length differs from LAP_DIST by more than 2% (ratio {ratio})")
+    else:
+        warnings.append("no LAP_DIST (pose channels unavailable)")
     return {
-        "ok": not missing and all((stats.get(n) or {}).get("n", 0) > 100 for n in need),
+        "ok": not missing and not zero_bad and all((stats.get(n) or {}).get("n", 0) > 100 for n in need),
         "path": str(ld_path),
         "missing": missing,
+        "all_zero_vre": zero_bad,
+        "lap_dist": lap_dist,
+        "warnings": warnings,
         "venue": getattr(d.head, "venue", None) or None,
         "stats": stats,
     }

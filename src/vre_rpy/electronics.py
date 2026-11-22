@@ -13,7 +13,7 @@ Replay HUD mirrors the same via `ECarDigitalDisplayType::TC_Level*` /
 `.rpy` status (2026-11-19): neither level nor InAction packer lanes are
 Motec-locked yet. Export:
 
-- `VRE_TC_ACT` / `VRE_ABS_ACT` — wheel-speed proxies for **state**
+- `VRE_TC_EST` / `VRE_ABS_EST` — slip-ratio estimates of intervention (not state)
 - `VRE_TC_LEVEL` / `VRE_ABS_LEVEL` / `VRE_TCCUT` / `VRE_ENG_MAP` — constant
   series when levels are supplied (garage JSON, future file decode, or HUD)
 """
@@ -73,6 +73,6 @@ def electronics_notes() -> Dict[str, str]:
         "VRE_TCCUT": "setting: graphics.TCCut / HUD TCCut_Level (file lane NO-GO)",
         "VRE_ABS_LEVEL": "setting: graphics.ABS / HUD ABS_Level (file lane NO-GO)",
         "VRE_ENG_MAP": "setting: graphics.EngineMap (file lane NO-GO)",
-        "VRE_TC_ACT": "state: physics.tcinAction / Motec TC; proxy until packer lock",
-        "VRE_ABS_ACT": "state: physics.absInAction / Motec ABS; proxy until packer lock",
+        "VRE_TC_EST": "estimate of TC intervention (not stored in replays)",
+        "VRE_ABS_EST": "estimate of ABS intervention (not stored in replays)",
     }

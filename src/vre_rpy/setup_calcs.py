@@ -5,7 +5,7 @@ only file_go lanes.
 
 Electronics are two dimensions (see `electronics.py`):
   - **levels** (TC=7, ABS=2) → `VRE_TC_LEVEL` / `VRE_ABS_LEVEL` when supplied
-  - **active** (fires on corner) → `VRE_TC_ACT` / `VRE_ABS_ACT` proxies until
+  - **active** (fires on corner) → `VRE_TC_EST` / `VRE_ABS_EST` proxies until
     HUD `TC_InAction` / `ABS_InAction` packer lanes Motec-lock
 """
 
@@ -69,14 +69,18 @@ def compute_setup_channels(
     wrr = np.asarray(ws.get("RR", np.zeros(n)), dtype=np.float64)
 
     spin, lock = wheelspin_lock(spd, wlf, wrf, wlr, wrr, spin_thresh_kmh=5.0, lock_thresh_kmh=5.0)
-    # Stricter ABS proxy: brake on + front lock (Motec ABS recall ~0.8 @ 5km/h)
-    abs_proxy = (
-        ((spd - np.minimum(wlf, wrf) * 3.6) > 5.0) & (brk > 0.05)
-    ).astype(np.float64)
-    # TC proxy: throttle on + rear spin
-    tc_proxy = (
-        ((np.maximum(wlr, wrr) * 3.6 - spd) > 3.0) & (thr > 0.15)
-    ).astype(np.float64)
+    # TC / ABS *estimates* (ACC does not store TC/ABS activity in replays). Slip-ratio thresholds,
+    # measured against MoTeC TC/ABS on the Spa gold: TC P 0.50 / R 0.59, ABS P 0.42 / R 0.31.
+    # Use as "likely intervening", never as state.
+    slips_ = decoded.get("slip_ratio") or {}
+    if all(c in slips_ for c in ("LF", "RF", "LR", "RR")):
+        rear_slip = np.maximum(np.asarray(slips_["LR"]), np.asarray(slips_["RR"]))
+        front_slip = np.minimum(np.asarray(slips_["LF"]), np.asarray(slips_["RF"]))
+        tc_proxy = ((rear_slip > 0.08) & (thr > 0.30)).astype(np.float64)
+        abs_proxy = ((front_slip < -0.08) & (brk > 0.30)).astype(np.float64)
+    else:  # no per-wheel data (other cars in race replays): wheel-speed fallback
+        abs_proxy = (((spd - np.minimum(wlf, wrf) * 3.6) > 5.0) & (brk > 0.30)).astype(np.float64)
+        tc_proxy = (((np.maximum(wlr, wrr) * 3.6 - spd) > 3.0) & (thr > 0.30)).astype(np.float64)
 
     # Yaw from heading rate if present, else from steer/G heuristic via us_os sibling
     heading = decoded.get("heading_deg")
@@ -163,8 +167,8 @@ def compute_setup_channels(
         "VRE_YAW_DEG": np.asarray(yaw_deg, dtype=np.float32),
         "VRE_SPIN": np.asarray(spin, dtype=np.float32),
         "VRE_LOCK": np.asarray(lock, dtype=np.float32),
-        "VRE_TC_ACT": np.asarray(tc_active(tc_proxy), dtype=np.float32),
-        "VRE_ABS_ACT": np.asarray(tc_active(abs_proxy), dtype=np.float32),
+        "VRE_TC_EST": np.asarray(tc_active(tc_proxy), dtype=np.float32),
+        "VRE_ABS_EST": np.asarray(tc_active(abs_proxy), dtype=np.float32),
         "VRE_RAKE_LOAD": rake.astype(np.float32),
         "VRE_LOAD_F": load_front.astype(np.float32),
         "VRE_LOAD_R": load_rear.astype(np.float32),
@@ -198,8 +202,12 @@ def compute_setup_channels(
 
 def channel_notes() -> Dict[str, str]:
     notes = {
-        "VRE_TC_ACT": "STATE proxy → Motec Wheelspeed/TC; raise TC maps only if ACT costs pace",
-        "VRE_ABS_ACT": "STATE proxy → Motec Wheelspeed/ABS; raise ABS map only if lock costs entry time",
+        "VRE_TC_EST": "ESTIMATE (rear slip > 0.08, thr > 30%; Spa gold P 0.50 / R 0.59) — not TC state",
+        "VRE_ABS_EST": "ESTIMATE (front slip < -0.08, brk > 30%; Spa gold P 0.42 / R 0.31) — not ABS state",
+        "VRE_YAW_DEG": "yaw rate from wheel-point heading (deg/s); 0 if pose unavailable",
+        "VRE_UNDERSTEER_DEG": "steered angle (steer / assumed ratio) minus kinematic angle (yaw rate x wheelbase / v); + = understeer",
+        "LAP_DIST": "distance from the S/F line along the AI line (m), resets each lap",
+        "GPS_LATITUDE": "synthetic GPS from replay position (local plane) so the Track Map draws the driven line",
         "VRE_TRACK_GRIP": "env → scale G expectations; weatherData[6] raw (name hyp)",
         "VRE_US_OS": "Motec Understeer/Oversteer worksheet; multi-corner → springs/ARB/aero not calm TC",
         "VRE_RAKE_LOAD": "F−R from sus_proxy (phys+0x478) when present, else tyre_load",
@@ -209,8 +217,8 @@ def channel_notes() -> Dict[str, str]:
         "VRE_SUS_PROXY_RR": "arr_48 phys+0x478; Motec SUS_TRAVEL |r_res|≈0.80 (normalized 0-1, not mm)",
         "VRE_COAST": "Driver worksheet; Sonoma: coast B+C ≠ soft the car",
         "VRE_PEDAL_GAP": "Driver worksheet; fix technique before setup",
-        "VRE_SPIN": "Wheelspeed; pair with VRE_TC_ACT / diff exit",
-        "VRE_LOCK": "Wheelspeed; pair with VRE_ABS_ACT / bias",
+        "VRE_SPIN": "Wheelspeed; pair with VRE_TC_EST / diff exit",
+        "VRE_LOCK": "Wheelspeed; pair with VRE_ABS_EST / bias",
         "VRE_BT_BAL": "Brake temp F−R; ducts/bias after tyre window",
         "VRE_LAT_UTIL": "|G_LAT| vs track grip — corner ranking",
         "VRE_COMBINED_G": "sqrt(G_LAT^2+G_LON^2) — total tyre demand",

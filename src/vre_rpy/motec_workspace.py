@@ -33,8 +33,8 @@ ACC_COMPARE_CHANNELS: List[str] = [
     "VRE_US_OS",
     "VRE_SPIN",
     "VRE_LOCK",
-    "VRE_TC_ACT",
-    "VRE_ABS_ACT",
+    "VRE_TC_EST",
+    "VRE_ABS_EST",
     "VRE_TC_LEVEL",
     "VRE_ABS_LEVEL",
 ]
@@ -288,8 +288,8 @@ def build_compare_workbook_xml() -> str:
                 "TCABS",
                 500,
                 750,
-                [("VRE_TC_ACT", "no", "0"), ("VRE_ABS_ACT", "no", "0")],
-                active="VRE_TC_ACT",
+                [("VRE_TC_EST", "no", "0"), ("VRE_ABS_EST", "no", "0")],
+                active="VRE_TC_EST",
             ),
             _graph_block(
                 "Levels",
@@ -301,7 +301,40 @@ def build_compare_workbook_xml() -> str:
         ],
         activate="Speed",
     )
-    sheets = "\n".join([track_map, compare, driver, usos, electronics])
+    corner = _time_distance_worksheet(
+        "VRE Corner",
+        [
+            _graph_block("Speed", 0, 250, [("SPEED_KMH", "km/h", "1")]),
+            _graph_block("Pedals", 250, 450, [("BRAKE", "%", "0"), ("THROTTLE", "%", "0")], active="BRAKE"),
+            _graph_block("Steer", 450, 600, [("STEERANGLE", "deg", "0")]),
+            _graph_block("Rotation", 600, 800, [("VRE_YAW_DEG", "deg/s", "1"), ("VRE_BETA_DEG", "deg", "1")], active="VRE_BETA_DEG"),
+            _graph_block("Balance", 800, 1000, [("VRE_UNDERSTEER_DEG", "deg", "1"), ("G_LAT", "G", "2")], active="VRE_UNDERSTEER_DEG"),
+        ],
+        activate="Speed",
+    )
+    terrain = _time_distance_worksheet(
+        "VRE Terrain",
+        [
+            _graph_block("Speed", 0, 200, [("SPEED_KMH", "km/h", "1")]),
+            _graph_block("Elevation", 200, 400, [("VRE_ELEV_M", "m", "1"), ("VRE_GRADE_PCT", "%", "1")], active="VRE_ELEV_M"),
+            _graph_block("Crest_Dip", 400, 600, [("VRE_VERT_CURV", "no", "2"), ("G_VERT", "G", "2")], active="G_VERT"),
+            _graph_block("Load", 600, 800, [("VRE_LOAD_TOTAL", "N", "0")]),
+            _graph_block("Pedals", 800, 1000, [("BRAKE", "%", "0"), ("THROTTLE", "%", "0")], active="BRAKE"),
+        ],
+        activate="Elevation",
+    )
+    limits = _time_distance_worksheet(
+        "VRE Limits",
+        [
+            _graph_block("Speed", 0, 250, [("SPEED_KMH", "km/h", "1")]),
+            _graph_block("EdgeAll4", 250, 500, [("VRE_EDGE_ALL4_L_M", "m", "2"), ("VRE_EDGE_ALL4_R_M", "m", "2")], active="VRE_EDGE_ALL4_L_M"),
+            _graph_block("EdgeAny", 500, 700, [("VRE_EDGE_ANY_L_M", "m", "2"), ("VRE_EDGE_ANY_R_M", "m", "2")], active="VRE_EDGE_ANY_L_M"),
+            _graph_block("Valid", 700, 850, [("VRE_VALID", "no", "0")]),
+            _graph_block("PredDelta", 850, 1000, [("VRE_PRED_DELTA_S", "s", "2")]),
+        ],
+        activate="EdgeAll4",
+    )
+    sheets = "\n".join([track_map, compare, driver, usos, electronics, corner, terrain, limits])
     return (
         '<?xml version="1.0"?>\n'
         '<Workbook Locale="English_United States.1252" DefaultLocale="C" '

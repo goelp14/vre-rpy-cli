@@ -68,7 +68,7 @@ def test_export_rpy_analysis_writes_motec_and_ai(tmp_path: Path):
     assert summary["motec_workspace"]["active_workbook"] == "VRE Compare"
     assert "disc_temp" in summary["channels_file_go"]
     assert "tyre_load" in summary["channels_file_go"]
-    for need in ("VRE_US_OS", "VRE_TC_ACT", "VRE_ABS_ACT", "VRE_TRACK_GRIP"):
+    for need in ("VRE_US_OS", "VRE_TC_EST", "VRE_ABS_EST", "VRE_TRACK_GRIP"):
         assert need in summary["motec_calc_channels"]
 
     import sys
