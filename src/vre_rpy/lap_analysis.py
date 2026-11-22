@@ -72,30 +72,51 @@ def variance_cliffs(delta: np.ndarray, *, step=STATION_M, window_m=120.0, top=5)
     return picked
 
 
-def theoretical_best(laps: List[Dict[str, np.ndarray]], lap_ms: List[int], length_m: float) -> Dict[str, Any]:
-    """Sum of best per-segment times over laps; drops laps outside 0.9-1.3x median; gated."""
+SECTOR_FALLBACK_M = 500.0
+
+
+def theoretical_best(laps: List[Dict[str, np.ndarray]], lap_ms: List[int], length_m: float,
+                     sectors_m: Optional[Sequence[float]] = None, lap_ids: Optional[Sequence[int]] = None) -> Dict[str, Any]:
+    """Ideal lap: sum of each sector's best time over the driver's laps; drops laps outside 0.9-1.3x median.
+
+    Sectors are corner sectors (``sectors_m`` = sector start positions from S/F, normally the corner
+    windows) or, without a track pack, ~500 m slices. Never short slices: position along the line jitters
+    by a few metres lap to lap, and taking the minimum of many short noisy slices rewards that noise.
+    On Spa, 50 m slices made a 2:18.5 driver's ideal 2:14.9; corner sectors give 2:17.4.
+    Each lap ends at its timed lap_ms at ``length_m`` so the sum is a whole lap."""
     if not laps:
         return {"ok": False, "reason": "no laps"}
+    ids = list(lap_ids) if lap_ids is not None else list(range(len(laps)))
     med = float(np.median(lap_ms))
-    use = [(l, ms) for l, ms in zip(laps, lap_ms) if 0.9 * med <= ms <= 1.3 * med and len(l["s"]) > 10]
+    use = [(l, ms, i) for l, ms, i in zip(laps, lap_ms, ids) if 0.9 * med <= ms <= 1.3 * med and len(l["s"]) > 10]
     if not use:
         return {"ok": False, "reason": "no laps within 0.9-1.3x median"}
-    edges = np.arange(0.0, length_m, SEGMENT_M)
-    best = np.full(len(edges) - 1, np.inf)
-    for l, _ in use:
-        t = np.interp(edges, l["s"], l["t"], right=np.nan)
-        seg = np.diff(t)
-        ok = np.isfinite(seg) & (seg > 0)
-        best[ok] = np.minimum(best[ok], seg[ok])
-    if not np.all(np.isfinite(best)):
-        return {"ok": False, "reason": "a segment has no data on any lap"}
-    tail = min(ms for _, ms in use) / 1000.0 - float(np.interp(edges[-1], use[0][0]["s"], use[0][0]["t"]))
-    theo = float(best.sum() + max(tail, 0.0))
-    best_lap = min(ms for _, ms in use) / 1000.0
-    gate = 0.95 * best_lap <= theo <= best_lap + 0.05
+    if sectors_m is not None and len(sectors_m):
+        inner = sorted({round(float(x), 1) for x in sectors_m if 1.0 < float(x) < length_m - 1.0})
+        method = "corner_sectors"
+    else:
+        n = max(3, int(round(length_m / SECTOR_FALLBACK_M)))
+        inner = list(np.linspace(0.0, length_m, n + 1)[1:-1])
+        method = "fixed_sectors"
+    edges = np.array([0.0, *inner, float(length_m)])
+    times = []
+    for l, ms, _ in use:
+        s, t = np.asarray(l["s"], float), np.asarray(l["t"], float)
+        keep = s < length_m - 1.0
+        s, t = np.append(s[keep], length_m), np.append(t[keep], ms / 1000.0)
+        t0 = float(np.interp(0.0, s, t))
+        times.append(np.diff(np.interp(edges, s, t)) + np.r_[t0, np.zeros(len(edges) - 2)])
+    T = np.array(times)
+    pick = np.argmin(T, axis=0)
+    best = T[pick, np.arange(T.shape[1])]
+    theo = float(best.sum())
+    best_lap = min(ms for _, ms, _ in use) / 1000.0
+    gate = 0.97 * best_lap <= theo <= best_lap + 0.05
+    secs = [{"s0_m": round(float(edges[k]), 1), "s1_m": round(float(edges[k + 1]), 1), "best_s": round(float(best[k]), 3),
+             "best_lap": use[int(pick[k])][2], "spread_s": round(float(T[:, k].max() - best[k]), 3)} for k in range(len(best))]
     return {"ok": bool(gate), "theoretical_best_s": round(theo, 3), "best_lap_s": round(best_lap, 3),
-            "potential_s": round(best_lap - theo, 3), "laps_used": len(use),
-            "reason": None if gate else "failed sanity gate (theoretical must be within 5% below best)"}
+            "potential_s": round(best_lap - theo, 3), "laps_used": len(use), "method": method, "sectors": secs,
+            "reason": None if gate else "failed sanity gate (ideal lap must be within 3% below best)"}
 
 
 # ----------------------------------------------------------------------------- corner windows
@@ -397,7 +418,8 @@ def analyze_driver(rf, *, windows=None, terrain=(), laps: str = "valid_flying") 
     return {"label": getattr(rf, "label", rf.path.stem), "identity": rf.ident, "car": rf.car,
             "lap_ms": lap_ms, "lap_indices": [fr["meta"]["lap_index"] for fr in frames],
             "best_index": best_i, "stations": st, "frames": frames,
-            "theoretical": theoretical_best(st, lap_ms, L), "length_m": L, "sf_offset_m": sf_off}
+            "theoretical": theoretical_best(st, lap_ms, L, lap_ids=[fr["meta"]["lap_index"] for fr in frames]),
+            "length_m": L, "sf_offset_m": sf_off}
 
 
 def pack_from_sf(pack: Optional[Dict[str, Any]], sf_offset_m: float, length_m: float) -> Dict[str, Any]:
@@ -450,8 +472,12 @@ def compare(me: Dict[str, Any], ref: Optional[Dict[str, Any]], pack: Optional[Di
                     rows.append(ev)
             per_corner[w["corner"] + f"#{w['index']}"] = {"laps": rows, "consistency": consistency(rows, METRICS),
                                                           "best_lap": next((r for r in rows if r["lap_index"] == d["lap_indices"][d["best_index"]]), None)}
+        theo = d["theoretical"]
+        if wins and d["stations"]:
+            theo = theoretical_best(d["stations"], d["lap_ms"], L, sectors_m=[w["s0_m"] for w in wins],
+                                    lap_ids=d["lap_indices"])
         out["drivers"][d["label"]] = {"lap_ms": d["lap_ms"], "best_lap_ms": min(d["lap_ms"]),
-                                      "theoretical": d["theoretical"], "corners": per_corner}
+                                      "theoretical": theo, "corners": per_corner}
     if ref and ref.get("best_index") is not None and me.get("best_index") is not None:
         mb, rb = me["stations"][me["best_index"]], ref["stations"][ref["best_index"]]
         dlt = delta_to_ref(mb, rb)

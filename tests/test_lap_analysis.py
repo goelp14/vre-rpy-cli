@@ -85,3 +85,23 @@ def test_windows_contain_their_apex_and_never_steal_braking():
     assert brake_points(ref, corners, 3000.0) == [902.0, None, None]
     for w in corner_windows(ref, corners, 3000.0):
         assert w["s0_m"] < w["apex_m"] < w["s1_m"] or w["index"] == len(corners) - 1
+
+
+def test_theoretical_best_ignores_position_jitter():
+    """Same pace every lap, a few metres of along-line jitter: the ideal lap must not invent time."""
+    rng = np.random.default_rng(1)
+    L = 7000.0
+    s = np.arange(0.0, L, 2.0)
+    t = s / 60.0  # 60 m/s constant: lap 116.667 s
+    laps, ms = [], []
+    for _ in range(9):
+        laps.append({"s": s, "t": np.interp(s + rng.normal(0, 1.0, len(s)), s, t)})
+        ms.append(int(round(L / 60.0 * 1000)))
+    sectors = np.linspace(0, L, 15)[1:-1]
+    tb = theoretical_best(laps, ms, L, sectors_m=sectors)
+    assert tb["ok"] and tb["method"] == "corner_sectors" and len(tb["sectors"]) == 14
+    assert tb["potential_s"] < 0.6, tb
+    fixed = theoretical_best(laps, ms, L)
+    assert fixed["method"] == "fixed_sectors" and fixed["potential_s"] < 0.6
+    # the old 50 m slicing turns the same jitter into seconds of phantom pace
+    assert theoretical_best(laps, ms, L, sectors_m=np.arange(50.0, L, 50.0))["potential_s"] > 3 * tb["potential_s"]
