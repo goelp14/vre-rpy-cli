@@ -215,6 +215,22 @@ def cmd_setup(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_cars(args: argparse.Namespace) -> int:
+    """List the cars in a replay (race/MP replays carry every car) with what data each has."""
+    from .ids import identity
+    from .processor import extract_rpy, list_cars
+
+    for spec in args.rpy:
+        ex = extract_rpy(spec)
+        ident = identity(ex, {})
+        print(f"{Path(spec).name}: track={ident.get('track')} player_car={ident.get('car')}")
+        for c in list_cars(ex):
+            flag = "  <- you" if c["is_player"] else ""
+            wheels = "wheel data" if c["has_wheel_data"] else "pose+inputs"
+            print(f"  --car-index {c['car_index']:2d}  {', '.join(c['drivers']) or '?':28s} {c['pose_frames']:6d} pose  {wheels}{flag}")
+    return 0
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(
         prog="vre-rpy",
@@ -295,10 +311,14 @@ def main(argv: Optional[List[str]] = None) -> int:
     su.add_argument("--ref-car-index", type=int, default=None)
     su.set_defaults(func=cmd_setup)
 
+    ca = sub.add_parser("cars", help="List cars in a replay (use with --car-index / --ref-car-index)")
+    ca.add_argument("rpy", nargs="+")
+    ca.set_defaults(func=cmd_cars)
+
     # Back-compat: `vre-rpy --rpy X --out-dir Y` (no subcommand)
     if argv is None:
         argv = sys.argv[1:]
-    if argv and argv[0] not in ("export", "verify", "frames", "limits", "track-pack", "analyze", "setup", "-h", "--help") and argv[0].startswith("-"):
+    if argv and argv[0] not in ("export", "verify", "frames", "limits", "track-pack", "analyze", "setup", "cars", "-h", "--help") and argv[0].startswith("-"):
         argv = ["export", *argv]
 
     args = ap.parse_args(argv)

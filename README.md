@@ -84,8 +84,8 @@ driver inputs (speed, throttle, brake, steering, gear, rpm, G incl. vertical) sy
 
 - **Any car, any track.** Car and track come from ids stored inside the replay, not the filename.
 - **Race replays:** every car in the session is in the file. The default is your car; pick another
-  with `--car-index` (`index.json` lists drivers). Other cars have position and inputs but no
-  per-wheel tyre data.
+  with `--car-index` (`vre-rpy cars FILE` or `index.json` lists drivers). Other cars have position
+  and inputs but no per-wheel tyre data.
 - **Sync is fitted, not assumed**, and every lap reports `sync.lap_r` / `sync.lap_sync_go`. Laps that
   fail the check keep positions but should not be used for input-level comparison.
 - Distances and track edges need your ACC install's `Content/Cache/<track>/fastlane.ai`
